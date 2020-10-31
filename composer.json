@@ -1,0 +1,24 @@
+{
+  "name": "extraton/php-ton-client",
+  "description": "Extraton php ton client",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Maxim Karanaev",
+      "email": "imaxvx@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-ffi": "*",
+    "ext-json": "*",
+    "symfony/serializer": "^5.1",
+    "guzzlehttp/promises": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Extraton\\TonClient\\": "src/"
+    }
+  }
+}
