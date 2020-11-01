@@ -9,13 +9,8 @@ use GuzzleHttp\Promise\Promise;
 
 class RequestCollection extends ArrayIterator
 {
-    private int $requestId = 0;
-
-    /**
-     * @param Promise $promise
-     */
-    public function append($promise): void
+    public function add(int $requestId, Promise $promise): void
     {
-        $this[++$this->requestId] = $promise;
+        $this[$requestId] = $promise;
     }
 }
