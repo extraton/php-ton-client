@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
+use function json_decode;
 use function strlen;
 
 class Encoder
@@ -81,6 +82,8 @@ class Encoder
         $size = $data->len;
 
         $json = $this->ffiWrapper->callString($content, $size);
+
+        return json_decode($json, true);
 
         return (array)$this->jsonDecode->decode(
             $json,

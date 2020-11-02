@@ -7,6 +7,9 @@ namespace Extraton\TonClient\Binding;
 use Closure;
 use Extraton\TonClient\Exception\ContextException;
 use Extraton\TonClient\FFI\FFIWrapper;
+use FFI\CData;
+
+use function usleep;
 
 class Binding
 {
@@ -18,6 +21,14 @@ class Binding
     {
         $this->ffiWrapper = new FFIWrapper($this->getLibraryInterface(), $libraryPath);
         $this->encoder = new Encoder($this->ffiWrapper);
+    }
+
+    /**
+     * @return Encoder
+     */
+    public function getEncoder(): Encoder
+    {
+        return $this->encoder;
     }
 
     /**
@@ -77,6 +88,9 @@ class Binding
                 $responseHandler
             ]
         );
+
+        // Protect segfault
+        usleep(250);
     }
 
     /**
@@ -98,13 +112,6 @@ class Binding
             tc_string_data_t params_json,
             uint32_t response_type,
             bool finished);
-
-            enum tc_response_types_t {
-                tc_response_success = 0,
-                tc_response_error = 1,
-                tc_response_nop = 2,
-                tc_response_custom = 100,
-            };
 
             tc_string_data_t tc_read_string(const tc_string_handle_t* string);
             void tc_destroy_string(const tc_string_handle_t* string);

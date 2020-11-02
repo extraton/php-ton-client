@@ -30,9 +30,9 @@ use const DIRECTORY_SEPARATOR;
 use const PHP_OS;
 
 /**
- * Ton client SDK downloader
+ * Composer script for post-install and post-update execute
  */
-class Scripts
+class PostScript
 {
     private const DEFAULT_SDK_VERSION = '1.0.0';
 
@@ -51,6 +51,8 @@ class Scripts
     private const DOWNLOAD_URL = 'http://sdkbinaries.tonlabs.io/%s';
 
     /**
+     * Download TON SDK library
+     *
      * @param Event $event
      */
     public static function downloadLibrary(Event $event): void
