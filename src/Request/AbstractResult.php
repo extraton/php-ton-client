@@ -10,28 +10,29 @@ use function array_shift;
 use function is_array;
 use function is_int;
 use function is_string;
+use function var_export;
 
 abstract class AbstractResult
 {
-    protected array $result;
+    protected array $resultData;
 
-    public function __construct(array $result = [])
+    public function __construct(array $resultData = [])
     {
-        $this->result = $result;
+        $this->resultData = $resultData;
     }
 
-    protected function getResult(): array
+    protected function getResultData(): array
     {
-        return $this->result;
+        return $this->resultData;
     }
 
     /**
      * @param string ...$keys
-     * @return mixed
+     * @return array
      */
-    protected function requireData(string ...$keys)
+    protected function requireArray(string ...$keys): array
     {
-        $result = $this->getResult();
+        $result = $this->getResultData();
         while ($key = array_shift($keys)) {
             if (!is_array($result) || !isset($result[$key])) {
                 throw new RuntimeException('Invalid path by array of keys');
@@ -45,7 +46,7 @@ abstract class AbstractResult
 
     protected function requireString(string ...$keys): string
     {
-        $result = $this->requireData(...$keys);
+        $result = $this->requireArray(...$keys);
 
         if (!is_string($result)) {
             throw new RuntimeException('Is not a string');
@@ -56,7 +57,7 @@ abstract class AbstractResult
 
     protected function requireInt(string ...$keys): int
     {
-        $result = $this->requireData(...$keys);
+        $result = $this->requireArray(...$keys);
 
         if (!is_int($result)) {
             throw new RuntimeException('Is not an integer');

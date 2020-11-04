@@ -10,7 +10,7 @@ class ResultOfBuildInfo extends AbstractResult
 {
     public function getBuildInfo(): array
     {
-        return $this->getResult();
+        return $this->getResultData();
     }
 
     public function getBuildNumber(): int

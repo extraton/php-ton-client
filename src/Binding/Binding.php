@@ -6,8 +6,14 @@ namespace Extraton\TonClient\Binding;
 
 use Extraton\TonClient\Exception\ContextException;
 use Extraton\TonClient\FFI\FFIWrapper;
+use RuntimeException;
 
+use function file_exists;
+use function sprintf;
+use function strtolower;
 use function usleep;
+
+use const PHP_OS;
 
 class Binding
 {
@@ -19,6 +25,26 @@ class Binding
     {
         $this->ffiWrapper = new FFIWrapper($this->getLibraryInterface(), $libraryPath);
         $this->encoder = new Encoder($this->ffiWrapper);
+    }
+
+    /**
+     * @return static
+     */
+    public static function createDefault(): self
+    {
+        $paths = [
+            'linux'  => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_linux.so',
+            'darwin' => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_darwin.dylib',
+            'win32'  => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_win32.dll',
+        ];
+
+        $os = strtolower(PHP_OS);
+
+        if (!isset($paths[$os]) || !file_exists($paths[$os])) {
+            throw new RuntimeException(sprintf('Library not found in %s.', $paths[$os]));
+        }
+
+        return new self($paths[$os]);
     }
 
     /**
@@ -88,7 +114,7 @@ class Binding
         );
 
         // Protect segfault
-        usleep(250);
+        usleep(1_000);
     }
 
     /**

@@ -9,7 +9,10 @@ use Extraton\TonClient\Handler\ResponseHandler;
 use Extraton\TonClient\Request\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Request\Client\ResultOfGetApiReference;
 use Extraton\TonClient\Request\Client\ResultOfVersion;
+use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
+
+use function usleep;
 
 class TonClient
 {
@@ -22,6 +25,8 @@ class TonClient
     private ?ResponseHandler $responseHandler = null;
 
     private ?Utils $utils = null;
+
+    private ?Net $net = null;
 
     /**
      * @param array $configuration
@@ -65,7 +70,14 @@ class TonClient
     public function request(string $functionName, array $functionParams = []): Promise
     {
         $responseHandler = $this->getResponseHandler();
-        $promise = new Promise();
+        $promise = new Promise(
+            static function () use (&$promise) {
+                while (Is::pending($promise)) {
+                    // @todo incremental step
+                    usleep(50_000);
+                }
+            }
+        );
 
         $requestId = $responseHandler->registerPromise($promise);
         $context = $this->getContext();
@@ -103,5 +115,14 @@ class TonClient
         }
 
         return $this->utils;
+    }
+
+    public function getNet(): Net
+    {
+        if ($this->net === null) {
+            $this->net = new Net($this);
+        }
+
+        return $this->net;
     }
 }

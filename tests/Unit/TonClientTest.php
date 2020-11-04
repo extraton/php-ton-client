@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Extraton\TonClient;
+namespace Tests\Unit\Extraton\TonClient;
 
-use Extraton\TonClient\Result\Client\ResultOfBuildInfo;
-use Extraton\TonClient\Result\Client\ResultOfGetApiReference;
-use Extraton\TonClient\Result\Client\ResultOfVersion;
+use Extraton\TonClient\Request\Client\ResultOfBuildInfo;
+use Extraton\TonClient\Request\Client\ResultOfGetApiReference;
+use Extraton\TonClient\Request\Client\ResultOfVersion;
 use Extraton\TonClient\TonClient;
 use GuzzleHttp\Promise\Promise;
 use PHPUnit\Framework\MockObject\MockObject;
