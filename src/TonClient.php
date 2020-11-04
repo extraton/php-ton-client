@@ -28,6 +28,8 @@ class TonClient
 
     private ?Net $net = null;
 
+    private ?Boc $boc = null;
+
     /**
      * @param array $configuration
      * @param Binding $binding
@@ -93,21 +95,6 @@ class TonClient
         return $promise;
     }
 
-    public function getVersion(): ResultOfVersion
-    {
-        return new ResultOfVersion($this->request('client.version')->wait());
-    }
-
-    public function getBuildInfo(): ResultOfBuildInfo
-    {
-        return new ResultOfBuildInfo($this->request('client.build_info')->wait());
-    }
-
-    public function getApiReference(): ResultOfGetApiReference
-    {
-        return new ResultOfGetApiReference($this->request('client.get_api_reference')->wait());
-    }
-
     public function getUtils(): Utils
     {
         if ($this->utils === null) {
@@ -124,5 +111,29 @@ class TonClient
         }
 
         return $this->net;
+    }
+
+    public function getBoc(): Boc
+    {
+        if ($this->boc === null) {
+            $this->boc = new Boc($this);
+        }
+
+        return $this->boc;
+    }
+
+    public function getVersion(): ResultOfVersion
+    {
+        return new ResultOfVersion($this->request('client.version')->wait());
+    }
+
+    public function getBuildInfo(): ResultOfBuildInfo
+    {
+        return new ResultOfBuildInfo($this->request('client.build_info')->wait());
+    }
+
+    public function getApiReference(): ResultOfGetApiReference
+    {
+        return new ResultOfGetApiReference($this->request('client.get_api_reference')->wait());
     }
 }

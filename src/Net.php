@@ -24,11 +24,12 @@ class Net
     ): ResultOfQueryCollection {
         return new ResultOfQueryCollection(
             $this->tonClient->request(
-                'net.query_collection',
+                'net.subscribe_collection',
                 [
                     'collection' => $collection,
                     'result'     => $result,
                     'limit'      => 5,
+                    //'timeout'    => 10,
                 ]
             )->wait()
         );
