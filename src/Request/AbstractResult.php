@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Result;
+namespace Extraton\TonClient\Request;
 
 use RuntimeException;
 
@@ -59,7 +59,7 @@ abstract class AbstractResult
         $result = $this->requireData(...$keys);
 
         if (!is_int($result)) {
-            throw new RuntimeException('Is not a integer');
+            throw new RuntimeException('Is not an integer');
         }
 
         return $result;

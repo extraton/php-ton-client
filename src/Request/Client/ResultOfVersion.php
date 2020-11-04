@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Result\Client;
+namespace Extraton\TonClient\Request\Client;
 
-use Extraton\TonClient\Result\AbstractResult;
+use Extraton\TonClient\Request\AbstractResult;
 
 class ResultOfVersion extends AbstractResult
 {

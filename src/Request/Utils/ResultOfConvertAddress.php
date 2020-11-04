@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Result\Utils;
+namespace Extraton\TonClient\Request\Utils;
 
-use Extraton\TonClient\Result\AbstractResult;
+use Extraton\TonClient\Request\AbstractResult;
 
 class ResultOfConvertAddress extends AbstractResult
 {

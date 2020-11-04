@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Binding;
 
-use Closure;
 use Extraton\TonClient\Exception\ContextException;
 use Extraton\TonClient\FFI\FFIWrapper;
-use FFI\CData;
 
 use function usleep;
 
@@ -65,7 +63,7 @@ class Binding
      * @param int $requestId
      * @param string $functionName
      * @param array $functionParams
-     * @param Closure $responseHandler
+     * @param callable $responseHandler
      * @return void
      */
     public function request(
@@ -73,7 +71,7 @@ class Binding
         int $requestId,
         string $functionName,
         array $functionParams,
-        Closure $responseHandler
+        callable $responseHandler
     ): void {
         $functionNameStringData = $this->encoder->encodeString($functionName);
         $functionParamsStringData = $this->encoder->encodeArray($functionParams);

@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Binding\Binding;
-use Extraton\TonClient\Binding\Type\ResponseType;
-use Extraton\TonClient\Exception\RequestException;
-use Extraton\TonClient\Request\RequestWatcher;
-use Extraton\TonClient\Result\Client\ResultOfBuildInfo;
-use Extraton\TonClient\Result\Client\ResultOfGetApiReference;
-use Extraton\TonClient\Result\Client\ResultOfVersion;
-use FFI\CData;
+use Extraton\TonClient\Handler\ResponseHandler;
+use Extraton\TonClient\Request\Client\ResultOfBuildInfo;
+use Extraton\TonClient\Request\Client\ResultOfGetApiReference;
+use Extraton\TonClient\Request\Client\ResultOfVersion;
 use GuzzleHttp\Promise\Promise;
-use RuntimeException;
 
 class TonClient
 {
@@ -23,7 +19,7 @@ class TonClient
 
     private ?int $context = null;
 
-    private RequestWatcher $requestWatcher;
+    private ?ResponseHandler $responseHandler = null;
 
     private ?Utils $utils = null;
 
@@ -35,7 +31,18 @@ class TonClient
     {
         $this->configuration = $configuration;
         $this->binding = $binding;
-        $this->requestWatcher = new RequestWatcher();
+    }
+
+    /**
+     * @return ResponseHandler
+     */
+    public function getResponseHandler(): ResponseHandler
+    {
+        if ($this->responseHandler === null) {
+            $this->responseHandler = new ResponseHandler($this->binding);
+        }
+
+        return $this->responseHandler;
     }
 
     /**
@@ -57,11 +64,10 @@ class TonClient
      */
     public function request(string $functionName, array $functionParams = []): Promise
     {
-        $requestId = $this->requestWatcher->generateRequestId();
-
+        $responseHandler = $this->getResponseHandler();
         $promise = new Promise();
 
-        $this->requestWatcher->addPromise($requestId, $promise);
+        $requestId = $responseHandler->registerPromise($promise);
         $context = $this->getContext();
 
         $this->binding->request(
@@ -69,22 +75,7 @@ class TonClient
             $requestId,
             $functionName,
             $functionParams,
-            function (int $requestId, CData $paramsJson, int $responseType, bool $finished) {
-                $result = $this->binding->getEncoder()->decodeToArray($paramsJson);
-                $promise = $this->requestWatcher->getPromise($requestId);
-
-                if ($finished) {
-                    $this->requestWatcher->removePromise($requestId);
-                }
-
-                if ($responseType === ResponseType::SUCCESS) {
-                    $promise->resolve($result);
-                } elseif ($responseType === ResponseType::ERROR) {
-                    $promise->reject(RequestException::create($result));
-                } else {
-                    $promise->reject(new RuntimeException('Unknown error.'));
-                }
-            }
+            $responseHandler
         );
 
         return $promise;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Params\Utils\ParamsOfConvertAddress;
-use Extraton\TonClient\Result\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Request\Utils\AddressStringFormat;
+use Extraton\TonClient\Request\Utils\ResultOfConvertAddress;
 
 class Utils
 {
@@ -16,12 +16,15 @@ class Utils
         $this->tonClient = $tonClient;
     }
 
-    public function convertAddress(ParamsOfConvertAddress $params): ResultOfConvertAddress
+    public function convertAddress(string $address, AddressStringFormat $outputFormat): ResultOfConvertAddress
     {
         return new ResultOfConvertAddress(
             $this->tonClient->request(
                 'utils.convert_address',
-                $params->jsonSerialize()
+                [
+                    'address'       => $address,
+                    'output_format' => $outputFormat,
+                ]
             )->wait()
         );
     }
@@ -29,20 +32,16 @@ class Utils
     public function convertAddressToAccountId(string $address): ResultOfConvertAddress
     {
         return $this->convertAddress(
-            new ParamsOfConvertAddress(
-                $address,
-                ParamsOfConvertAddress::TYPE_ACCOUNT_ID
-            )
+            $address,
+            AddressStringFormat::accountId()
         );
     }
 
     public function convertAddressToHex(string $address): ResultOfConvertAddress
     {
         return $this->convertAddress(
-            new ParamsOfConvertAddress(
-                $address,
-                ParamsOfConvertAddress::TYPE_HEX
-            )
+            $address,
+            AddressStringFormat::hex()
         );
     }
 
@@ -53,13 +52,8 @@ class Utils
         bool $bounce = false
     ): ResultOfConvertAddress {
         return $this->convertAddress(
-            new ParamsOfConvertAddress(
-                $address,
-                ParamsOfConvertAddress::TYPE_BASE64,
-                $url,
-                $test,
-                $bounce
-            )
+            $address,
+            AddressStringFormat::base64($url, $test, $bounce)
         );
     }
 }

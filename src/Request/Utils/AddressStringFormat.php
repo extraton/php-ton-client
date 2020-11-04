@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Params\Utils;
+namespace Extraton\TonClient\Request\Utils;
 
-use JsonSerializable;
+use Extraton\TonClient\Request\AbstractParams;
 use RuntimeException;
 
 use function in_array;
 
-class ParamsOfConvertAddress implements JsonSerializable
+class AddressStringFormat extends AbstractParams
 {
     public const TYPE_ACCOUNT_ID = 'AccountId';
 
     public const TYPE_HEX = 'Hex';
 
     public const TYPE_BASE64 = 'Base64';
-
-    private string $address;
 
     private string $type;
 
@@ -28,7 +26,6 @@ class ParamsOfConvertAddress implements JsonSerializable
     private bool $bounce;
 
     public function __construct(
-        string $address,
         string $type,
         bool $url = false,
         bool $test = false,
@@ -38,26 +35,37 @@ class ParamsOfConvertAddress implements JsonSerializable
             throw new RuntimeException('Unknown address type');
         }
 
-        $this->address = $address;
         $this->type = $type;
         $this->url = $url;
         $this->test = $test;
         $this->bounce = $bounce;
     }
 
+    public static function accountId(): self
+    {
+        return new self(self::TYPE_ACCOUNT_ID);
+    }
+
+    public static function hex(): self
+    {
+        return new self(self::TYPE_HEX);
+    }
+
+    public static function base64(bool $url = false, bool $test = false, bool $bounce = false): self
+    {
+        return new self(self::TYPE_BASE64, $url, $test, $bounce);
+    }
+
     public function jsonSerialize(): array
     {
         $result = [
-            'address'       => $this->address,
-            'output_format' => [
-                'type' => $this->type,
-            ]
+            'type' => $this->type,
         ];
 
         if ($this->type === self::TYPE_BASE64) {
-            $result['output_format']['url'] = $this->url;
-            $result['output_format']['test'] = $this->test;
-            $result['output_format']['bounce'] = $this->bounce;
+            $result['url'] = $this->url;
+            $result['test'] = $this->test;
+            $result['bounce'] = $this->bounce;
         }
 
         return $result;

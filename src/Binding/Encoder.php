@@ -6,21 +6,18 @@ namespace Extraton\TonClient\Binding;
 
 use Extraton\TonClient\FFI\FFIWrapper;
 use FFI\CData;
+use JsonException;
 use stdClass;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
-use Symfony\Component\Serializer\Encoder\JsonEncode;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 use function json_decode;
+use function json_encode;
 use function strlen;
+
+use const JSON_THROW_ON_ERROR;
 
 class Encoder
 {
     private FFIWrapper $ffiWrapper;
-
-    private JsonEncode $jsonEncode;
-
-    private JsonDecode $jsonDecode;
 
     /**
      * @param FFIWrapper $ffiWrapper
@@ -28,12 +25,6 @@ class Encoder
     public function __construct(FFIWrapper $ffiWrapper)
     {
         $this->ffiWrapper = $ffiWrapper;
-        $this->jsonEncode = new JsonEncode();
-        $this->jsonDecode = new JsonDecode(
-            [
-                JsonDecode::ASSOCIATIVE => true
-            ]
-        );
     }
 
     /**
@@ -41,12 +32,13 @@ class Encoder
      *
      * @param array $value
      * @return CData
+     * @throws JsonException
      */
     public function encodeArray(array $value): CData
     {
-        $json = $this->jsonEncode->encode(
+        $json = (string)json_encode(
             empty($value) ? new stdClass() : $value,
-            JsonEncoder::FORMAT
+            JSON_THROW_ON_ERROR
         );
 
         return $this->encodeString($json);
@@ -60,34 +52,30 @@ class Encoder
      */
     public function encodeString(string $value): CData
     {
-        $stringData = $this->ffiWrapper->callNew('tc_string_data_t');
+        $cData = $this->ffiWrapper->callNew('tc_string_data_t');
 
         $size = strlen($value);
-        $stringData->content = $this->ffiWrapper->callNew("char[{$size}]", false);
-        $stringData->len = $size;
+        $cData->content = $this->ffiWrapper->callNew("char[{$size}]", false);
+        $cData->len = $size;
 
-        $content = &$stringData->content;
+        $content = &$cData->content;
         $this->ffiWrapper->callMemCpy($content, $value, $size);
 
-        return $stringData;
+        return $cData;
     }
 
     /**
-     * @param CData $data
+     * @param CData $cData
      * @return array
+     * @throws JsonException
      */
-    public function decodeToArray(CData $data): array
+    public function decodeToArray(CData $cData): array
     {
-        $content = &$data->content;
-        $size = $data->len;
+        $content = &$cData->content;
+        $size = $cData->len;
 
         $json = $this->ffiWrapper->callString($content, $size);
 
-        return json_decode($json, true);
-
-        return (array)$this->jsonDecode->decode(
-            $json,
-            JsonEncoder::FORMAT
-        );
+        return (array)json_decode($json, true, 32, JSON_THROW_ON_ERROR);
     }
 }
