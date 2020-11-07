@@ -4,61 +4,39 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Extraton\TonClient;
 
-use Extraton\TonClient\Request\Utils\AddressStringFormat;
-use Extraton\TonClient\Request\Utils\ResultOfConvertAddress;
-use Extraton\TonClient\TonClient;
+use Extraton\TonClient\Entity\Utils\AddressStringFormat;
+use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Utils;
-use GuzzleHttp\Promise\Promise;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 use function microtime;
 use function uniqid;
 
-class UtilsTest extends TestCase
+class UtilsTest extends AbstractModuleTest
 {
-    /** @var MockObject|TonClient */
-    private MockObject $mockTonClient;
-
-    /** @var MockObject|Promise */
-    private MockObject $mockPromise;
-
     /** @var Utils */
     private Utils $utils;
 
     public function setUp(): void
     {
-        $this->mockTonClient = $this->getMockBuilder(TonClient::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(
-                [
-                    'request'
-                ]
-            )
-            ->getMock();
-
-        $this->mockPromise = $this->getMockBuilder(Promise::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(
-                [
-                    'wait'
-                ]
-            )
-            ->getMock();
-
+        parent::setUp();
         $this->utils = new Utils($this->mockTonClient);
     }
 
     public function testConvertAddressSuccessResult(): void
     {
         $address = uniqid(microtime(), true);
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
         $addressStringFormat = AddressStringFormat::accountId();
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
@@ -71,7 +49,7 @@ class UtilsTest extends TestCase
             )
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfConvertAddress($result);
+        $expected = new ResultOfConvertAddress($response);
 
         self::assertEquals($expected, $this->utils->convertAddress($address, $addressStringFormat));
     }

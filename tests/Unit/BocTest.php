@@ -5,57 +5,35 @@ declare(strict_types=1);
 namespace Tests\Unit\Extraton\TonClient;
 
 use Extraton\TonClient\Boc;
-use Extraton\TonClient\Request\Boc\ResultOfParse;
-use Extraton\TonClient\TonClient;
-use GuzzleHttp\Promise\Promise;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Extraton\TonClient\Entity\Boc\ResultOfParse;
+use Extraton\TonClient\Handler\Response;
 
 use function microtime;
 use function uniqid;
 
-class BocTest extends TestCase
+class BocTest extends AbstractModuleTest
 {
-    /** @var MockObject|TonClient */
-    private MockObject $mockTonClient;
-
-    /** @var MockObject|Promise */
-    private MockObject $mockPromise;
-
     private Boc $boc;
 
     public function setUp(): void
     {
-        $this->mockTonClient = $this->getMockBuilder(TonClient::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(
-                [
-                    'request'
-                ]
-            )
-            ->getMock();
-
-        $this->mockPromise = $this->getMockBuilder(Promise::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(
-                [
-                    'wait'
-                ]
-            )
-            ->getMock();
-
+        parent::setUp();
         $this->boc = new Boc($this->mockTonClient);
     }
 
     public function testParseMessageSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
@@ -67,7 +45,7 @@ class BocTest extends TestCase
             )
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfParse($result);
+        $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseMessage($boc));
     }
@@ -75,12 +53,16 @@ class BocTest extends TestCase
     public function testParseTransactionSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
@@ -92,7 +74,7 @@ class BocTest extends TestCase
             )
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfParse($result);
+        $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseTransaction($boc));
     }
@@ -100,12 +82,16 @@ class BocTest extends TestCase
     public function testParseAccountSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
@@ -117,7 +103,7 @@ class BocTest extends TestCase
             )
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfParse($result);
+        $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseAccount($boc));
     }
@@ -125,12 +111,16 @@ class BocTest extends TestCase
     public function testParseBlockSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
@@ -142,7 +132,7 @@ class BocTest extends TestCase
             )
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfParse($result);
+        $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseBlock($boc));
     }

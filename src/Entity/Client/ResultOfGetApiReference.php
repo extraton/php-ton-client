@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Request\Client;
+namespace Extraton\TonClient\Entity\Client;
 
-use Extraton\TonClient\Request\AbstractResult;
+use Extraton\TonClient\Entity\AbstractResult;
 
 class ResultOfGetApiReference extends AbstractResult
 {

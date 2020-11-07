@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Request;
+namespace Extraton\TonClient\Entity;
 
 use JsonSerializable;
 

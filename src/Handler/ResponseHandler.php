@@ -13,12 +13,16 @@ use JsonException;
 use LogicException;
 use RuntimeException;
 
+use function print_r;
 use function sprintf;
 
 class ResponseHandler
 {
     /** @var Promise[] */
     private array $promises = [];
+
+    /** @var Response[] */
+    private array $responses = [];
 
     private Binding $binding;
 
@@ -33,10 +37,22 @@ class ResponseHandler
         $this->requestId = 0;
     }
 
-    /**
-     * @param int $requestId
-     * @return Promise
-     */
+    public function registerPromise(Promise $promise): int
+    {
+        $this->promises[++$this->requestId] = $promise;
+
+        return $this->requestId;
+    }
+
+    public function unregisterPromise(int $requestId): void
+    {
+        if (!isset($this->promises[$requestId])) {
+            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
+        }
+
+        unset($this->promises[$requestId]);
+    }
+
     public function getPromise(int $requestId): Promise
     {
         if (!isset($this->promises[$requestId])) {
@@ -46,24 +62,25 @@ class ResponseHandler
         return $this->promises[$requestId];
     }
 
-    /**
-     * @param int $requestId
-     */
-    public function removePromise(int $requestId): void
+    public function addResponse(int $requestId, Response $response): void
     {
-        if (!isset($this->promises[$requestId])) {
-            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
-        }
-
-        unset($this->promises[$requestId]);
+        $this->responses[$requestId] = $response;
     }
 
-
-    public function registerPromise(Promise $promise): int
+    public function removeResponse(int $requestId): void
     {
-        $this->promises[++$this->requestId] = $promise;
+        if (isset($this->responses[$requestId])) {
+            unset($this->responses[$requestId]);
+        }
+    }
 
-        return $this->requestId;
+    public function getResponse(int $requestId): Response
+    {
+        if (!isset($this->responses[$requestId])) {
+            throw new RuntimeException('Response not found.');
+        }
+
+        return $this->responses[$requestId];
     }
 
     /**
@@ -76,18 +93,49 @@ class ResponseHandler
     public function __invoke(int $requestId, CData $paramsJson, int $responseType, bool $finished): void
     {
         $result = $this->binding->getEncoder()->decodeToArray($paramsJson);
-        $promise = $this->getPromise($requestId);
-
-        if ($finished) {
-            $this->removePromise($requestId);
-        }
 
         if ($responseType === ResponseType::SUCCESS) {
-            $promise->resolve($result);
+            $this->handleSuccess($requestId, $result, $finished);
         } elseif ($responseType === ResponseType::ERROR) {
-            $promise->reject(RequestException::create($result));
+            $this->handleError($requestId, $result);
+        } elseif ($responseType >= ResponseType::CUSTOM) {
+            $this->handleData($requestId, $result, $finished);
         } else {
-            $promise->reject(new RuntimeException('Unknown error.'));
+            throw new LogicException('Unknown response data.');
         }
+    }
+
+    public function handleSuccess(int $requestId, array $result, bool $finished): void
+    {
+        $promise = $this->getPromise($requestId);
+        $this->unregisterPromise($requestId);
+
+        $response = new Response($result, $finished);
+        if (!$finished) {
+            $this->addResponse($requestId, $response);
+        }
+
+        $promise->resolve($response);
+    }
+
+    public function handleError(int $requestId, array $result): void
+    {
+        $promise = $this->getPromise($requestId);
+        $this->unregisterPromise($requestId);
+
+        $this->removeResponse($requestId);
+
+        $promise->reject(RequestException::create($result));
+    }
+
+    public function handleData(int $requestId, array $result, bool $finished): void
+    {
+        $response = $this->getResponse($requestId);
+
+        if ($finished) {
+            $this->removeResponse($requestId);
+        }
+
+        $response($result);
     }
 }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Request\Net\ResultOfQueryCollection;
+use Extraton\TonClient\Entity\Net\QueryInterface;
+use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 
 class Net
 {
@@ -15,23 +16,32 @@ class Net
         $this->tonClient = $tonClient;
     }
 
-    public function queryCollection(
-        string $collection,
-        ?string $filter = null,
-        string $result,
-        $order = null,
-        int $limit = null
-    ): ResultOfQueryCollection {
+    public function queryCollection(QueryInterface $query): ResultOfQueryCollection
+    {
         return new ResultOfQueryCollection(
             $this->tonClient->request(
-                'net.subscribe_collection',
+                'net.query_collection',
                 [
-                    'collection' => $collection,
-                    'result'     => $result,
-                    'limit'      => 5,
-                    //'timeout'    => 10,
+                    'collection' => $query->getCollection(),
+                    'filter'     => $query->getFilter(),
+                    'result'     => $query->getResult(),
+                    'orderBy'    => $query->getOrderBy(),
+                    'limit'      => $query->getLimit(),
                 ]
             )->wait()
         );
     }
 }
+
+//'net.subscribe_collection',
+//[
+//    'collection' => 'accounts',
+//    'filter'     => null,
+//    'result'     => 'last_paid',
+//    'limit'      => 2,
+//    'orderBy'    => [
+//    'path'      => 'last_paid',
+//    'direction' => 'DESC'
+//]
+////'timeout'    => 10,
+//]

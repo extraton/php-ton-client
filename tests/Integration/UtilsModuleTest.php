@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Extraton\TonClient;
 
-use Extraton\TonClient\Request\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Handler\Response;
+use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Utils;
 use Generator;
 
-class UtilsTest extends AbstractModuleTest
+class UtilsModuleTest extends AbstractModuleTest
 {
     private Utils $utils;
 
@@ -23,9 +24,11 @@ class UtilsTest extends AbstractModuleTest
         $address = '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
 
         $expected = new ResultOfConvertAddress(
-            [
-                'address' => 'ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528',
-            ]
+            new Response(
+                [
+                    'address' => 'ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528',
+                ]
+            )
         );
 
         self::assertEquals($expected, $this->utils->convertAddressToAccountId($address));
@@ -36,9 +39,11 @@ class UtilsTest extends AbstractModuleTest
         $address = '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
 
         $expected = new ResultOfConvertAddress(
-            [
-                'address' => '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528',
-            ]
+            new Response(
+                [
+                    'address' => '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528',
+                ]
+            )
         );
 
         self::assertEquals($expected, $this->utils->convertAddressToHex($address));
@@ -61,9 +66,11 @@ class UtilsTest extends AbstractModuleTest
         bool $bounce = false
     ): void {
         $expected = new ResultOfConvertAddress(
-            [
-                'address' => $expectedAddress,
-            ]
+            new Response(
+                [
+                    'address' => $expectedAddress,
+                ]
+            )
         );
 
         self::assertEquals(

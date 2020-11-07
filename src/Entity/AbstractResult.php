@@ -2,37 +2,39 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Request;
+namespace Extraton\TonClient\Entity;
 
+use Extraton\TonClient\Handler\Response;
+use Generator;
+use IteratorAggregate;
 use RuntimeException;
 
 use function array_shift;
 use function is_array;
 use function is_int;
 use function is_string;
-use function var_export;
 
-abstract class AbstractResult
+abstract class AbstractResult implements IteratorAggregate
 {
-    protected array $resultData;
+    private Response $response;
 
-    public function __construct(array $resultData = [])
+    public function __construct(Response $response)
     {
-        $this->resultData = $resultData;
+        $this->response = $response;
     }
 
-    protected function getResultData(): array
+    protected function getResponse(): Response
     {
-        return $this->resultData;
+        return $this->response;
     }
 
     /**
      * @param string ...$keys
-     * @return array
+     * @return mixed
      */
-    protected function requireArray(string ...$keys): array
+    protected function requireData(string ...$keys)
     {
-        $result = $this->getResultData();
+        $result = $this->getResponse()->getResponseData();
         while ($key = array_shift($keys)) {
             if (!is_array($result) || !isset($result[$key])) {
                 throw new RuntimeException('Invalid path by array of keys');
@@ -46,7 +48,7 @@ abstract class AbstractResult
 
     protected function requireString(string ...$keys): string
     {
-        $result = $this->requireArray(...$keys);
+        $result = $this->requireData(...$keys);
 
         if (!is_string($result)) {
             throw new RuntimeException('Is not a string');
@@ -57,12 +59,17 @@ abstract class AbstractResult
 
     protected function requireInt(string ...$keys): int
     {
-        $result = $this->requireArray(...$keys);
+        $result = $this->requireData(...$keys);
 
         if (!is_int($result)) {
             throw new RuntimeException('Is not an integer');
         }
 
         return $result;
+    }
+
+    public function getIterator(): Generator
+    {
+        yield from $this->getResponse()->getIterator();
     }
 }

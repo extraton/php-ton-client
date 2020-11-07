@@ -5,26 +5,28 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Binding;
 
 use Extraton\TonClient\Exception\ContextException;
-use Extraton\TonClient\FFI\FFIWrapper;
+use Extraton\TonClient\FFI\FFIAdapter;
 use RuntimeException;
 
 use function file_exists;
 use function sprintf;
+use function str_replace;
 use function strtolower;
 use function usleep;
 
+use const DIRECTORY_SEPARATOR;
 use const PHP_OS;
 
 class Binding
 {
-    private FFIWrapper $ffiWrapper;
+    private FFIAdapter $ffiAdapter;
 
     private Encoder $encoder;
 
     public function __construct(string $libraryPath)
     {
-        $this->ffiWrapper = new FFIWrapper($this->getLibraryInterface(), $libraryPath);
-        $this->encoder = new Encoder($this->ffiWrapper);
+        $this->ffiAdapter = new FFIAdapter($this->getLibraryInterface(), $libraryPath);
+        $this->encoder = new Encoder($this->ffiAdapter);
     }
 
     /**
@@ -44,7 +46,9 @@ class Binding
             throw new RuntimeException(sprintf('Library not found in %s.', $paths[$os]));
         }
 
-        return new self($paths[$os]);
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $paths[$os]);
+
+        return new self($path);
     }
 
     /**
@@ -62,14 +66,14 @@ class Binding
     public function createContext(array $configuration): int
     {
         $stringData = $this->encoder->encodeArray($configuration);
-        $stringHandle = $this->ffiWrapper->call(
+        $stringHandle = $this->ffiAdapter->call(
             'tc_create_context',
             [
                 $stringData
             ]
         );
 
-        $resultStringData = $this->ffiWrapper->call(
+        $resultStringData = $this->ffiAdapter->call(
             'tc_read_string',
             [
                 $stringHandle
@@ -102,7 +106,7 @@ class Binding
         $functionNameStringData = $this->encoder->encodeString($functionName);
         $functionParamsStringData = $this->encoder->encodeArray($functionParams);
 
-        $this->ffiWrapper->call(
+        $this->ffiAdapter->call(
             'tc_request',
             [
                 $context,

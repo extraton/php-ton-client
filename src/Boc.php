@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Request\Boc\ResultOfParse;
+use Extraton\TonClient\Entity\Boc\ResultOfParse;
 
 class Boc
 {

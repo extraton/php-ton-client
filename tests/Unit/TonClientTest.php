@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Extraton\TonClient;
 
-use Extraton\TonClient\Request\Client\ResultOfBuildInfo;
-use Extraton\TonClient\Request\Client\ResultOfGetApiReference;
-use Extraton\TonClient\Request\Client\ResultOfVersion;
+use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
+use Extraton\TonClient\Entity\Client\ResultOfGetApiReference;
+use Extraton\TonClient\Entity\Client\ResultOfVersion;
+use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\TonClient;
 use GuzzleHttp\Promise\Promise;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -44,59 +45,71 @@ class TonClientTest extends TestCase
             ->getMock();
     }
 
-    public function testGetVersionWithSuccessResult(): void
+    public function testVersionWithSuccessResult(): void
     {
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
             ->with('client.version', [])
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfVersion($result);
+        $expected = new ResultOfVersion($response);
 
-        self::assertEquals($expected, $this->mockTonClient->getVersion());
+        self::assertEquals($expected, $this->mockTonClient->version());
     }
 
-    public function testGetBuildInfoWithSuccessResult(): void
+    public function testBuildInfoWithSuccessResult(): void
     {
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
             ->with('client.build_info', [])
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfBuildInfo($result);
+        $expected = new ResultOfBuildInfo($response);
 
-        self::assertEquals($expected, $this->mockTonClient->getBuildInfo());
+        self::assertEquals($expected, $this->mockTonClient->buildInfo());
     }
 
     public function testGetApiReferenceWithSuccessResult(): void
     {
-        $result = [uniqid(microtime(), true)];
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
 
         $this->mockPromise->expects(self::once())
             ->method('wait')
             ->with()
-            ->willReturn($result);
+            ->willReturn($response);
 
         $this->mockTonClient->expects(self::once())
             ->method('request')
             ->with('client.get_api_reference', [])
             ->willReturn($this->mockPromise);
 
-        $expected = new ResultOfGetApiReference($result);
+        $expected = new ResultOfGetApiReference($response);
 
         self::assertEquals($expected, $this->mockTonClient->getApiReference());
     }

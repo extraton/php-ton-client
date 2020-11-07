@@ -6,14 +6,16 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Handler\ResponseHandler;
-use Extraton\TonClient\Request\Client\ResultOfBuildInfo;
-use Extraton\TonClient\Request\Client\ResultOfGetApiReference;
-use Extraton\TonClient\Request\Client\ResultOfVersion;
+use Extraton\TonClient\Handler\SmartSleeper;
+use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
+use Extraton\TonClient\Entity\Client\ResultOfGetApiReference;
+use Extraton\TonClient\Entity\Client\ResultOfVersion;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
 
-use function usleep;
-
+/**
+ * Ton client
+ */
 class TonClient
 {
     private array $configuration;
@@ -32,12 +34,12 @@ class TonClient
 
     /**
      * @param array $configuration
-     * @param Binding $binding
+     * @param Binding|null $binding
      */
-    public function __construct(array $configuration, Binding $binding)
+    public function __construct(array $configuration, ?Binding $binding = null)
     {
         $this->configuration = $configuration;
-        $this->binding = $binding;
+        $this->binding = $binding ?? Binding::createDefault();
     }
 
     /**
@@ -74,9 +76,11 @@ class TonClient
         $responseHandler = $this->getResponseHandler();
         $promise = new Promise(
             static function () use (&$promise) {
+                $sleeper = new SmartSleeper();
+
                 while (Is::pending($promise)) {
-                    // @todo incremental step
-                    usleep(50_000);
+                    $sleeper->sleep();
+                    $sleeper->increase();
                 }
             }
         );
@@ -122,18 +126,30 @@ class TonClient
         return $this->boc;
     }
 
-    public function getVersion(): ResultOfVersion
+    public function version(): ResultOfVersion
     {
-        return new ResultOfVersion($this->request('client.version')->wait());
+        return new ResultOfVersion(
+            $this->request(
+                'client.version'
+            )->wait()
+        );
     }
 
-    public function getBuildInfo(): ResultOfBuildInfo
+    public function buildInfo(): ResultOfBuildInfo
     {
-        return new ResultOfBuildInfo($this->request('client.build_info')->wait());
+        return new ResultOfBuildInfo(
+            $this->request(
+                'client.build_info'
+            )->wait()
+        );
     }
 
     public function getApiReference(): ResultOfGetApiReference
     {
-        return new ResultOfGetApiReference($this->request('client.get_api_reference')->wait());
+        return new ResultOfGetApiReference(
+            $this->request(
+                'client.get_api_reference'
+            )->wait()
+        );
     }
 }

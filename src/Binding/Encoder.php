@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Binding;
 
-use Extraton\TonClient\FFI\FFIWrapper;
+use Extraton\TonClient\FFI\FFIAdapter;
 use FFI\CData;
 use JsonException;
 use stdClass;
@@ -17,14 +17,14 @@ use const JSON_THROW_ON_ERROR;
 
 class Encoder
 {
-    private FFIWrapper $ffiWrapper;
+    private FFIAdapter $ffiAdapter;
 
     /**
-     * @param FFIWrapper $ffiWrapper
+     * @param FFIAdapter $ffiAdapter
      */
-    public function __construct(FFIWrapper $ffiWrapper)
+    public function __construct(FFIAdapter $ffiAdapter)
     {
-        $this->ffiWrapper = $ffiWrapper;
+        $this->ffiAdapter = $ffiAdapter;
     }
 
     /**
@@ -52,14 +52,14 @@ class Encoder
      */
     public function encodeString(string $value): CData
     {
-        $cData = $this->ffiWrapper->callNew('tc_string_data_t');
+        $cData = $this->ffiAdapter->callNew('tc_string_data_t');
 
         $size = strlen($value);
-        $cData->content = $this->ffiWrapper->callNew("char[{$size}]", false);
+        $cData->content = $this->ffiAdapter->callNew("char[{$size}]", false);
         $cData->len = $size;
 
         $content = &$cData->content;
-        $this->ffiWrapper->callMemCpy($content, $value, $size);
+        $this->ffiAdapter->callMemCpy($content, $value, $size);
 
         return $cData;
     }
@@ -74,7 +74,7 @@ class Encoder
         $content = &$cData->content;
         $size = $cData->len;
 
-        $json = $this->ffiWrapper->callString($content, $size);
+        $json = $this->ffiAdapter->callString($content, $size);
 
         return (array)json_decode($json, true, 32, JSON_THROW_ON_ERROR);
     }

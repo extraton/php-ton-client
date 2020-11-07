@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Request\Utils\AddressStringFormat;
-use Extraton\TonClient\Request\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Entity\Utils\AddressStringFormat;
+use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 
 class Utils
 {

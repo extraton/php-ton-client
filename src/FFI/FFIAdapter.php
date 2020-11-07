@@ -9,7 +9,7 @@ use FFI\CData;
 
 use function call_user_func_array;
 
-class FFIWrapper
+class FFIAdapter
 {
     private string $libraryInterface;
 

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Request\Client;
+namespace Extraton\TonClient\Entity\Client;
 
-use Extraton\TonClient\Request\AbstractResult;
+use Extraton\TonClient\Entity\AbstractResult;
 
 class ResultOfBuildInfo extends AbstractResult
 {
     public function getBuildInfo(): array
     {
-        return $this->getResultData();
+        return $this->getResponse();
     }
 
     public function getBuildNumber(): int

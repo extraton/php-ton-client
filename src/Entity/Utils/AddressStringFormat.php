@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Request\Utils;
+namespace Extraton\TonClient\Entity\Utils;
 
-use Extraton\TonClient\Request\AbstractParams;
+use Extraton\TonClient\Entity\AbstractParams;
 use RuntimeException;
 
 use function in_array;
