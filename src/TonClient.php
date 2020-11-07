@@ -36,6 +36,8 @@ class TonClient
 
     private ?Abi $abi = null;
 
+    private ?Crypto $crypto = null;
+
     /**
      * @param array $configuration
      * @param Binding|null $binding
@@ -114,6 +116,20 @@ class TonClient
         }
 
         return $this->abi;
+    }
+
+    /**
+     * Get Crypto module
+     *
+     * @return Crypto
+     */
+    public function getCrypto(): Crypto
+    {
+        if ($this->crypto === null) {
+            $this->crypto = new Crypto($this);
+        }
+
+        return $this->crypto;
     }
 
     /**
