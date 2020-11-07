@@ -8,7 +8,7 @@ use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
 use Extraton\TonClient\Handler\Response;
 
-class TonClientModuleTest extends AbstractModuleTest
+class TonClientTest extends AbstractModuleTest
 {
     public function testVersionWithSuccessResult(): void
     {

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Integration\Extraton\TonClient;
 
 use Extraton\TonClient\Boc;
-use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
+use Extraton\TonClient\Handler\Response;
 
-class BocModuleTest extends AbstractModuleTest
+class BocTest extends AbstractModuleTest
 {
     private Boc $boc;
 

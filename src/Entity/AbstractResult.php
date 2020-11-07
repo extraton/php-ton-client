@@ -46,6 +46,17 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
+    protected function requireArray(string ...$keys): array
+    {
+        $result = $this->requireData(...$keys);
+
+        if (!is_array($result)) {
+            throw new RuntimeException('Is not a array');
+        }
+
+        return $result;
+    }
+
     protected function requireString(string ...$keys): string
     {
         $result = $this->requireData(...$keys);
@@ -68,8 +79,13 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getIterator(): Generator
     {
-        yield from $this->getResponse()->getIterator();
+        $generator = new Generator();
+
+        yield $generator->throw(new RuntimeException('Result is not iterable.'));
     }
 }

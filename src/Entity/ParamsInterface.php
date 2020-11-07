@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Extraton\TonClient\Entity\Net;
+namespace Extraton\TonClient\Entity;
 
 use JsonSerializable;
 
-interface OrderByCollectionInterface extends JsonSerializable
+interface ParamsInterface extends JsonSerializable
 {
     public function jsonSerialize(): array;
 }

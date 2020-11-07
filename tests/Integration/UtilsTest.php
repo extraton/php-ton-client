@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Extraton\TonClient;
 
-use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Utils;
 use Generator;
 
-class UtilsModuleTest extends AbstractModuleTest
+class UtilsTest extends AbstractModuleTest
 {
     private Utils $utils;
 
