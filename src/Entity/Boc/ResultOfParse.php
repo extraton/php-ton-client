@@ -10,6 +10,6 @@ class ResultOfParse extends AbstractResult
 {
     public function getParsed(): array
     {
-        return $this->requireData('parsed');
+        return $this->requireArray('parsed');
     }
 }

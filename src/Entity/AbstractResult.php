@@ -18,9 +18,20 @@ abstract class AbstractResult implements IteratorAggregate
 {
     private Response $response;
 
+    /**
+     * @param Response $response
+     */
     public function __construct(Response $response)
     {
         $this->response = $response;
+    }
+
+    /**
+     * @return Response
+     */
+    protected function getResponse(): Response
+    {
+        return $this->response;
     }
 
     /**
@@ -41,17 +52,6 @@ abstract class AbstractResult implements IteratorAggregate
         return $this->response->isFinished();
     }
 
-    protected function requireArray(string ...$keys): array
-    {
-        $result = $this->requireData(...$keys);
-
-        if (!is_array($result)) {
-            throw new RuntimeException('Is not a array');
-        }
-
-        return $result;
-    }
-
     /**
      * @param string ...$keys
      * @return mixed
@@ -70,11 +70,25 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
-    protected function getResponse(): Response
+    /**
+     * @param string ...$keys
+     * @return array
+     */
+    protected function requireArray(string ...$keys): array
     {
-        return $this->response;
+        $result = $this->requireData(...$keys);
+
+        if (!is_array($result)) {
+            throw new RuntimeException('Is not a array');
+        }
+
+        return $result;
     }
 
+    /**
+     * @param string ...$keys
+     * @return string
+     */
     protected function requireString(string ...$keys): string
     {
         $result = $this->requireData(...$keys);
@@ -86,6 +100,10 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
+    /**
+     * @param string ...$keys
+     * @return int
+     */
     protected function requireInt(string ...$keys): int
     {
         $result = $this->requireData(...$keys);

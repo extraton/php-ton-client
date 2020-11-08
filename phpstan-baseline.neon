@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$str of function strtolower expects string, int\\|string given\\.$#"
+			count: 1
+			path: src/Client.php
+
+		-
+			message: "#^Property GuzzleHttp\\\\Handler\\\\CurlFactory\\:\\:\\$handles has unknown class CurlHandle as its type\\.$#"
+			count: 1
+			path: src/Handler/CurlFactory.php
