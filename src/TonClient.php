@@ -32,6 +32,10 @@ class TonClient
 
     private ?Boc $boc = null;
 
+    private ?Processing $processing = null;
+
+    private ?Abi $abi = null;
+
     /**
      * @param array $configuration
      * @param Binding|null $binding
@@ -82,6 +86,34 @@ class TonClient
         }
 
         return $this->boc;
+    }
+
+    /**
+     * Get message processing module
+     *
+     * @return Processing
+     */
+    public function getProcessing(): Processing
+    {
+        if ($this->processing === null) {
+            $this->processing = new Processing($this);
+        }
+
+        return $this->processing;
+    }
+
+    /**
+     * Get Abi module
+     *
+     * @return Abi
+     */
+    public function getAbi(): Abi
+    {
+        if ($this->abi === null) {
+            $this->abi = new Abi($this);
+        }
+
+        return $this->abi;
     }
 
     /**

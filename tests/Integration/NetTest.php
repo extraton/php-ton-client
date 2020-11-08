@@ -210,6 +210,7 @@ class NetTest extends AbstractModuleTest
 
     /**
      * @covers ::subscribeCollection
+     * @covers ::unsubscribe
      */
     public function testSubscribeCollectionSuccessResult(): void
     {

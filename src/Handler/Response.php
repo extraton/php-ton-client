@@ -32,14 +32,19 @@ class Response implements IteratorAggregate
         return $this->responseData;
     }
 
+    public function setEventDataTransformer(callable $eventTransformer): void
+    {
+        $this->eventDataTransformer = Closure::fromCallable($eventTransformer);
+    }
+
     public function finish(): void
     {
         $this->finished = true;
     }
 
-    public function setEventDataTransformer(callable $eventTransformer): void
+    public function isFinished(): bool
     {
-        $this->eventDataTransformer = Closure::fromCallable($eventTransformer);
+        return $this->finished;
     }
 
     public function __invoke(array $eventData): void
@@ -52,40 +57,33 @@ class Response implements IteratorAggregate
     }
 
     /**
-     * @return Generator<array<mixed>>
+     * @return Generator<mixed>
      */
     public function getIterator(): Generator
     {
-        if ($this->finished) {
+        if ($this->isFinished()) {
             throw new LogicException('Completed response.');
         }
 
-        return (function () {
-            $sleeper = new SmartSleeper();
+        $sleeper = new SmartSleeper();
 
-            for (; ;) {
-                while ($data = array_shift($this->eventData)) {
-                    $sleeper->reset();
+        for (; ;) {
+            while ($data = array_shift($this->eventData)) {
+                $sleeper->reset();
 
-                    if ($this->eventDataTransformer === null) {
-                        yield $data;
-                    } else {
-                        yield call_user_func($this->eventDataTransformer, $data);
-                    }
+                if ($this->eventDataTransformer === null) {
+                    yield $data;
+                } else {
+                    yield call_user_func($this->eventDataTransformer, $data);
                 }
-
-                if ($this->isFinished()) {
-                    break;
-                }
-
-                $sleeper->sleep();
-                $sleeper->increase();
             }
-        })();
-    }
 
-    public function isFinished(): bool
-    {
-        return $this->finished;
+            if ($this->isFinished()) {
+                break;
+            }
+
+            $sleeper->sleep();
+            $sleeper->increase();
+        }
     }
 }
