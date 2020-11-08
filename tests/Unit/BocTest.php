@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Extraton\TonClient;
 
 use Extraton\TonClient\Boc;
+use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
 
@@ -152,5 +153,37 @@ class BocTest extends AbstractModuleTest
         $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseBlock($boc));
+    }
+
+    /**
+     * @covers ::getBlockchainConfig
+     */
+    public function testGetBlockchainConfigWithSuccessResult(): void
+    {
+        $blockBoc = uniqid(microtime(), true);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.get_blockchain_config',
+                [
+                    'block_boc' => $blockBoc,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfGetBlockchainConfig($response);
+
+        self::assertEquals($expected, $this->boc->getBlockchainConfig($blockBoc));
     }
 }

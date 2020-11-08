@@ -42,6 +42,11 @@ class TonClient
         $this->binding = $binding ?? Binding::createDefault();
     }
 
+    /**
+     * Get Utils module
+     *
+     * @return Utils
+     */
     public function getUtils(): Utils
     {
         if ($this->utils === null) {
@@ -51,6 +56,11 @@ class TonClient
         return $this->utils;
     }
 
+    /**
+     * Get Net module
+     *
+     * @return Net
+     */
     public function getNet(): Net
     {
         if ($this->net === null) {
@@ -60,6 +70,11 @@ class TonClient
         return $this->net;
     }
 
+    /**
+     * Get Boc module
+     *
+     * @return Boc
+     */
     public function getBoc(): Boc
     {
         if ($this->boc === null) {
@@ -69,18 +84,11 @@ class TonClient
         return $this->boc;
     }
 
-    public function version(): ResultOfVersion
-    {
-        return new ResultOfVersion(
-            $this->request(
-                'client.version'
-            )->wait()
-        );
-    }
-
     /**
-     * @param string $functionName
-     * @param array $functionParams
+     * Main method to call sdk methods
+     *
+     * @param string $functionName Function name
+     * @param array $functionParams Function params
      * @return Promise
      */
     public function request(string $functionName, array $functionParams = []): Promise
@@ -112,6 +120,8 @@ class TonClient
     }
 
     /**
+     * Get response handler
+     *
      * @return ResponseHandler
      */
     public function getResponseHandler(): ResponseHandler
@@ -124,6 +134,8 @@ class TonClient
     }
 
     /**
+     * Get sdk content
+     *
      * @return int
      */
     public function getContext(): int
@@ -135,6 +147,25 @@ class TonClient
         return $this->context;
     }
 
+    /**
+     * Get sdk client version
+     *
+     * @return ResultOfVersion
+     */
+    public function version(): ResultOfVersion
+    {
+        return new ResultOfVersion(
+            $this->request(
+                'client.version'
+            )->wait()
+        );
+    }
+
+    /**
+     * Get build info
+     *
+     * @return ResultOfBuildInfo
+     */
     public function buildInfo(): ResultOfBuildInfo
     {
         return new ResultOfBuildInfo(
@@ -144,6 +175,11 @@ class TonClient
         );
     }
 
+    /**
+     * Get api version
+     *
+     * @return ResultOfGetApiReference
+     */
     public function getApiReference(): ResultOfGetApiReference
     {
         return new ResultOfGetApiReference(

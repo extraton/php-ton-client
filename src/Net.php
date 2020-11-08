@@ -19,12 +19,17 @@ class Net
 {
     private TonClient $tonClient;
 
+    /**
+     * @param TonClient $tonClient
+     */
     public function __construct(TonClient $tonClient)
     {
         $this->tonClient = $tonClient;
     }
 
     /**
+     * Queries collection data
+     *
      * @param QueryInterface|ParamsOfQueryCollection $query
      * @return ResultOfQueryCollection
      */
@@ -45,6 +50,8 @@ class Net
     }
 
     /**
+     * Returns an object that fulfills the conditions or waits for its appearance
+     *
      * @param QueryInterface|ParamsOfWaitForCollection $query
      * @return ResultOfWaitForCollection
      */
@@ -64,6 +71,8 @@ class Net
     }
 
     /**
+     * Creates a subscription
+     *
      * @param QueryInterface|ParamsOfSubscribeCollection $query
      * @return ResultOfSubscribeCollection
      */
@@ -83,6 +92,8 @@ class Net
     }
 
     /**
+     * Cancels a subscription
+     *
      * @param int $handle
      */
     public function unsubscribe(int $handle): void
