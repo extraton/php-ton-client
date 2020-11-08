@@ -23,14 +23,19 @@ class FFIAdapter
         $this->libraryPath = $libraryPath;
     }
 
-    public function getLibraryPath(): string
+    public function __call(string $functionName, array $arguments = []): FFI\CData
     {
-        return $this->libraryPath;
+        return $this->call($functionName, $arguments);
     }
 
-    public function getLibraryInterface(): string
+    public function call(string $functionName, array $arguments = []): FFI\CData
     {
-        return $this->libraryInterface;
+        $callable = [
+            $this->getFFI(),
+            $functionName
+        ];
+
+        return call_user_func_array($callable, $arguments);
     }
 
     public function getFFI(): FFI
@@ -45,19 +50,14 @@ class FFIAdapter
         return $this->ffi;
     }
 
-    public function call(string $functionName, array $arguments = []): FFI\CData
+    public function getLibraryInterface(): string
     {
-        $callable = [
-            $this->getFFI(),
-            $functionName
-        ];
-
-        return call_user_func_array($callable, $arguments);
+        return $this->libraryInterface;
     }
 
-    public function __call(string $functionName, array $arguments = []): FFI\CData
+    public function getLibraryPath(): string
     {
-        return $this->call($functionName, $arguments);
+        return $this->libraryPath;
     }
 
     public function callNew(string $type, bool $owned = true): FFI\CData

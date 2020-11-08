@@ -12,6 +12,11 @@ use Extraton\TonClient\Utils;
 use function microtime;
 use function uniqid;
 
+/**
+ * Unit tests for Utils module
+ *
+ * @coversDefaultClass \Extraton\TonClient\Utils
+ */
 class UtilsTest extends AbstractModuleTest
 {
     /** @var Utils */
@@ -23,7 +28,10 @@ class UtilsTest extends AbstractModuleTest
         $this->utils = new Utils($this->mockTonClient);
     }
 
-    public function testConvertAddressSuccessResult(): void
+    /**
+     * @covers ::convertAddress
+     */
+    public function testConvertAddressWithSuccessResult(): void
     {
         $address = uniqid(microtime(), true);
         $response = new Response(

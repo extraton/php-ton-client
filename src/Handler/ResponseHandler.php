@@ -13,7 +13,6 @@ use JsonException;
 use LogicException;
 use RuntimeException;
 
-use function print_r;
 use function sprintf;
 
 class ResponseHandler
@@ -44,45 +43,6 @@ class ResponseHandler
         return $this->requestId;
     }
 
-    public function unregisterPromise(int $requestId): void
-    {
-        if (!isset($this->promises[$requestId])) {
-            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
-        }
-
-        unset($this->promises[$requestId]);
-    }
-
-    public function getPromise(int $requestId): Promise
-    {
-        if (!isset($this->promises[$requestId])) {
-            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
-        }
-
-        return $this->promises[$requestId];
-    }
-
-    public function addResponse(int $requestId, Response $response): void
-    {
-        $this->responses[$requestId] = $response;
-    }
-
-    public function removeResponse(int $requestId): void
-    {
-        if (isset($this->responses[$requestId])) {
-            unset($this->responses[$requestId]);
-        }
-    }
-
-    public function getResponse(int $requestId): Response
-    {
-        if (!isset($this->responses[$requestId])) {
-            throw new RuntimeException('Response not found.');
-        }
-
-        return $this->responses[$requestId];
-    }
-
     /**
      * @param int $requestId
      * @param CData $paramsJson
@@ -100,6 +60,8 @@ class ResponseHandler
             $this->handleError($requestId, $result);
         } elseif ($responseType >= ResponseType::CUSTOM) {
             $this->handleData($requestId, $result, $finished);
+        } elseif ($responseType === ResponseType::NOP) {
+            $this->handleNop($requestId);
         } else {
             throw new LogicException('Unknown response data.');
         }
@@ -118,6 +80,29 @@ class ResponseHandler
         $promise->resolve($response);
     }
 
+    public function getPromise(int $requestId): Promise
+    {
+        if (!isset($this->promises[$requestId])) {
+            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
+        }
+
+        return $this->promises[$requestId];
+    }
+
+    public function unregisterPromise(int $requestId): void
+    {
+        if (!isset($this->promises[$requestId])) {
+            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
+        }
+
+        unset($this->promises[$requestId]);
+    }
+
+    public function addResponse(int $requestId, Response $response): void
+    {
+        $this->responses[$requestId] = $response;
+    }
+
     public function handleError(int $requestId, array $result): void
     {
         $promise = $this->getPromise($requestId);
@@ -126,6 +111,13 @@ class ResponseHandler
         $this->removeResponse($requestId);
 
         $promise->reject(RequestException::create($result));
+    }
+
+    public function removeResponse(int $requestId): void
+    {
+        if (isset($this->responses[$requestId])) {
+            unset($this->responses[$requestId]);
+        }
     }
 
     public function handleData(int $requestId, array $result, bool $finished): void
@@ -137,5 +129,22 @@ class ResponseHandler
         }
 
         $response($result);
+    }
+
+    public function getResponse(int $requestId): Response
+    {
+        if (!isset($this->responses[$requestId])) {
+            throw new RuntimeException('Response not found.');
+        }
+
+        return $this->responses[$requestId];
+    }
+
+    public function handleNop(int $requestId): void
+    {
+        $response = $this->getResponse($requestId);
+        $response->finish();
+
+        $this->removeResponse($requestId);
     }
 }

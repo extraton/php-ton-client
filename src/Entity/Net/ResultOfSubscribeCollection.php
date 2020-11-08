@@ -24,18 +24,27 @@ class ResultOfSubscribeCollection extends AbstractResult
         return $this->requireData('result');
     }
 
-    public function getHandle(): int
-    {
-        return $this->requireInt('handle');
-    }
-
     public function stop(): void
     {
         $this->net->unsubscribe($this->getHandle());
     }
 
+    public function getHandle(): int
+    {
+        return $this->requireInt('handle');
+    }
+
+    /**
+     * @return Generator<Event>
+     */
     public function getIterator(): Generator
     {
-        yield from $this->getResponse();
+        $response = $this->getResponse();
+
+        $response->setEventDataTransformer(
+            static fn($eventData) => new Event(new Response($eventData))
+        );
+
+        yield from $response;
     }
 }

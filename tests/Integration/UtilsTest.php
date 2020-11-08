@@ -9,6 +9,11 @@ use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Utils;
 use Generator;
 
+/**
+ * Integration tests for Utils module
+ *
+ * @coversDefaultClass \Extraton\TonClient\Utils
+ */
 class UtilsTest extends AbstractModuleTest
 {
     private Utils $utils;
@@ -19,7 +24,10 @@ class UtilsTest extends AbstractModuleTest
         $this->utils = $this->tonClient->getUtils();
     }
 
-    public function testConvertAddressToAccountIdSuccessResult(): void
+    /**
+     * @covers ::convertAddressToAccountId
+     */
+    public function testConvertAddressToAccountIdWithSuccessResult(): void
     {
         $address = '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
 
@@ -34,7 +42,10 @@ class UtilsTest extends AbstractModuleTest
         self::assertEquals($expected, $this->utils->convertAddressToAccountId($address));
     }
 
-    public function testConvertAddressToHexSuccessResult(): void
+    /**
+     * @covers ::convertAddressToHex
+     */
+    public function testConvertAddressToHexWithSuccessResult(): void
     {
         $address = '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
 
@@ -50,7 +61,9 @@ class UtilsTest extends AbstractModuleTest
     }
 
     /**
-     * @dataProvider dataForTestConvertAddressToBase64SuccessResult
+     * @covers ::convertAddressToBase64
+     *
+     * @dataProvider dataForTestConvertAddressToBase64WithSuccessResult
      *
      * @param string $expectedAddress
      * @param string $sourceAddress
@@ -58,7 +71,7 @@ class UtilsTest extends AbstractModuleTest
      * @param bool $test
      * @param bool $bounce
      */
-    public function testConvertAddressToBase64SuccessResult(
+    public function testConvertAddressToBase64WithSuccessResult(
         string $expectedAddress,
         string $sourceAddress,
         bool $url = false,
@@ -87,7 +100,7 @@ class UtilsTest extends AbstractModuleTest
     /**
      * @return Generator
      */
-    public function dataForTestConvertAddressToBase64SuccessResult(): Generator
+    public function dataForTestConvertAddressToBase64WithSuccessResult(): Generator
     {
         yield [
             'kQDuZdFwgwE2JTrYvSEWoo_L1KxGLG8iL0mhUF0vp_f1KGjN',

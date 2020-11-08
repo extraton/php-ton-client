@@ -36,23 +36,9 @@ abstract class AbstractQuery implements QueryInterface
         $this->resultFields = $resultFields;
     }
 
-    public function setFilters(?Filters $filters): self
+    public function addResultField(string ...$fieldNames): self
     {
-        $this->filters = $filters;
-
-        return $this;
-    }
-
-    public function setOrderBy(?OrderBy $orderBy): self
-    {
-        $this->orderBy = $orderBy;
-
-        return $this;
-    }
-
-    public function addResultField(string $fieldName): self
-    {
-        $this->resultFields[] = trim($fieldName);
+        $this->resultFields = [...$this->resultFields, ...$fieldNames];
 
         return $this;
     }
@@ -81,20 +67,6 @@ abstract class AbstractQuery implements QueryInterface
         }
 
         $this->filters->add($field, $operator, $value);
-
-        return $this;
-    }
-
-    public function setLimit(?int $limit): self
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    public function setTimeout(int $timeout): self
-    {
-        $this->timeout = $timeout;
 
         return $this;
     }
@@ -129,9 +101,23 @@ abstract class AbstractQuery implements QueryInterface
         return $this->filters;
     }
 
+    public function setFilters(?Filters $filters): self
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
+
     public function getOrderBy(): ?ParamsInterface
     {
         return $this->orderBy;
+    }
+
+    public function setOrderBy(?OrderBy $orderBy): self
+    {
+        $this->orderBy = $orderBy;
+
+        return $this;
     }
 
     public function getLimit(): ?int
@@ -139,8 +125,22 @@ abstract class AbstractQuery implements QueryInterface
         return $this->limit;
     }
 
+    public function setLimit(?int $limit): self
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
     public function getTimeout(): ?int
     {
         return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): self
+    {
+        $this->timeout = $timeout;
+
+        return $this;
     }
 }

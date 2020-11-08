@@ -30,6 +30,41 @@ class Binding
     }
 
     /**
+     * @return string
+     */
+    public function getLibraryInterface(): string
+    {
+        return <<<C
+            typedef struct {
+                const char* content;
+                uint32_t len;
+            } tc_string_data_t;
+
+            typedef struct  {
+            } tc_string_handle_t;
+            
+            typedef void (*tc_response_handler_t)(
+            uint32_t request_id,
+            tc_string_data_t params_json,
+            uint32_t response_type,
+            bool finished);
+
+            tc_string_data_t tc_read_string(const tc_string_handle_t* string);
+            void tc_destroy_string(const tc_string_handle_t* string);
+            
+            tc_string_handle_t* tc_create_context(tc_string_data_t config);
+            void tc_destroy_context(uint32_t context);
+
+            void tc_request(
+            uint32_t context,
+            tc_string_data_t function_name,
+            tc_string_data_t function_params_json,
+            uint32_t request_id,
+            tc_response_handler_t response_handler);
+        C;
+    }
+
+    /**
      * @return static
      */
     public static function createDefault(): self
@@ -119,40 +154,5 @@ class Binding
 
         // Protect segfault
         usleep(1_000);
-    }
-
-    /**
-     * @return string
-     */
-    public function getLibraryInterface(): string
-    {
-        return <<<C
-            typedef struct {
-                const char* content;
-                uint32_t len;
-            } tc_string_data_t;
-
-            typedef struct  {
-            } tc_string_handle_t;
-            
-            typedef void (*tc_response_handler_t)(
-            uint32_t request_id,
-            tc_string_data_t params_json,
-            uint32_t response_type,
-            bool finished);
-
-            tc_string_data_t tc_read_string(const tc_string_handle_t* string);
-            void tc_destroy_string(const tc_string_handle_t* string);
-            
-            tc_string_handle_t* tc_create_context(tc_string_data_t config);
-            void tc_destroy_context(uint32_t context);
-
-            void tc_request(
-            uint32_t context,
-            tc_string_data_t function_name,
-            tc_string_data_t function_params_json,
-            uint32_t request_id,
-            tc_response_handler_t response_handler);
-        C;
     }
 }

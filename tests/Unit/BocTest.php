@@ -11,6 +11,11 @@ use Extraton\TonClient\Handler\Response;
 use function microtime;
 use function uniqid;
 
+/**
+ * Unit tests for Boc module
+ *
+ * @coversDefaultClass \Extraton\TonClient\Boc
+ */
 class BocTest extends AbstractModuleTest
 {
     private Boc $boc;
@@ -21,7 +26,10 @@ class BocTest extends AbstractModuleTest
         $this->boc = new Boc($this->mockTonClient);
     }
 
-    public function testParseMessageSuccessResult(): void
+    /**
+     * @covers ::parseMessage
+     */
+    public function testParseMessageWithSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -50,7 +58,10 @@ class BocTest extends AbstractModuleTest
         self::assertEquals($expected, $this->boc->parseMessage($boc));
     }
 
-    public function testParseTransactionSuccessResult(): void
+    /**
+     * @covers ::parseTransaction
+     */
+    public function testParseTransactionWithSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -79,7 +90,10 @@ class BocTest extends AbstractModuleTest
         self::assertEquals($expected, $this->boc->parseTransaction($boc));
     }
 
-    public function testParseAccountSuccessResult(): void
+    /**
+     * @covers ::parseAccount
+     */
+    public function testParseAccountWithSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -108,7 +122,10 @@ class BocTest extends AbstractModuleTest
         self::assertEquals($expected, $this->boc->parseAccount($boc));
     }
 
-    public function testParseBlockSuccessResult(): void
+    /**
+     * @covers ::parseBlock
+     */
+    public function testParseBlockWithSuccessResult(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(

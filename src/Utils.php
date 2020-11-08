@@ -16,6 +16,14 @@ class Utils
         $this->tonClient = $tonClient;
     }
 
+    public function convertAddressToAccountId(string $address): ResultOfConvertAddress
+    {
+        return $this->convertAddress(
+            $address,
+            AddressStringFormat::accountId()
+        );
+    }
+
     public function convertAddress(string $address, AddressStringFormat $outputFormat): ResultOfConvertAddress
     {
         return new ResultOfConvertAddress(
@@ -26,14 +34,6 @@ class Utils
                     'output_format' => $outputFormat,
                 ]
             )->wait()
-        );
-    }
-
-    public function convertAddressToAccountId(string $address): ResultOfConvertAddress
-    {
-        return $this->convertAddress(
-            $address,
-            AddressStringFormat::accountId()
         );
     }
 

@@ -6,7 +6,7 @@ namespace Extraton\TonClient\Entity\Net;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
-class ResultOfQueryCollection extends AbstractResult
+class Event extends AbstractResult
 {
     public function getResult(): array
     {

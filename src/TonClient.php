@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Binding\Binding;
-use Extraton\TonClient\Handler\ResponseHandler;
-use Extraton\TonClient\Handler\SmartSleeper;
 use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Entity\Client\ResultOfGetApiReference;
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
+use Extraton\TonClient\Handler\ResponseHandler;
+use Extraton\TonClient\Handler\SmartSleeper;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
 
@@ -40,63 +40,6 @@ class TonClient
     {
         $this->configuration = $configuration;
         $this->binding = $binding ?? Binding::createDefault();
-    }
-
-    /**
-     * @return ResponseHandler
-     */
-    public function getResponseHandler(): ResponseHandler
-    {
-        if ($this->responseHandler === null) {
-            $this->responseHandler = new ResponseHandler($this->binding);
-        }
-
-        return $this->responseHandler;
-    }
-
-    /**
-     * @return int
-     */
-    public function getContext(): int
-    {
-        if ($this->context === null) {
-            $this->context = $this->binding->createContext($this->configuration);
-        }
-
-        return $this->context;
-    }
-
-    /**
-     * @param string $functionName
-     * @param array $functionParams
-     * @return Promise
-     */
-    public function request(string $functionName, array $functionParams = []): Promise
-    {
-        $responseHandler = $this->getResponseHandler();
-        $promise = new Promise(
-            static function () use (&$promise) {
-                $sleeper = new SmartSleeper();
-
-                while (Is::pending($promise)) {
-                    $sleeper->sleep();
-                    $sleeper->increase();
-                }
-            }
-        );
-
-        $requestId = $responseHandler->registerPromise($promise);
-        $context = $this->getContext();
-
-        $this->binding->request(
-            $context,
-            $requestId,
-            $functionName,
-            $functionParams,
-            $responseHandler
-        );
-
-        return $promise;
     }
 
     public function getUtils(): Utils
@@ -133,6 +76,63 @@ class TonClient
                 'client.version'
             )->wait()
         );
+    }
+
+    /**
+     * @param string $functionName
+     * @param array $functionParams
+     * @return Promise
+     */
+    public function request(string $functionName, array $functionParams = []): Promise
+    {
+        $responseHandler = $this->getResponseHandler();
+        $promise = new Promise(
+            static function () use (&$promise) {
+                $sleeper = new SmartSleeper();
+
+                while (Is::pending($promise)) {
+                    $sleeper->sleep();
+                    $sleeper->increase();
+                }
+            }
+        );
+
+        $requestId = $responseHandler->registerPromise($promise);
+        $context = $this->getContext();
+
+        $this->binding->request(
+            $context,
+            $requestId,
+            $functionName,
+            $functionParams,
+            $responseHandler
+        );
+
+        return $promise;
+    }
+
+    /**
+     * @return ResponseHandler
+     */
+    public function getResponseHandler(): ResponseHandler
+    {
+        if ($this->responseHandler === null) {
+            $this->responseHandler = new ResponseHandler($this->binding);
+        }
+
+        return $this->responseHandler;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContext(): int
+    {
+        if ($this->context === null) {
+            $this->context = $this->binding->createContext($this->configuration);
+        }
+
+        return $this->context;
     }
 
     public function buildInfo(): ResultOfBuildInfo

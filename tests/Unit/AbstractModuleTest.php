@@ -9,6 +9,9 @@ use GuzzleHttp\Promise\Promise;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Abstract class for setup Ton client
+ */
 abstract class AbstractModuleTest extends TestCase
 {
     /** @var MockObject|TonClient */

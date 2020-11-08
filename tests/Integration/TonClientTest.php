@@ -8,8 +8,16 @@ use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
 use Extraton\TonClient\Handler\Response;
 
+/**
+ * Integration tests for Ton client
+ *
+ * @coversDefaultClass \Extraton\TonClient\TonClient
+ */
 class TonClientTest extends AbstractModuleTest
 {
+    /**
+     * @covers ::version
+     */
     public function testVersionWithSuccessResult(): void
     {
         $expected = new ResultOfVersion(
@@ -23,6 +31,9 @@ class TonClientTest extends AbstractModuleTest
         self::assertEquals($expected, $this->tonClient->version());
     }
 
+    /**
+     * @covers ::buildInfo
+     */
     public function testBuildInfoSuccessResult(): void
     {
         $expected = new ResultOfBuildInfo(

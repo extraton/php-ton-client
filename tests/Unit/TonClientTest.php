@@ -16,6 +16,11 @@ use PHPUnit\Framework\TestCase;
 use function microtime;
 use function uniqid;
 
+/**
+ * Unit tests for Ton client
+ *
+ * @coversDefaultClass \Extraton\TonClient\TonClient
+ */
 class TonClientTest extends TestCase
 {
     /** @var MockObject|TonClient */
@@ -45,6 +50,9 @@ class TonClientTest extends TestCase
             ->getMock();
     }
 
+    /**
+     * @covers ::version
+     */
     public function testVersionWithSuccessResult(): void
     {
         $response = new Response(
@@ -68,6 +76,9 @@ class TonClientTest extends TestCase
         self::assertEquals($expected, $this->mockTonClient->version());
     }
 
+    /**
+     * @covers ::buildInfo
+     */
     public function testBuildInfoWithSuccessResult(): void
     {
         $response = new Response(
@@ -91,6 +102,9 @@ class TonClientTest extends TestCase
         self::assertEquals($expected, $this->mockTonClient->buildInfo());
     }
 
+    /**
+     * @covers ::getApiReference
+     */
     public function testGetApiReferenceWithSuccessResult(): void
     {
         $response = new Response(

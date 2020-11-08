@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Handler;
 
+use Closure;
 use Generator;
 use IteratorAggregate;
 use LogicException;
@@ -18,6 +19,8 @@ class Response implements IteratorAggregate
 
     private bool $finished;
 
+    private ?Closure $eventDataTransformer = null;
+
     public function __construct(array $responseData, bool $finished = true)
     {
         $this->responseData = $responseData;
@@ -27,6 +30,16 @@ class Response implements IteratorAggregate
     public function getResponseData(): array
     {
         return $this->responseData;
+    }
+
+    public function finish(): void
+    {
+        $this->finished = true;
+    }
+
+    public function setEventDataTransformer(callable $eventTransformer): void
+    {
+        $this->eventDataTransformer = Closure::fromCallable($eventTransformer);
     }
 
     public function __invoke(array $eventData): void
@@ -54,12 +67,25 @@ class Response implements IteratorAggregate
                 while ($data = array_shift($this->eventData)) {
                     $sleeper->reset();
 
-                    yield $data;
+                    if ($this->eventDataTransformer === null) {
+                        yield $data;
+                    } else {
+                        yield call_user_func($this->eventDataTransformer, $data);
+                    }
+                }
+
+                if ($this->isFinished()) {
+                    break;
                 }
 
                 $sleeper->sleep();
                 $sleeper->increase();
             }
         })();
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->finished;
     }
 }

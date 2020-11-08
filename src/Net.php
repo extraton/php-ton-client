@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Net\ParamsOfQueryCollection;
+use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
+use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Net\QueryInterface;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
-use Extraton\TonClient\Entity\Net\ResultOfUnsubscribe;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 
 /**
@@ -43,6 +44,10 @@ class Net
         );
     }
 
+    /**
+     * @param QueryInterface|ParamsOfWaitForCollection $query
+     * @return ResultOfWaitForCollection
+     */
     public function waitForCollection(QueryInterface $query): ResultOfWaitForCollection
     {
         return new ResultOfWaitForCollection(
@@ -58,6 +63,10 @@ class Net
         );
     }
 
+    /**
+     * @param QueryInterface|ParamsOfSubscribeCollection $query
+     * @return ResultOfSubscribeCollection
+     */
     public function subscribeCollection(QueryInterface $query): ResultOfSubscribeCollection
     {
         return new ResultOfSubscribeCollection(
@@ -73,15 +82,16 @@ class Net
         );
     }
 
-    public function unsubscribe(int $handle): ResultOfUnsubscribe
+    /**
+     * @param int $handle
+     */
+    public function unsubscribe(int $handle): void
     {
-        return new ResultOfUnsubscribe(
-            $this->tonClient->request(
-                'net.unsubscribe',
-                [
-                    'handle' => $handle,
-                ]
-            )->wait()
-        );
+        $this->tonClient->request(
+            'net.unsubscribe',
+            [
+                'handle' => $handle,
+            ]
+        )->wait();
     }
 }

@@ -23,9 +23,33 @@ abstract class AbstractResult implements IteratorAggregate
         $this->response = $response;
     }
 
-    protected function getResponse(): Response
+    /**
+     * @inheritDoc
+     */
+    public function getIterator(): Generator
     {
-        return $this->response;
+        $generator = new Generator();
+
+        yield $generator->throw(new RuntimeException('Result is not iterable.'));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFinished(): bool
+    {
+        return $this->response->isFinished();
+    }
+
+    protected function requireArray(string ...$keys): array
+    {
+        $result = $this->requireData(...$keys);
+
+        if (!is_array($result)) {
+            throw new RuntimeException('Is not a array');
+        }
+
+        return $result;
     }
 
     /**
@@ -46,15 +70,9 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
-    protected function requireArray(string ...$keys): array
+    protected function getResponse(): Response
     {
-        $result = $this->requireData(...$keys);
-
-        if (!is_array($result)) {
-            throw new RuntimeException('Is not a array');
-        }
-
-        return $result;
+        return $this->response;
     }
 
     protected function requireString(string ...$keys): string
@@ -77,15 +95,5 @@ abstract class AbstractResult implements IteratorAggregate
         }
 
         return $result;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getIterator(): Generator
-    {
-        $generator = new Generator();
-
-        yield $generator->throw(new RuntimeException('Result is not iterable.'));
     }
 }

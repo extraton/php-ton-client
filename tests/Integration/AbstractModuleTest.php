@@ -8,6 +8,9 @@ use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\TonClient;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Abstract class for setup Ton client
+ */
 abstract class AbstractModuleTest extends TestCase
 {
     protected TonClient $tonClient;
