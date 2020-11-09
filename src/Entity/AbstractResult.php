@@ -79,7 +79,7 @@ abstract class AbstractResult implements IteratorAggregate
         $result = $this->requireData(...$keys);
 
         if (!is_array($result)) {
-            throw new RuntimeException('Is not a array');
+            throw new RuntimeException('Is not an array');
         }
 
         return $result;

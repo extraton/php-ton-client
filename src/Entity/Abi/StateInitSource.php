@@ -31,6 +31,9 @@ class StateInitSource implements ParamsInterface
 
     private MessageSource $messageSource;
 
+    /**
+     * @param string $type
+     */
     public function __construct(string $type)
     {
         $this->type = $type;

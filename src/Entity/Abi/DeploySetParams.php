@@ -17,10 +17,10 @@ class DeploySetParams implements ParamsInterface
 
     /**
      * @param string $tvc Content of TVC file encoded in base64
-     * @param int|null $workchainId arget workchain for destination address. Default is 0
+     * @param int|null $workchainId Target workchain for destination address. Default is 0
      * @param null $initialData List of initial values for contract's public variables
      */
-    public function __construct(string $tvc, ?int $workchainId, $initialData = null)
+    public function __construct(string $tvc, ?int $workchainId = null, $initialData = null)
     {
         $this->tvc = $tvc;
         $this->workchainId = $workchainId;

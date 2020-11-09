@@ -10,16 +10,16 @@ class KeyPairParams implements ParamsInterface
 {
     private string $public;
 
-    private string $private;
+    private string $secret;
 
     /**
      * @param string $public Public key - 64 symbols hex string
-     * @param string $private Private key - u64 symbols hex string
+     * @param string $secret Private key - u64 symbols hex string
      */
-    public function __construct(string $public, string $private)
+    public function __construct(string $public, string $secret)
     {
         $this->public = $public;
-        $this->private = $private;
+        $this->secret = $secret;
     }
 
     /**
@@ -28,8 +28,8 @@ class KeyPairParams implements ParamsInterface
     public function jsonSerialize(): array
     {
         return [
-            'public'  => $this->public,
-            'private' => $this->private,
+            'public' => $this->public,
+            'secret' => $this->secret,
         ];
     }
 }

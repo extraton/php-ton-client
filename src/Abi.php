@@ -197,14 +197,14 @@ class Abi
     /**
      * Creates account state BOC
      *
-     * @param StateInitSource $stateInit Source of the account state init
+     * @param StateInitSource $stateInitSource Source of the account state init
      * @param int|null $balance Initial balance
      * @param int|null $lastTransLt Initial value for the last_trans_lt
      * @param int|null $lastPaid Initial value for the last_paid
      * @return ResultOfEncodeAccount
      */
     public function encodeAccount(
-        StateInitSource $stateInit,
+        StateInitSource $stateInitSource,
         ?int $balance = null,
         ?int $lastTransLt = null,
         ?int $lastPaid = null
@@ -213,7 +213,7 @@ class Abi
             $this->tonClient->request(
                 'abi.encode_account',
                 [
-                    'state_init'    => $stateInit,
+                    'state_init'    => $stateInitSource,
                     'balance'       => $balance,
                     'last_trans_lt' => $lastTransLt,
                     'last_paid'     => $lastPaid,
