@@ -35,16 +35,16 @@ class Abi
      * Encodes message body according to ABI function call
      *
      * @param AbiParams $abi Contract ABI
-     * @param CallSetParams $callSet Function call parameters
      * @param SignerParams $signer Signing parameters
+     * @param CallSetParams $callSet Function call parameters
      * @param bool $isInternal True if internal message body must be encoded
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessageBody
      */
     public function encodeMessageBody(
         AbiParams $abi,
-        CallSetParams $callSet,
         SignerParams $signer,
+        CallSetParams $callSet,
         bool $isInternal,
         ?int $processingTryIndex = null
     ): ResultOfEncodeMessageBody {
@@ -53,8 +53,8 @@ class Abi
                 'abi.encode_message_body',
                 [
                     'abi'                  => $abi,
-                    'call_set'             => $callSet,
                     'signer'               => $signer,
+                    'call_set'             => $callSet,
                     'is_internal'          => $isInternal,
                     'processing_try_index' => $processingTryIndex,
                 ]
