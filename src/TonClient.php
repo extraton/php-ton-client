@@ -41,6 +41,8 @@ class TonClient
 
     private ?Crypto $crypto = null;
 
+    private ?Tvm $tvm = null;
+
     /**
      * @param array<mixed> $configuration
      * @param Binding|null $binding
@@ -133,6 +135,20 @@ class TonClient
         }
 
         return $this->crypto;
+    }
+
+    /**
+     * Get Tvm module
+     *
+     * @return Tvm
+     */
+    public function getTvm(): Tvm
+    {
+        if ($this->tvm === null) {
+            $this->tvm = new Tvm($this);
+        }
+
+        return $this->tvm;
     }
 
     /**
