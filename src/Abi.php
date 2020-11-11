@@ -95,18 +95,18 @@ class Abi
      *
      * @param AbiParams $abi Contract ABI
      * @param SignerParams $signer Signing parameters
-     * @param string|null $address Target address the message will be sent to
      * @param DeploySetParams|null $deploySet Deploy parameters
      * @param CallSetParams|null $callSet Function call parameters
+     * @param string|null $address Target address the message will be sent to
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessage
      */
     public function encodeMessage(
         AbiParams $abi,
         SignerParams $signer,
-        ?string $address = null,
         ?DeploySetParams $deploySet = null,
         ?CallSetParams $callSet = null,
+        ?string $address = null,
         ?int $processingTryIndex = null
     ): ResultOfEncodeMessage {
         return new ResultOfEncodeMessage(
@@ -115,9 +115,9 @@ class Abi
                 [
                     'abi'                  => $abi,
                     'signer'               => $signer,
-                    'address'              => $address,
                     'deploy_set'           => $deploySet,
                     'call_set'             => $callSet,
+                    'address'              => $address,
                     'processing_try_index' => $processingTryIndex,
                 ]
             )->wait()

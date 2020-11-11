@@ -137,11 +137,12 @@ class BocTest extends AbstractModuleTest
                             'end_status_name'  => 'Active',
                             'in_msg'           => 'cd7781d11b5b6abd0fdc8decc23807d0b93c91d67c27e0e9d941f985170149c6',
                             'out_msgs'         => [],
-                            'account_id'       => '3333333333333333333333333333333333333333333333333333333333333333',
                             'total_fees'       => '0x0',
                             'balance_delta'    => '0xa8621440',
                             'old_hash'         => 'd01ab93f4629bdbe6807ec795673af466603b2c9b37526a73d25f85f691e7b91',
                             'new_hash'         => 'cc2bb2f44521ec53efc68ef7775907192750e0806311ccb3b29f77344cbba794',
+                            'workchain_id'     => -1,
+                            'account_addr'     => '-1:3333333333333333333333333333333333333333333333333333333333333333',
                         ],
                 ]
             )

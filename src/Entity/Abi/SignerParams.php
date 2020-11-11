@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\Crypto\KeyPairParams;
+use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\ParamsInterface;
 use LogicException;
 
@@ -22,7 +22,7 @@ class SignerParams implements ParamsInterface
 
     private string $publicKey;
 
-    private KeyPairParams $keyPair;
+    private KeyPair $keyPair;
 
     private int $signingBoxHandle;
 
@@ -44,7 +44,7 @@ class SignerParams implements ParamsInterface
         return $instance;
     }
 
-    public static function fromKeys(KeyPairParams $keyPair): self
+    public static function fromKeys(KeyPair $keyPair): self
     {
         $instance = new self(self::TYPE_KEYS);
         $instance->setKeyPair($keyPair);
@@ -67,7 +67,7 @@ class SignerParams implements ParamsInterface
         return $this;
     }
 
-    public function setKeyPair(KeyPairParams $keyPair): self
+    public function setKeyPair(KeyPair $keyPair): self
     {
         $this->keyPair = $keyPair;
 

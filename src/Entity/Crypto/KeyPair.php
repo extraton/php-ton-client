@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Crypto;
 
+use Extraton\TonClient\Entity\ParamsInterface;
+
 /**
- * Sign keys
+ * Key pair
  */
-class KeyPair
+class KeyPair implements ParamsInterface
 {
     private string $public;
+
     private string $secret;
 
     /**
@@ -22,14 +25,6 @@ class KeyPair
         $this->secret = $secret;
     }
 
-    public function toArray(): array
-    {
-        return [
-            'public' => $this->public,
-            'secret' => $this->secret,
-        ];
-    }
-
     public function getPublic(): string
     {
         return $this->public;
@@ -38,5 +33,13 @@ class KeyPair
     public function getSecret(): string
     {
         return $this->secret;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'public' => $this->getPublic(),
+            'secret' => $this->getSecret(),
+        ];
     }
 }

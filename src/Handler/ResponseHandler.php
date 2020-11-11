@@ -67,6 +67,11 @@ class ResponseHandler
         }
     }
 
+    /**
+     * @param int $requestId
+     * @param array<mixed> $result
+     * @param bool $finished
+     */
     public function handleSuccess(int $requestId, array $result, bool $finished): void
     {
         $promise = $this->getPromise($requestId);
@@ -103,6 +108,10 @@ class ResponseHandler
         $this->responses[$requestId] = $response;
     }
 
+    /**
+     * @param int $requestId
+     * @param array<mixed> $result
+     */
     public function handleError(int $requestId, array $result): void
     {
         $promise = $this->getPromise($requestId);
@@ -120,6 +129,11 @@ class ResponseHandler
         }
     }
 
+    /**
+     * @param int $requestId
+     * @param array<mixed> $result
+     * @param bool $finished
+     */
     public function handleData(int $requestId, array $result, bool $finished): void
     {
         $response = $this->getResponse($requestId);

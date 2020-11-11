@@ -255,7 +255,7 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.sign',
                 [
                     'unsigned' => $unsigned,
-                    'keys' => $keyPair->toArray(),
+                    'keys' => $keyPair,
                 ]
             )
             ->willReturn($this->mockPromise);

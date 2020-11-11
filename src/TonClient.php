@@ -12,12 +12,15 @@ use Extraton\TonClient\Handler\ResponseHandler;
 use Extraton\TonClient\Handler\SmartSleeper;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
+use JsonException;
+use LogicException;
 
 /**
  * Ton client
  */
 class TonClient
 {
+    /** @var array<mixed> */
     private array $configuration;
 
     private Binding $binding;
@@ -39,7 +42,7 @@ class TonClient
     private ?Crypto $crypto = null;
 
     /**
-     * @param array $configuration
+     * @param array<mixed> $configuration
      * @param Binding|null $binding
      */
     public function __construct(array $configuration, ?Binding $binding = null)
@@ -136,8 +139,9 @@ class TonClient
      * Main method to call sdk methods
      *
      * @param string $functionName Function name
-     * @param array $functionParams Function params
+     * @param array<string, mixed> $functionParams Function params
      * @return Promise
+     * @throws JsonException
      */
     public function request(string $functionName, array $functionParams = []): Promise
     {
@@ -145,6 +149,10 @@ class TonClient
         $promise = new Promise(
             static function () use (&$promise) {
                 $sleeper = new SmartSleeper();
+
+                if ($promise === null) {
+                    throw new LogicException('Unknown condition');
+                }
 
                 while (Is::pending($promise)) {
                     $sleeper->sleep();

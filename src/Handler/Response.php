@@ -11,22 +11,34 @@ use LogicException;
 
 use function array_shift;
 
+/**
+ * @implements IteratorAggregate<mixed>
+ */
 class Response implements IteratorAggregate
 {
+    /** @var array<mixed> */
     private array $responseData;
 
+    /** @var array<mixed> */
     private array $eventData = [];
 
     private bool $finished;
 
     private ?Closure $eventDataTransformer = null;
 
+    /**
+     * @param array<mixed> $responseData
+     * @param bool $finished
+     */
     public function __construct(array $responseData, bool $finished = true)
     {
         $this->responseData = $responseData;
         $this->finished = $finished;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getResponseData(): array
     {
         return $this->responseData;
@@ -47,6 +59,9 @@ class Response implements IteratorAggregate
         return $this->finished;
     }
 
+    /**
+     * @param array<mixed> $eventData
+     */
     public function __invoke(array $eventData): void
     {
         if ($this->finished) {

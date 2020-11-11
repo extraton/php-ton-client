@@ -35,7 +35,7 @@ abstract class AbstractResult implements IteratorAggregate
     }
 
     /**
-     * @inheritDoc
+     * @return Generator<mixed>
      */
     public function getIterator(): Generator
     {

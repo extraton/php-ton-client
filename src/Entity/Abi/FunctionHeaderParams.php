@@ -15,11 +15,11 @@ class FunctionHeaderParams implements ParamsInterface
     private ?string $pubKey;
 
     /**
-     * @param int|null $expire
-     * @param int|null $time
      * @param string|null $pubKey
+     * @param int|null $time
+     * @param int|null $expire
      */
-    public function __construct(?int $expire = null, ?int $time = null, ?string $pubKey = null)
+    public function __construct(?string $pubKey = null, ?int $time = null, ?int $expire = null)
     {
         $this->expire = $expire;
         $this->time = $time;
@@ -32,9 +32,9 @@ class FunctionHeaderParams implements ParamsInterface
     public function jsonSerialize(): array
     {
         return [
-            'expire' => $this->expire,
-            'time'   => $this->time,
             'pubkey' => $this->pubKey,
+            'time'   => $this->time,
+            'expire' => $this->expire,
         ];
     }
 }

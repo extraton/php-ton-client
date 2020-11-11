@@ -158,7 +158,7 @@ class Crypto
                 'crypto.sign',
                 [
                     'unsigned' => $unsigned,
-                    'keys' => $keyPair->toArray(),
+                    'keys' => $keyPair,
                 ]
             )->wait()
         );

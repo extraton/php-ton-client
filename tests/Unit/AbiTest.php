@@ -209,9 +209,9 @@ class AbiTest extends AbstractModuleTest
             $this->abi->encodeMessage(
                 $this->mockAbi,
                 $this->mockSigner,
-                $address,
                 $this->mockDeploySet,
                 $this->mockCallSet,
+                $address,
                 $processingTryIndex
             )
         );

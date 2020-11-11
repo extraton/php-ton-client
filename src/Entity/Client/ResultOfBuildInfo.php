@@ -8,14 +8,9 @@ use Extraton\TonClient\Entity\AbstractResult;
 
 class ResultOfBuildInfo extends AbstractResult
 {
-    public function getBuildInfo(): array
-    {
-        return $this->getResponse();
-    }
-
     public function getBuildNumber(): int
     {
-        return $this->requireInt('build_info', 'buildNumber');
+        return $this->requireInt('build_info', 'build_number');
     }
 
     public function getTonLabsTypesGitCommit(): string

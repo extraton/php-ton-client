@@ -6,6 +6,7 @@ namespace Extraton\TonClient\Binding;
 
 use Extraton\TonClient\Exception\ContextException;
 use Extraton\TonClient\FFI\FFIAdapter;
+use JsonException;
 use RuntimeException;
 
 use function file_exists;
@@ -65,7 +66,7 @@ class Binding
     }
 
     /**
-     * @return static
+     * @return self
      */
     public static function createDefault(): self
     {
@@ -95,8 +96,9 @@ class Binding
     }
 
     /**
-     * @param array $configuration
+     * @param array<mixed> $configuration
      * @return int
+     * @throws JsonException
      */
     public function createContext(array $configuration): int
     {
@@ -127,9 +129,10 @@ class Binding
      * @param int $context
      * @param int $requestId
      * @param string $functionName
-     * @param array $functionParams
+     * @param array<string, mixed> $functionParams
      * @param callable $responseHandler
      * @return void
+     * @throws JsonException
      */
     public function request(
         int $context,
@@ -153,6 +156,6 @@ class Binding
         );
 
         // Protect segfault
-        usleep(1_000);
+        usleep(25_000);
     }
 }

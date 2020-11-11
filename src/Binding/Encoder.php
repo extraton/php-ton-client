@@ -30,7 +30,7 @@ class Encoder
     /**
      * Create CData of tc_string_data_t via FFI
      *
-     * @param array $value
+     * @param array<mixed> $value
      * @return CData
      * @throws JsonException
      */
@@ -55,7 +55,9 @@ class Encoder
         $cData = $this->ffiAdapter->callNew('tc_string_data_t');
 
         $size = strlen($value);
+        // @phpstan-ignore-next-line
         $cData->content = $this->ffiAdapter->callNew("char[{$size}]", false);
+        // @phpstan-ignore-next-line
         $cData->len = $size;
 
         $content = &$cData->content;
@@ -66,12 +68,13 @@ class Encoder
 
     /**
      * @param CData $cData
-     * @return array
+     * @return array<mixed>
      * @throws JsonException
      */
     public function decodeToArray(CData $cData): array
     {
         $content = &$cData->content;
+        // @phpstan-ignore-next-line
         $size = $cData->len;
 
         $json = $this->ffiAdapter->callString($content, $size);

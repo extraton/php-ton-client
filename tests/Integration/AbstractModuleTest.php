@@ -17,7 +17,12 @@ abstract class AbstractModuleTest extends TestCase
 
     public function setUp(): void
     {
-        $this->tonClient = new TonClient(
+        $this->tonClient = $this->getTonClient();
+    }
+
+    protected function getTonClient(): TonClient
+    {
+        return new TonClient(
             [
                 'network' => [
                     'server_address'             => 'net.ton.dev',
