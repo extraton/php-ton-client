@@ -1,0 +1,169 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Extraton\TonClient;
+
+use Extraton\TonClient\Entity\Abi\AbiParams;
+use Extraton\TonClient\Entity\Processing\ParamsOfEncodeMessage;
+use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
+use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
+use Extraton\TonClient\Handler\Response;
+use Extraton\TonClient\Processing;
+use PHPUnit\Framework\MockObject\MockObject;
+
+use function microtime;
+use function random_int;
+use function uniqid;
+
+/**
+ * Unit tests for Processing module
+ *
+ * @coversDefaultClass \Extraton\TonClient\Processing
+ */
+class ProcessingTest extends AbstractModuleTest
+{
+    private Processing $processing;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->processing = new Processing($this->mockTonClient);
+    }
+
+    /**
+     * @covers ::sendMessage
+     */
+    public function testSendMessageWithSuccessResult(): void
+    {
+        $message = uniqid(microtime(), true);
+        $sendEvents = (bool)random_int(0, 1);
+        $abi = AbiParams::fromArray([]);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'processing.send_message',
+                [
+                    'message'     => $message,
+                    'send_events' => $sendEvents,
+                    'abi'         => $abi,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfSendMessage($response);
+
+        self::assertEquals(
+            $expected,
+            $this->processing->sendMessage(
+                $message,
+                $sendEvents,
+                $abi
+            )
+        );
+    }
+
+    /**
+     * @covers ::waitForTransaction
+     */
+    public function testWaitForTransactionWithSuccessResult(): void
+    {
+        $message = uniqid(microtime(), true);
+        $shardBlockId = uniqid(microtime(), true);
+        $sendEvents = (bool)random_int(0, 1);
+        $abi = AbiParams::fromArray([]);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'processing.wait_for_transaction',
+                [
+                    'message'        => $message,
+                    'shard_block_id' => $shardBlockId,
+                    'send_events'    => $sendEvents,
+                    'abi'            => $abi,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfProcessMessage($response);
+
+        self::assertEquals(
+            $expected,
+            $this->processing->waitForTransaction(
+                $message,
+                $shardBlockId,
+                $sendEvents,
+                $abi
+            )
+        );
+    }
+
+    /**
+     * @covers ::processMessage
+     */
+    public function testProcessMessageWithSuccessResult(): void
+    {
+        /** @var MockObject|ParamsOfEncodeMessage $paramsOfEncodeMessage */
+        $paramsOfEncodeMessage = $this->getMockBuilder(ParamsOfEncodeMessage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sendEvents = (bool)random_int(0, 1);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'processing.process_message',
+                [
+                    'message_encode_params' => $paramsOfEncodeMessage,
+                    'send_events'           => $sendEvents,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfProcessMessage($response);
+
+        self::assertEquals(
+            $expected,
+            $this->processing->processMessage(
+                $paramsOfEncodeMessage,
+                $sendEvents,
+            )
+        );
+    }
+}

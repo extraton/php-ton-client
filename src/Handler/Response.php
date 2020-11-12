@@ -97,8 +97,7 @@ class Response implements IteratorAggregate
                 break;
             }
 
-            $sleeper->sleep();
-            $sleeper->increase();
+            $sleeper->sleep()->increase();
         }
     }
 }

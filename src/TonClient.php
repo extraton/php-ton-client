@@ -171,8 +171,7 @@ class TonClient
                 }
 
                 while (Is::pending($promise)) {
-                    $sleeper->sleep();
-                    $sleeper->increase();
+                    $sleeper->sleep()->increase();
                 }
             }
         );

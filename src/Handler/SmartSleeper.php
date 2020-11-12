@@ -25,28 +25,46 @@ class SmartSleeper
         $this->spin = $spin;
     }
 
+    /**
+     * @return int
+     */
     public function getStartSleepMicroSeconds(): int
     {
         return $this->startSleepMicroSeconds;
     }
 
-    public function reset(): void
+    /**
+     * @return $this
+     */
+    public function reset(): self
     {
         $this->sleepMicroSeconds = $this->startSleepMicroSeconds;
+
+        return $this;
     }
 
-    public function sleep(): void
+    /**
+     * @return $this
+     */
+    public function sleep(): self
     {
         usleep($this->getSleepMicroSeconds());
-        $this->increase();
+
+        return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getSleepMicroSeconds(): int
     {
         return $this->sleepMicroSeconds;
     }
 
-    public function increase(): void
+    /**
+     *
+     */
+    public function increase(): self
     {
         $sleepMicroSeconds = (int)($this->getSleepMicroSeconds() * $this->getSpin());
         $stopSleepMicroSeconds = $this->getStopSleepMicroSeconds();
@@ -56,13 +74,21 @@ class SmartSleeper
         }
 
         $this->sleepMicroSeconds = $sleepMicroSeconds;
+
+        return $this;
     }
 
+    /**
+     * @return float
+     */
     public function getSpin(): float
     {
         return $this->spin;
     }
 
+    /**
+     * @return int
+     */
     public function getStopSleepMicroSeconds(): int
     {
         return $this->stopSleepMicroSeconds;
