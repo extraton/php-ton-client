@@ -79,7 +79,7 @@ abstract class AbstractResult implements IteratorAggregate
         $result = $this->requireData(...$keys);
 
         if (!is_array($result)) {
-            throw new RuntimeException('Is not an array');
+            throw new RuntimeException('It\'s not an array');
         }
 
         return $result;
@@ -94,7 +94,7 @@ abstract class AbstractResult implements IteratorAggregate
         $result = $this->requireData(...$keys);
 
         if (!is_string($result)) {
-            throw new RuntimeException('Is not a string');
+            throw new RuntimeException('It\'s not a string');
         }
 
         return $result;
@@ -109,7 +109,22 @@ abstract class AbstractResult implements IteratorAggregate
         $result = $this->requireData(...$keys);
 
         if (!is_int($result)) {
-            throw new RuntimeException('Is not an integer');
+            throw new RuntimeException('It\'s not an integer');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string ...$keys
+     * @return int
+     */
+    protected function requireBool(string ...$keys): bool
+    {
+        $result = $this->requireData(...$keys);
+
+        if (!is_bool($result)) {
+            throw new RuntimeException('It\'s not a boolean');
         }
 
         return $result;
