@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Extraton\TonClient;
+namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Entity\Abi\AbiParams;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;

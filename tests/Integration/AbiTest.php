@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Extraton\TonClient;
+namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Abi;
 use Extraton\TonClient\Boc;
@@ -19,7 +19,7 @@ use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
 use Extraton\TonClient\Handler\Response;
 use JsonException;
-use Tests\Integration\Extraton\TonClient\Data\DataProvider;
+use Extraton\Tests\Integration\TonClient\Data\DataProvider;
 
 use function file_get_contents;
 use function json_decode;

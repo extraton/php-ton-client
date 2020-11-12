@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Extraton\TonClient;
+namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
 use Extraton\TonClient\Handler\Response;

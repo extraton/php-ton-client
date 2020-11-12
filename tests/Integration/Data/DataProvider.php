@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Extraton\TonClient\Data;
+namespace Extraton\Tests\Integration\TonClient\Data;
 
 use function base64_encode;
 use function file_get_contents;

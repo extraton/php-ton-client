@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Extraton\TonClient;
+namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Handler\Response;

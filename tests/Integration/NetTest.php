@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Extraton\TonClient;
+namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\OrderBy;

@@ -26,8 +26,8 @@
   "autoload": {
     "psr-4": {
       "Extraton\\TonClient\\": "src/",
-      "Tests\\Unit\\Extraton\\TonClient\\": "tests/Unit/",
-      "Tests\\Integration\\Extraton\\TonClient\\": "tests/Integration/"
+      "Extraton\\Tests\\Unit\\TonClient\\": "tests/Unit/",
+      "Extraton\\Tests\\Integration\\TonClient\\": "tests/Integration/"
     }
   },
   "scripts": {
