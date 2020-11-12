@@ -7,11 +7,21 @@ namespace Extraton\TonClient;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfFactorize;
+use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateRandomBytes;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateSignKeys;
 use Extraton\TonClient\Entity\Crypto\ResultOfHash;
+use Extraton\TonClient\Entity\Crypto\ResultOfHDKeyPublicFromXPrv;
+use Extraton\TonClient\Entity\Crypto\ResultOfHDKeySecretFromXPrv;
+use Extraton\TonClient\Entity\Crypto\ResultOfHDKeyXPrv;
+use Extraton\TonClient\Entity\Crypto\ResultOfMnemonicVerify;
+use Extraton\TonClient\Entity\Crypto\ResultOfMnemonicWords;
 use Extraton\TonClient\Entity\Crypto\ResultOfModularPower;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclBoxOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSign;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetached;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
@@ -287,6 +297,393 @@ class Crypto
                     'unsigned' => $unsigned,
                     'secret' => $secret,
                 ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Extract unsigned data.
+     *
+     * @param string $signed Signed data that must be unsigned. Encoded with base64
+     * @param string $public Signer's public key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclSignOpen
+     */
+    public function naclSignOpen(string $signed, string $public): ResultOfNaclSignOpen
+    {
+        return new ResultOfNaclSignOpen(
+            $this->tonClient->request(
+                'crypto.nacl_sign_open',
+                [
+                    'signed' => $signed,
+                    'public' => $public,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Get signature.
+     *
+     * @param string $unsigned Data that must be signed encoded in base64
+     * @param string $secret Signer's secret key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclSignDetached
+     */
+    public function naclSignDetached(string $unsigned, string $secret): ResultOfNaclSignDetached
+    {
+        return new ResultOfNaclSignDetached(
+            $this->tonClient->request(
+                'crypto.nacl_sign_detached',
+                [
+                    'unsigned' => $unsigned,
+                    'secret' => $secret,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Generate keypair.
+     *
+     * @return ResultOfGenerateSignKeys
+     */
+    public function naclBoxKeypair(): ResultOfGenerateSignKeys
+    {
+        return new ResultOfGenerateSignKeys(
+            $this->tonClient->request('crypto.nacl_box_keypair')->wait()
+        );
+    }
+
+    /**
+     * Generate keypair from a secret key.
+     *
+     * @param string $secret Secret key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfGenerateSignKeys
+     */
+    public function naclBoxKeypairFromSecretKey(string $secret): ResultOfGenerateSignKeys
+    {
+        return new ResultOfGenerateSignKeys(
+            $this->tonClient->request(
+                'crypto.nacl_box_keypair_from_secret_key',
+                [
+                    'secret' => $secret,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Public key authenticated encryption.
+     *
+     * Encrypt and authenticate a message using the senders secret key, the recievers public key, and a nonce.
+     *
+     * @param string $decrypted Data that must be encrypted encoded in base64
+     * @param string $nonce Nonce, encoded in hex
+     * @param string $theirPublic Receiver's public key - unprefixed 0-padded to 64 symbols hex string
+     * @param string $secret Sender's private key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclBox
+     */
+    public function naclBox(string $decrypted, string $nonce, string $theirPublic, string $secret): ResultOfNaclBox
+    {
+        return new ResultOfNaclBox(
+            $this->tonClient->request(
+                'crypto.nacl_box',
+                [
+                    'decrypted' => $decrypted,
+                    'nonce' => $nonce,
+                    'their_public' => $theirPublic,
+                    'secret' => $secret,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Decrypt and verify the cipher text using the recievers secret key, the senders public key, and the nonce.
+     *
+     * @param string $encrypted Data that must be decrypted. Encoded with base64
+     * @param string $nonce Nonce, encoded in hex
+     * @param string $theirPublic Receiver's public key - unprefixed 0-padded to 64 symbols hex string
+     * @param string $secret Sender's private key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclBoxOpen
+     */
+    public function naclBoxOpen(string $encrypted, string $nonce, string $theirPublic, string $secret): ResultOfNaclBoxOpen
+    {
+        return new ResultOfNaclBoxOpen(
+            $this->tonClient->request(
+                'crypto.nacl_box_open',
+                [
+                    'encrypted' => $encrypted,
+                    'nonce' => $nonce,
+                    'their_public' => $theirPublic,
+                    'secret' => $secret,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Encrypt and authenticate message using nonce and secret key.
+     *
+     * @param string $decrypted Data that must be encrypted. Encoded with base64
+     * @param string $nonce Nonce, encoded in hex
+     * @param string $key Secret key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclBox
+     */
+    public function naclSecretBox(string $decrypted, string $nonce, string $key): ResultOfNaclBox
+    {
+        return new ResultOfNaclBox(
+            $this->tonClient->request(
+                'crypto.nacl_secret_box',
+                [
+                    'decrypted' => $decrypted,
+                    'nonce' => $nonce,
+                    'key' => $key,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Encrypt and authenticate message using nonce and secret key.
+     *
+     * @param string $encrypted Data that must be decrypted. Encoded with base64
+     * @param string $nonce Nonce, encoded in hex
+     * @param string $key Public key - unprefixed 0-padded to 64 symbols hex string
+     * @return ResultOfNaclBoxOpen
+     */
+    public function naclSecretBoxOpen(string $encrypted, string $nonce, string $key): ResultOfNaclBoxOpen
+    {
+        return new ResultOfNaclBoxOpen(
+            $this->tonClient->request(
+                'crypto.nacl_secret_box_open',
+                [
+                    'encrypted' => $encrypted,
+                    'nonce' => $nonce,
+                    'key' => $key,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Prints the list of words from the specified dictionary.
+     *
+     * @param ?int $dictionary Dictionary identifier
+     * @return ResultOfMnemonicWords
+     */
+    public function mnemonicWords(int $dictionary = null): ResultOfMnemonicWords
+    {
+        return new ResultOfMnemonicWords(
+            $this->tonClient->request(
+                'crypto.mnemonic_words',
+                [
+                    'dictionary' => $dictionary,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Generates a random mnemonic from the specified dictionary and word count.
+     *
+     * @param ?int $dictionary Dictionary identifier
+     * @param ?int $wordCount Mnemonic word count
+     * @return ResultOfGenerateMnemonic
+     */
+    public function mnemonicFromRandom(int $dictionary = null, int $wordCount = null): ResultOfGenerateMnemonic
+    {
+        return new ResultOfGenerateMnemonic(
+            $this->tonClient->request(
+                'crypto.mnemonic_from_random',
+                [
+                    'dictionary' => $dictionary,
+                    'word_count' => $wordCount,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Generates mnemonic from pre-generated entropy.
+     *
+     * @param string $entropy Entropy bytes. Hex encoded.
+     * @param ?int $dictionary Dictionary identifier
+     * @param ?int $wordCount Mnemonic word count
+     * @return ResultOfGenerateMnemonic
+     */
+    public function mnemonicFromEntropy(
+        string $entropy,
+        int $dictionary = null,
+        int $wordCount = null
+    ): ResultOfGenerateMnemonic
+    {
+        return new ResultOfGenerateMnemonic(
+            $this->tonClient->request(
+                'crypto.mnemonic_from_entropy',
+                [
+                    'entropy' => $entropy,
+                    'dictionary' => $dictionary,
+                    'word_count' => $wordCount,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * The phrase supplied will be checked for word length and validated according to the checksum specified in BIP0039.
+     *
+     * @param string $phrase Phrase
+     * @param ?int $dictionary Dictionary identifier
+     * @param ?int $wordCount Mnemonic word count
+     * @return ResultOfMnemonicVerify
+     */
+    public function mnemonicVerify(
+        string $phrase,
+        int $dictionary = null,
+        int $wordCount = null
+    ): ResultOfMnemonicVerify
+    {
+        return new ResultOfMnemonicVerify(
+            $this->tonClient->request(
+                'crypto.mnemonic_verify',
+                [
+                    'phrase' => $phrase,
+                    'dictionary' => $dictionary,
+                    'word_count' => $wordCount,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Validates the seed phrase, generates master key and then derives the key pair from the master key and the specified path.
+     *
+     * @param string $phrase Phrase
+     * @param ?string $path Derivation path, for instance "m/44'/396'/0'/0/0"
+     * @param ?int $dictionary Dictionary identifier
+     * @param ?int $wordCount Mnemonic word count
+     * @return ResultOfGenerateSignKeys
+     */
+    public function mnemonicDeriveSignKeys(
+        string $phrase,
+        string $path = null,
+        int $dictionary = null,
+        int $wordCount = null
+    ): ResultOfGenerateSignKeys
+    {
+        return new ResultOfGenerateSignKeys(
+            $this->tonClient->request(
+                'crypto.mnemonic_derive_sign_keys',
+                [
+                    'phrase' => $phrase,
+                    'path' => $path,
+                    'dictionary' => $dictionary,
+                    'word_count' => $wordCount,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Generates an extended master private key that will be the root for all the derived keys.
+     *
+     * @param string $phrase Phrase
+     * @param ?int $dictionary Dictionary identifier
+     * @param ?int $wordCount Mnemonic word count
+     * @return ResultOfHDKeyXPrv
+     */
+    public function hdkeyXprvFromMnemonic(
+        string $phrase,
+        int $dictionary = null,
+        int $wordCount = null
+    ): ResultOfHDKeyXPrv
+    {
+        return new ResultOfHDKeyXPrv(
+            $this->tonClient->request(
+                'crypto.hdkey_xprv_from_mnemonic',
+                [
+                    'phrase' => $phrase,
+                    'dictionary' => $dictionary,
+                    'word_count' => $wordCount,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Returns extended private key derived from the specified extended private key and child index.
+     *
+     * @param string $xprv Serialized extended private key
+     * @param int $childIndex Child index (see BIP-0032)
+     * @param bool $hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032)
+     * @return ResultOfHDKeyXPrv
+     */
+    public function hdkeyDeriveFromXprv(string $xprv, int $childIndex, bool $hardened): ResultOfHDKeyXPrv
+    {
+        return new ResultOfHDKeyXPrv(
+            $this->tonClient->request(
+                'crypto.hdkey_derive_from_xprv',
+                [
+                    'xprv' => $xprv,
+                    'child_index' => $childIndex,
+                    'hardened' => $hardened,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Derives the exented private key from the specified key and path.
+     *
+     * @param string $xprv Serialized extended private key
+     * @param string $path Derivation path, for instance "m/44'/396'/0'/0/0"
+     * @return ResultOfHDKeyXPrv
+     */
+    public function hdkeyDeriveFromXprvPath(string $xprv, string $path): ResultOfHDKeyXPrv
+    {
+        return new ResultOfHDKeyXPrv(
+            $this->tonClient->request(
+                'crypto.hdkey_derive_from_xprv_path',
+                [
+                    'xprv' => $xprv,
+                    'path' => $path,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Extracts the private key from the serialized extended private key.
+     *
+     * @param string $xprv Serialized extended private key
+     * @return ResultOfHDKeySecretFromXPrv
+     */
+    public function hdkeySecretFromXprv(string $xprv): ResultOfHDKeySecretFromXPrv
+    {
+        return new ResultOfHDKeySecretFromXPrv(
+            $this->tonClient->request(
+                'crypto.hdkey_secret_from_xprv',
+                [
+                    'xprv' => $xprv,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Extracts the public key from the serialized extended private key.
+     *
+     * @param string $xprv Serialized extended private key
+     * @return ResultOfHDKeyPublicFromXPrv
+     */
+    public function hdkeyPublicFromXprv(string $xprv): ResultOfHDKeyPublicFromXPrv
+    {
+        return new ResultOfHDKeyPublicFromXPrv(
+            $this->tonClient->request(
+                'crypto.hdkey_public_from_xprv',
+                [
+                    'xprv' => $xprv,
+                ],
             )->wait()
         );
     }
