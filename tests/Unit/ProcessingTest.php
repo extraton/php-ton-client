@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Processing\ParamsOfEncodeMessage;
+use Extraton\TonClient\Entity\Abi\ParamsOfEncodeMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
 use Extraton\TonClient\Handler\Response;

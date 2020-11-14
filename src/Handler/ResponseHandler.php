@@ -8,12 +8,10 @@ use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Binding\Type\ResponseType;
 use Extraton\TonClient\Exception\RequestException;
 use FFI\CData;
+use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
 use JsonException;
 use LogicException;
-use RuntimeException;
-
-use function sprintf;
 
 class ResponseHandler
 {
@@ -43,6 +41,35 @@ class ResponseHandler
         return $this->requestId;
     }
 
+    public function getPromise(int $requestId): ?Promise
+    {
+        return $this->promises[$requestId] ?? null;
+    }
+
+    public function unregisterPromise(int $requestId): void
+    {
+        if (isset($this->promises[$requestId])) {
+            unset($this->promises[$requestId]);
+        }
+    }
+
+    public function addResponse(int $requestId, Response $response): void
+    {
+        $this->responses[$requestId] = $response;
+    }
+
+    public function getResponse(int $requestId): ?Response
+    {
+        return $this->responses[$requestId] ?? null;
+    }
+
+    public function removeResponse(int $requestId): void
+    {
+        if (isset($this->responses[$requestId])) {
+            unset($this->responses[$requestId]);
+        }
+    }
+
     /**
      * @param int $requestId
      * @param CData $paramsJson
@@ -61,7 +88,7 @@ class ResponseHandler
         } elseif ($responseType >= ResponseType::CUSTOM) {
             $this->handleData($requestId, $result, $finished);
         } elseif ($responseType === ResponseType::NOP) {
-            $this->handleNop($requestId);
+            $this->handleNop($requestId, $finished);
         } else {
             throw new LogicException('Unknown response data.');
         }
@@ -74,38 +101,28 @@ class ResponseHandler
      */
     public function handleSuccess(int $requestId, array $result, bool $finished): void
     {
-        $promise = $this->getPromise($requestId);
-        $this->unregisterPromise($requestId);
+        $response = $this->getResponse($requestId);
+        if ($response === null) {
+            $response = new Response($result, true, $finished);
 
-        $response = new Response($result, $finished);
-        if (!$finished) {
             $this->addResponse($requestId, $response);
+        } else {
+            $response->setResponseData($result);
         }
 
-        $promise->resolve($response);
-    }
-
-    public function getPromise(int $requestId): Promise
-    {
-        if (!isset($this->promises[$requestId])) {
-            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
+        if (!$finished) {
+            return;
         }
 
-        return $this->promises[$requestId];
-    }
+        $response->finish();
 
-    public function unregisterPromise(int $requestId): void
-    {
-        if (!isset($this->promises[$requestId])) {
-            throw new LogicException(sprintf('Promise not found by id "%s".', $requestId));
+        $promise = $this->getPromise($requestId);
+        if (($promise !== null) && Is::pending($promise)) {
+            $promise->resolve($response);
         }
 
-        unset($this->promises[$requestId]);
-    }
-
-    public function addResponse(int $requestId, Response $response): void
-    {
-        $this->responses[$requestId] = $response;
+        $this->unregisterPromise($requestId);
+        $this->removeResponse($requestId);
     }
 
     /**
@@ -115,18 +132,12 @@ class ResponseHandler
     public function handleError(int $requestId, array $result): void
     {
         $promise = $this->getPromise($requestId);
-        $this->unregisterPromise($requestId);
-
-        $this->removeResponse($requestId);
-
-        $promise->reject(RequestException::create($result));
-    }
-
-    public function removeResponse(int $requestId): void
-    {
-        if (isset($this->responses[$requestId])) {
-            unset($this->responses[$requestId]);
+        if ($promise !== null) {
+            $promise->reject(RequestException::create($result));
         }
+
+        $this->unregisterPromise($requestId);
+        $this->removeResponse($requestId);
     }
 
     /**
@@ -137,28 +148,47 @@ class ResponseHandler
     public function handleData(int $requestId, array $result, bool $finished): void
     {
         $response = $this->getResponse($requestId);
+        if ($response === null) {
+            $response = new Response([], false, false);
 
-        if ($finished) {
-            $this->removeResponse($requestId);
+            $this->addResponse($requestId, $response);
         }
 
         $response($result);
-    }
 
-    public function getResponse(int $requestId): Response
-    {
-        if (!isset($this->responses[$requestId])) {
-            throw new RuntimeException('Response not found.');
+        if ($finished) {
+            $response->finish();
         }
 
-        return $this->responses[$requestId];
+        $promise = $this->getPromise($requestId);
+        if (($promise !== null) && Is::pending($promise)) {
+            $promise->resolve($response);
+        }
     }
 
-    public function handleNop(int $requestId): void
+    /**
+     * @param int $requestId
+     * @param bool $finished
+     */
+    public function handleNop(int $requestId, bool $finished): void
     {
+        if (!$finished) {
+            return;
+        }
+
         $response = $this->getResponse($requestId);
+        if ($response === null) {
+            return;
+        }
+
         $response->finish();
 
+        $promise = $this->getPromise($requestId);
+        if (($promise !== null) && Is::pending($promise)) {
+            $promise->resolve($response);
+        }
+
+        $this->unregisterPromise($requestId);
         $this->removeResponse($requestId);
     }
 }

@@ -6,9 +6,13 @@ namespace Extraton\TonClient\Entity\Processing;
 
 use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Tvm\TransactionFees;
+use Extraton\TonClient\Handler\Response;
+use Generator;
 
 /**
  * Result of call method processing.wait_for_transaction
+ *
+ * @phpstan-implements IteratorAggregate<ProcessingEvent>
  */
 class ResultOfProcessMessage extends AbstractResult
 {
@@ -60,5 +64,19 @@ class ResultOfProcessMessage extends AbstractResult
     public function getDecoded(): ?DecodedOutput
     {
         return DecodedOutput::fromArray($this->requireArray('decoded'));
+    }
+
+    /**
+     * @return Generator<ProcessingEvent>
+     */
+    public function getIterator(): Generator
+    {
+        $response = $this->getResponse();
+
+        $response->setEventDataTransformer(
+            static fn($eventData) => new ProcessingEvent(new Response($eventData))
+        );
+
+        yield from $response;
     }
 }

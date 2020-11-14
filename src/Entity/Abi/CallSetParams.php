@@ -20,7 +20,7 @@ class CallSetParams implements ParamsInterface
      * @param FunctionHeaderParams|null $header
      * @param mixed $input
      */
-    public function __construct(string $functionName, ?FunctionHeaderParams $header, $input = null)
+    public function __construct(string $functionName, ?FunctionHeaderParams $header = null, $input = null)
     {
         $this->functionName = $functionName;
         $this->header = $header;

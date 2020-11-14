@@ -43,9 +43,9 @@ class PostScript
     ];
 
     private const DESTINATION_FILE_NAME = [
-        'win32'  => 'tonclient_%s_%s.dll',
-        'darwin' => 'tonclient_%s_%s.dylib',
-        'linux'  => 'tonclient_%s_%s.so',
+        'win32'  => 'tonclient.dll',
+        'darwin' => 'tonclient.dylib',
+        'linux'  => 'tonclient.so',
     ];
 
     private const DOWNLOAD_URL = 'http://sdkbinaries.tonlabs.io/%s';
@@ -82,8 +82,7 @@ class PostScript
         }
 
         // Destination path to library
-        $dstFileName = sprintf(self::DESTINATION_FILE_NAME[$os], str_replace('.', '_', $binSdkVersion), $os);
-        $dstPath = rtrim($binDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $dstFileName;
+        $dstPath = rtrim($binDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . self::DESTINATION_FILE_NAME[$os];
 
         // Unpack gz file
         $tmpFileHandler = gzopen($tmpPath, 'rb');

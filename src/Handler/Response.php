@@ -16,24 +16,40 @@ use function array_shift;
  */
 class Response implements IteratorAggregate
 {
+    private bool $dataFetched;
+
+    private bool $eventsFinished;
+
     /** @var array<mixed> */
     private array $responseData;
 
     /** @var array<mixed> */
     private array $eventData = [];
 
-    private bool $finished;
-
     private ?Closure $eventDataTransformer = null;
 
     /**
      * @param array<mixed> $responseData
-     * @param bool $finished
+     * @param bool $dataFetched
+     * @param bool $eventsFinished
      */
-    public function __construct(array $responseData, bool $finished = true)
+    public function __construct(array $responseData = [], bool $dataFetched = true, bool $eventsFinished = true)
     {
         $this->responseData = $responseData;
-        $this->finished = $finished;
+        $this->dataFetched = $dataFetched;
+        $this->eventsFinished = $eventsFinished;
+    }
+
+    /**
+     * @param array<mixed> $responseData
+     * @return $this
+     */
+    public function setResponseData(array $responseData): self
+    {
+        $this->responseData = $responseData;
+        $this->dataFetched = true;
+
+        return $this;
     }
 
     /**
@@ -41,6 +57,16 @@ class Response implements IteratorAggregate
      */
     public function getResponseData(): array
     {
+        if ($this->dataFetched) {
+            return $this->responseData;
+        }
+
+        $sleeper = new SmartSleeper();
+
+        while (!$this->dataFetched) {
+            $sleeper->sleep()->increase();
+        }
+
         return $this->responseData;
     }
 
@@ -51,12 +77,12 @@ class Response implements IteratorAggregate
 
     public function finish(): void
     {
-        $this->finished = true;
+        $this->eventsFinished = true;
     }
 
-    public function isFinished(): bool
+    public function isEventsFinished(): bool
     {
-        return $this->finished;
+        return $this->eventsFinished;
     }
 
     /**
@@ -64,8 +90,8 @@ class Response implements IteratorAggregate
      */
     public function __invoke(array $eventData): void
     {
-        if ($this->finished) {
-            throw new LogicException('Completed response.');
+        if ($this->eventsFinished) {
+            throw new LogicException('Response already completed.');
         }
 
         $this->eventData[] = $eventData;
@@ -76,10 +102,6 @@ class Response implements IteratorAggregate
      */
     public function getIterator(): Generator
     {
-        if ($this->isFinished()) {
-            throw new LogicException('Completed response.');
-        }
-
         $sleeper = new SmartSleeper();
 
         for (; ;) {
@@ -93,7 +115,7 @@ class Response implements IteratorAggregate
                 }
             }
 
-            if ($this->isFinished()) {
+            if ($this->isEventsFinished()) {
                 break;
             }
 

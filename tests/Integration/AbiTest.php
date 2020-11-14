@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\Tests\Integration\TonClient\Data\DataProvider;
 use Extraton\TonClient\Abi;
 use Extraton\TonClient\Boc;
 use Extraton\TonClient\Crypto;
@@ -19,7 +20,6 @@ use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
 use Extraton\TonClient\Handler\Response;
 use JsonException;
-use Extraton\Tests\Integration\TonClient\Data\DataProvider;
 
 use function file_get_contents;
 use function json_decode;
@@ -129,7 +129,7 @@ class AbiTest extends AbstractModuleTest
      */
     public function testEncodeMessage(): void
     {
-        $dataProvider = new DataProvider();
+        $dataProvider = new DataProvider($this->tonClient);
 
         // Create unsigned deployment message
         $abi = AbiParams::fromJson($dataProvider->getEventsAbiJson());
@@ -255,8 +255,5 @@ class AbiTest extends AbstractModuleTest
                 $address
             )
         );
-
-
-
     }
 }

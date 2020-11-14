@@ -15,6 +15,8 @@ use GuzzleHttp\Promise\Promise;
 use JsonException;
 use LogicException;
 
+use function print_r;
+
 /**
  * Ton client
  */
@@ -178,6 +180,12 @@ class TonClient
 
         $requestId = $responseHandler->registerPromise($promise);
         $context = $this->getContext();
+
+//        print_r(
+//            [
+//                $requestId => $functionName,
+//            ]
+//        );
 
         $this->binding->request(
             $context,

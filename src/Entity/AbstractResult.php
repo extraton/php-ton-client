@@ -58,7 +58,7 @@ abstract class AbstractResult implements IteratorAggregate
      */
     public function isFinished(): bool
     {
-        return $this->response->isFinished();
+        return $this->response->isEventsFinished();
     }
 
     /**

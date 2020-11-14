@@ -2,7 +2,7 @@
   "name": "extraton/php-ton-client",
   "description": "Extraton PHP TON client",
   "type": "library",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://extraton.io/",
   "authors": [
     {
@@ -39,7 +39,7 @@
     ]
   },
   "extra": {
-    "sdk-version": "1.0.0"
+    "sdk-version": "1.1.0"
   },
   "bin": [
     "bin/*"

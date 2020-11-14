@@ -71,9 +71,9 @@ class Binding
     public static function createDefault(): self
     {
         $paths = [
-            'linux'  => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_linux.so',
-            'darwin' => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_darwin.dylib',
-            'win32'  => __DIR__ . '/../../vendor/bin/tonclient_1_0_0_win32.dll',
+            'linux'  => __DIR__ . '/../../vendor/bin/tonclient.so',
+            'darwin' => __DIR__ . '/../../vendor/bin/tonclient.dylib',
+            'win32'  => __DIR__ . '/../../vendor/bin/tonclient.dll',
         ];
 
         $os = strtolower(PHP_OS);

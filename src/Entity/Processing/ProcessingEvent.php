@@ -23,4 +23,14 @@ class ProcessingEvent extends AbstractResult
     public const TYPE_FETCH_NEXT_BLOCK_FAILED = 'FetchNextBlockFailed';
 
     public const TYPE_MESSAGE_EXPIRED = 'MessageExpired';
+
+    public function getType(): string
+    {
+        return $this->requireString('type');
+    }
+
+    public function getError(): string
+    {
+        return $this->requireData('error');
+    }
 }
