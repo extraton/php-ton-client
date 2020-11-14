@@ -6,7 +6,6 @@ namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Handler\Response;
-use Extraton\TonClient\Utils;
 use Generator;
 
 /**
@@ -16,14 +15,6 @@ use Generator;
  */
 class UtilsTest extends AbstractModuleTest
 {
-    private Utils $utils;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->utils = $this->tonClient->getUtils();
-    }
-
     /**
      * @covers ::convertAddressToAccountId
      */

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
-use Extraton\Tests\Integration\TonClient\Data\DataProvider;
-use Extraton\TonClient\Abi;
-use Extraton\TonClient\Boc;
 use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Entity\Abi\AbiParams;
 use Extraton\TonClient\Entity\Abi\CallSetParams;
@@ -33,20 +30,6 @@ use const JSON_THROW_ON_ERROR;
  */
 class AbiTest extends AbstractModuleTest
 {
-    private Abi $abi;
-
-    private Boc $boc;
-
-    private Crypto $crypto;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->abi = $this->tonClient->getAbi();
-        $this->boc = $this->tonClient->getBoc();
-        $this->crypto = $this->tonClient->getCrypto();
-    }
-
     /**
      * @covers ::decodeMessage
      */
@@ -129,22 +112,20 @@ class AbiTest extends AbstractModuleTest
      */
     public function testEncodeMessage(): void
     {
-        $dataProvider = new DataProvider($this->tonClient);
-
         // Create unsigned deployment message
-        $abi = AbiParams::fromJson($dataProvider->getEventsAbiJson());
+        $abi = AbiParams::fromJson($this->dataProvider->getEventsAbiJson());
 
-        $deploySet = new DeploySetParams($dataProvider->getEventsTvc());
+        $deploySet = new DeploySetParams($this->dataProvider->getEventsTvc());
 
         $functionHeader = new FunctionHeaderParams(
-            $dataProvider->getPublicKey(),
-            $dataProvider->getEventsTime(),
-            $dataProvider->getEventsExpire(),
+            $this->dataProvider->getPublicKey(),
+            $this->dataProvider->getEventsTime(),
+            $this->dataProvider->getEventsExpire(),
         );
 
         $callSet = new CallSetParams('constructor', $functionHeader);
 
-        $signer = SignerParams::fromExternal($dataProvider->getPublicKey());
+        $signer = SignerParams::fromExternal($this->dataProvider->getPublicKey());
 
         $expectedResult = [
             'message'      => 'te6ccgECFwEAA2gAAqeIAAt9aqvShfTon7Lei1PVOhUEkEEZQkhDKPgNyzeTL6YSEZTHxAj/Hd67jWQF7peccWoU/dbMCBJBB6YdPCVZcJlJkAAAF0ZyXLg19VzGRotV8/gGAQEBwAICA88gBQMBAd4EAAPQIABB2mPiBH+O713GsgL3S844tQp+62YECSCD0w6eEqy4TKTMAib/APSkICLAAZL0oOGK7VNYMPShCQcBCvSkIPShCAAAAgEgDAoByP9/Ie1E0CDXScIBjhDT/9M/0wDRf/hh+Gb4Y/hijhj0BXABgED0DvK91wv/+GJw+GNw+GZ/+GHi0wABjh2BAgDXGCD5AQHTAAGU0/8DAZMC+ELiIPhl+RDyqJXTAAHyeuLTPwELAGqOHvhDIbkgnzAg+COBA+iogggbd0Cgud6S+GPggDTyNNjTHwH4I7zyudMfAfAB+EdukvI83gIBIBINAgEgDw4AvbqLVfP/hBbo417UTQINdJwgGOENP/0z/TANF/+GH4Zvhj+GKOGPQFcAGAQPQO8r3XC//4YnD4Y3D4Zn/4YeLe+Ebyc3H4ZtH4APhCyMv/+EPPCz/4Rs8LAMntVH/4Z4AgEgERAA5biABrW/CC3Rwn2omhp/+mf6YBov/ww/DN8Mfwxb30gyupo6H0gb+j8IpA3SRg4b3whXXlwMnwAZGT9ghBkZ8KEZ0aCBAfQAAAAAAAAAAAAAAAAACBni2TAgEB9gBh8IWRl//wh54Wf/CNnhYBk9qo//DPAAxbmTwqLfCC3Rwn2omhp/+mf6YBov/ww/DN8Mfwxb2uG/8rqaOhp/+/o/ABkRe4AAAAAAAAAAAAAAAAIZ4tnwOfI48sYvRDnhf/kuP2AGHwhZGX//CHnhZ/8I2eFgGT2qj/8M8AIBSBYTAQm4t8WCUBQB/PhBbo4T7UTQ0//TP9MA0X/4Yfhm+GP4Yt7XDf+V1NHQ0//f0fgAyIvcAAAAAAAAAAAAAAAAEM8Wz4HPkceWMXohzwv/yXH7AMiL3AAAAAAAAAAAAAAAABDPFs+Bz5JW+LBKIc8L/8lx+wAw+ELIy//4Q88LP/hGzwsAye1UfxUABPhnAHLccCLQ1gIx0gAw3CHHAJLyO+Ah1w0fkvI84VMRkvI74cEEIoIQ/////byxkvI84AHwAfhHbpLyPN4=',
@@ -162,8 +143,8 @@ class AbiTest extends AbstractModuleTest
 
         // Create detached signature
         $keyPair = new KeyPair(
-            $dataProvider->getPublicKey(),
-            $dataProvider->getPrivateKey()
+            $this->dataProvider->getPublicKey(),
+            $this->dataProvider->getPrivateKey()
         );
 
         $expectedResult = [
@@ -197,7 +178,7 @@ class AbiTest extends AbstractModuleTest
         );
 
         // Create initially signed message
-        $keyPair = new KeyPair($dataProvider->getPublicKey(), $dataProvider->getPrivateKey());
+        $keyPair = new KeyPair($this->dataProvider->getPublicKey(), $this->dataProvider->getPrivateKey());
         $signer = SignerParams::fromKeys($keyPair);
 
         $expectedResult = [
@@ -223,9 +204,9 @@ class AbiTest extends AbstractModuleTest
         $address = '0:05beb555e942fa744fd96f45a9ea9d0a8248208ca12421947c06e59bc997d309';
 
         $functionHeader = new FunctionHeaderParams(
-            $dataProvider->getPublicKey(),
-            $dataProvider->getEventsTime(),
-            $dataProvider->getEventsExpire(),
+            $this->dataProvider->getPublicKey(),
+            $this->dataProvider->getEventsTime(),
+            $this->dataProvider->getEventsExpire(),
         );
 
         $callSet = new CallSetParams(
@@ -234,7 +215,7 @@ class AbiTest extends AbstractModuleTest
             ['id' => '0'],
         );
 
-        $signer = SignerParams::fromExternal($dataProvider->getPublicKey());
+        $signer = SignerParams::fromExternal($this->dataProvider->getPublicKey());
 
         $expectedResult = [
             'message'      => 'te6ccgEBAgEAeAABpYgAC31qq9KF9Oifst6LU9U6FQSQQRlCSEMo+A3LN5MvphIFMfECP8d3ruNZAXul5xxahT91swIEkEHph08JVlwmUmQAAAXRnJcuDX1XMZBW+LBKAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',

@@ -29,10 +29,10 @@ use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
 use Extraton\TonClient\Handler\Response;
 
-use function microtime;
-use function uniqid;
 use function hexdec;
+use function microtime;
 use function random_int;
+use function uniqid;
 
 /**
  * Unit tests for Crypto module

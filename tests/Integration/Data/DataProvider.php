@@ -96,6 +96,7 @@ class DataProvider
 
     /**
      * @param string $address
+     * @throws \JsonException
      */
     public function sendGrams(string $address): void
     {
@@ -104,17 +105,12 @@ class DataProvider
         $giverAddress = $this->getGiverAddress();
         $signer = SignerParams::fromNone();
 
-        $paramsOfEncodeMessage = new ParamsOfEncodeMessage(
+        $this->tonClient->getProcessing()->processMessage(
             $abi,
             $signer,
             null,
             $callSet,
             $giverAddress
-        );
-
-        $this->tonClient->getProcessing()->processMessage(
-            $paramsOfEncodeMessage,
-            false
         );
     }
 }

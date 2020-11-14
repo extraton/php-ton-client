@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\ParamsOfEncodeMessage;
+use Extraton\TonClient\Entity\Abi\CallSetParams;
+use Extraton\TonClient\Entity\Abi\DeploySetParams;
+use Extraton\TonClient\Entity\Abi\SignerParams;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
 use JsonException;
@@ -80,20 +82,37 @@ class Processing
     /**
      * Creates message, sends it to the network and monitors its processing
      *
-     * @param ParamsOfEncodeMessage $paramsOfEncodeMessage Message encode parameters
+     * @param AbiParams $abi Contract ABI
+     * @param SignerParams $signer Signing parameters
+     * @param DeploySetParams|null $deploySet Deploy parameters
+     * @param CallSetParams|null $callSet Function call parameters
+     * @param string|null $address Target address the message will be sent to
+     * @param int|null $processingTryIndex Processing try index
      * @param bool $sendEvents Flag for requesting events sending
      * @return ResultOfProcessMessage
      * @throws JsonException
      */
     public function processMessage(
-        ParamsOfEncodeMessage $paramsOfEncodeMessage,
-        bool $sendEvents
+        AbiParams $abi,
+        SignerParams $signer,
+        ?DeploySetParams $deploySet = null,
+        ?CallSetParams $callSet = null,
+        ?string $address = null,
+        ?int $processingTryIndex = null,
+        bool $sendEvents = false
     ): ResultOfProcessMessage {
         return new ResultOfProcessMessage(
             $this->tonClient->request(
                 'processing.process_message',
                 [
-                    'message_encode_params' => $paramsOfEncodeMessage,
+                    'message_encode_params' => [
+                        'abi'                  => $abi,
+                        'signer'               => $signer,
+                        'deploy_set'           => $deploySet,
+                        'call_set'             => $callSet,
+                        'address'              => $address,
+                        'processing_try_index' => $processingTryIndex,
+                    ],
                     'send_events'           => $sendEvents,
                 ]
             )->wait()
