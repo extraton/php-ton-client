@@ -47,6 +47,17 @@ class DataProvider
         return base64_encode($bin);
     }
 
+    /**
+     * @return string
+     */
+    public function getHelloTvc(): string
+    {
+        $path = __DIR__ . '/Hello.tvc';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return base64_encode($bin);
+    }
+
     public function getEventsAbiJson(): string
     {
         return file_get_contents(__DIR__ . '/Events.abi.json');
@@ -62,19 +73,29 @@ class DataProvider
         return file_get_contents(__DIR__ . '/Giver.abi.json');
     }
 
+    public function getHelloAbiJson(): string
+    {
+        return file_get_contents(__DIR__ . '/Hello.abi.json');
+    }
+
     public function getEventsAbiArray(): array
     {
-        return (array)json_decode($this->getEventsAbiJson(), true, 32, JSON_THROW_ON_ERROR);
+        return (array)json_decode($this->getEventsAbiJson(), true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function getHelloAbiArray(): array
+    {
+        return (array)json_decode($this->getHelloAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function getSubscriptionAbiArray(): array
     {
-        return (array)json_decode($this->getSubscriptionAbiJson(), true, 32, JSON_THROW_ON_ERROR);
+        return (array)json_decode($this->getSubscriptionAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function getGiverAbiArray(): array
     {
-        return (array)json_decode($this->getGiverAbiJson(), true, 32, JSON_THROW_ON_ERROR);
+        return (array)json_decode($this->getGiverAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function getKeyPairJson(): string
@@ -84,7 +105,7 @@ class DataProvider
 
     public function getKeyPairArray(): array
     {
-        return (array)json_decode($this->getKeyPairJson(), true, 32, JSON_THROW_ON_ERROR);
+        return (array)json_decode($this->getKeyPairJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function getEventsTime(): int
@@ -121,6 +142,14 @@ class DataProvider
     public function getWalletAddress(): string
     {
         return '0:2222222222222222222222222222222222222222222222222222222222222222';
+    }
+
+    /**
+     * @return string
+     */
+    public function getElectorAddress(): string
+    {
+        return '-1:3333333333333333333333333333333333333333333333333333333333333333';
     }
 
     /**

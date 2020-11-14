@@ -119,10 +119,6 @@ class ProcessingTest extends AbstractModuleTest
                 [
                     'code'    => 305,
                     'message' => "Encode deploy message failed: Wrong data format:\n-1",
-                    'data'    =>
-                        [
-                            'core_version' => '1.1.0',
-                        ],
                 ]
             )
         );
