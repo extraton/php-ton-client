@@ -50,7 +50,7 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $this->dataProvider->sendGrams($address);
+        $this->dataProvider->sendTons($address);
 
         $expected = new ResultOfProcessMessage(
             new Response(
@@ -162,7 +162,7 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $this->dataProvider->sendGrams($address);
+        $this->dataProvider->sendTons($address);
 
         $expected = new ResultOfProcessMessage(
             new Response(
@@ -268,7 +268,7 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $this->dataProvider->sendGrams($address);
+        $this->dataProvider->sendTons($address);
 
         $resultOfSendMessage = $this->processing->sendMessage(
             $resultOfEncodeMessage->getMessage(),
@@ -364,7 +364,7 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $this->dataProvider->sendGrams($address);
+        $this->dataProvider->sendTons($address);
 
         $resultOfSendMessage = $this->processing->sendMessage(
             $resultOfEncodeMessage->getMessage(),

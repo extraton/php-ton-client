@@ -6,6 +6,7 @@ namespace Extraton\TonClient\Entity\Tvm;
 
 use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Processing\DecodedOutput;
+use Extraton\TonClient\Handler\Response;
 
 /**
  * Result of run tvm
@@ -40,6 +41,12 @@ class ResultOfRunTvm extends AbstractResult
      */
     public function getDecodedOutput(): ?DecodedOutput
     {
-        // todo
+        $result = $this->getArray('decoded');
+
+        if ($result !== null) {
+            return new DecodedOutput(new Response($result));
+        }
+
+        return null;
     }
 }

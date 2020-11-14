@@ -12,6 +12,7 @@ use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Net;
 use Extraton\TonClient\Processing;
 use Extraton\TonClient\TonClient;
+use Extraton\TonClient\Tvm;
 use Extraton\TonClient\Utils;
 use PHPUnit\Framework\TestCase;
 
@@ -34,6 +35,8 @@ abstract class AbstractModuleTest extends TestCase
 
     protected Utils $utils;
 
+    protected Tvm $tvm;
+
     protected DataProvider $dataProvider;
 
     public function setUp(): void
@@ -45,6 +48,7 @@ abstract class AbstractModuleTest extends TestCase
         $this->boc = $this->tonClient->getBoc();
         $this->net = $this->tonClient->getNet();
         $this->utils = $this->tonClient->getUtils();
+        $this->tvm = $this->tonClient->getTvm();
         $this->dataProvider = new DataProvider($this->tonClient);
     }
 

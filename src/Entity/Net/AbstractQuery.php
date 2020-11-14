@@ -137,7 +137,7 @@ abstract class AbstractQuery implements QueryInterface
         return $this->timeout;
     }
 
-    public function setTimeout(int $timeout): self
+    public function setTimeout(?int $timeout): self
     {
         $this->timeout = $timeout;
 

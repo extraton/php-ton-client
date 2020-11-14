@@ -67,13 +67,43 @@ abstract class AbstractResult implements IteratorAggregate
      */
     protected function requireData(string ...$keys)
     {
+        $result = $this->getData(...$keys);
+
+        if ($result === null) {
+            throw new RuntimeException('Invalid path by array of keys');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string ...$keys
+     * @return array|mixed|null
+     */
+    protected function getData(string ...$keys)
+    {
         $result = $this->getResponse()->getResponseData();
         while ($key = array_shift($keys)) {
             if (!is_array($result) || !isset($result[$key])) {
-                throw new RuntimeException('Invalid path by array of keys');
+                return null;
             }
 
             $result = $result[$key];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string ...$keys
+     * @return array<mixed>|null
+     */
+    protected function getArray(string ...$keys): ?array
+    {
+        $result = $this->getData(...$keys);
+
+        if (!is_array($result)) {
+            return null;
         }
 
         return $result;

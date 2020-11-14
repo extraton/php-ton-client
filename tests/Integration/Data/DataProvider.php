@@ -12,6 +12,9 @@ use Extraton\TonClient\TonClient;
 
 use function base64_encode;
 use function file_get_contents;
+use function filesize;
+use function fopen;
+use function fread;
 use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
@@ -36,9 +39,22 @@ class DataProvider
         return base64_encode($bin);
     }
 
+    public function getSubscriptionTvc(): string
+    {
+        $path = __DIR__ . '/Subscription.tvc';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return base64_encode($bin);
+    }
+
     public function getEventsAbiJson(): string
     {
         return file_get_contents(__DIR__ . '/Events.abi.json');
+    }
+
+    public function getSubscriptionAbiJson(): string
+    {
+        return file_get_contents(__DIR__ . '/Subscription.abi.json');
     }
 
     public function getGiverAbiJson(): string
@@ -49,6 +65,11 @@ class DataProvider
     public function getEventsAbiArray(): array
     {
         return (array)json_decode($this->getEventsAbiJson(), true, 32, JSON_THROW_ON_ERROR);
+    }
+
+    public function getSubscriptionAbiArray(): array
+    {
+        return (array)json_decode($this->getSubscriptionAbiJson(), true, 32, JSON_THROW_ON_ERROR);
     }
 
     public function getGiverAbiArray(): array
@@ -95,10 +116,18 @@ class DataProvider
     }
 
     /**
+     * @return string
+     */
+    public function getWalletAddress(): string
+    {
+        return '0:2222222222222222222222222222222222222222222222222222222222222222';
+    }
+
+    /**
      * @param string $address
      * @throws \JsonException
      */
-    public function sendGrams(string $address): void
+    public function sendTons(string $address): void
     {
         $abi = AbiParams::fromArray($this->getGiverAbiArray());
         $callSet = new CallSetParams('grant', null, ['addr' => $address]);

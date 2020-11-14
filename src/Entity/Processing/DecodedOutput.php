@@ -6,6 +6,7 @@ namespace Extraton\TonClient\Entity\Processing;
 
 use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
 use Extraton\TonClient\Entity\AbstractResult;
+use Extraton\TonClient\Handler\Response;
 
 class DecodedOutput extends AbstractResult
 {
@@ -14,7 +15,7 @@ class DecodedOutput extends AbstractResult
      */
     public function getDecodedMessageBody(): DecodedMessageBody
     {
-        // @todo
+        return new DecodedMessageBody(new Response($this->requireArray('out_messages')));
     }
 
     /**
@@ -22,6 +23,6 @@ class DecodedOutput extends AbstractResult
      */
     public function getOutput()
     {
-        return $this->requireData('output');
+        return $this->getData('output');
     }
 }

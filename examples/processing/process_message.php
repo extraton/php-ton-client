@@ -45,7 +45,7 @@ $resultOfEncodeMessage = $abi->encodeMessage(
 
 $address = $resultOfEncodeMessage->getAddress();
 
-$dataProvider->sendGrams($address);
+$dataProvider->sendTons($address);
 
 $paramsOfEncodeMessage = new ParamsOfEncodeMessage(
     $abiParams,
