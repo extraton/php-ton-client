@@ -10,7 +10,7 @@ use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunGet;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunTvm;
-use JsonException;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Tvm module
@@ -26,7 +26,7 @@ class Tvm extends AbstractModule
      * @param AbiParams|null $abi
      * @param bool|null $skipTransactionCheck
      * @return ResultOfRunExecutor
-     * @throws JsonException
+     * @throws TonException
      */
     public function runExecutor(
         string $message,
@@ -57,7 +57,7 @@ class Tvm extends AbstractModule
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param AbiParams|null $abi Contract ABI for dedcoding output messages
      * @return ResultOfRunTvm
-     * @throws JsonException
+     * @throws TonException
      */
     public function runTvm(
         string $message,
@@ -79,14 +79,14 @@ class Tvm extends AbstractModule
     }
 
     /**
-     * Executes getmethod and returns data from TVM stack
+     * Executes get method and returns data from TVM stack
      *
      * @param string $account Account BOC in base64
      * @param string $functionName Function name
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param mixed $input Input parameters
      * @return ResultOfRunGet
-     * @throws JsonException
+     * @throws TonException
      */
     public function runGet(
         string $account,

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Net;
 
 use Extraton\TonClient\Entity\Params;
-use RuntimeException;
+use Extraton\TonClient\Exception\LogicException;
 
 use function array_filter;
 use function array_map;
@@ -90,7 +90,7 @@ abstract class AbstractQuery implements QueryInterface
         array_unique($fields);
 
         if (empty($fields)) {
-            throw new RuntimeException('Empty result fields.');
+            throw new LogicException('Result fields cannot be empty');
         }
 
         return implode(' ', $fields);

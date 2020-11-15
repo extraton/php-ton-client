@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity;
 
+use Extraton\TonClient\Exception\DataException;
 use JsonSerializable;
 
 /**
@@ -13,6 +14,7 @@ interface Params extends JsonSerializable
 {
     /**
      * @return array<mixed>
+     * @throws DataException
      */
     public function jsonSerialize(): array;
 }

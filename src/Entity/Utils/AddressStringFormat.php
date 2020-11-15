@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Utils;
 
 use Extraton\TonClient\Entity\Params;
-use RuntimeException;
+use Extraton\TonClient\Exception\DataException;
 
 use function in_array;
+use function sprintf;
 
 class AddressStringFormat implements Params
 {
@@ -32,7 +33,7 @@ class AddressStringFormat implements Params
         bool $bounce = false
     ) {
         if (!in_array($type, [self::TYPE_ACCOUNT_ID, self::TYPE_HEX, self::TYPE_BASE64], true)) {
-            throw new RuntimeException('Unknown address type');
+            throw new DataException(sprintf('Unknown type %s.', $type));
         }
 
         $this->type = $type;

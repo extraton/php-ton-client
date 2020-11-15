@@ -10,6 +10,9 @@ class ResultOfGenerateSignKeys extends AbstractResult
 {
     public function getKeyPair(): KeyPair
     {
-        return new KeyPair($this->requireString('public'), $this->requireString('secret'));
+        return new KeyPair(
+            $this->requireString('public'),
+            $this->requireString('secret')
+        );
     }
 }

@@ -12,7 +12,7 @@ use Extraton\TonClient\Entity\Abi\StateInitSource;
 use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
-use Extraton\TonClient\Exception\RequestException;
+use Extraton\TonClient\Exception\SDKException;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -202,7 +202,7 @@ class TvmTest extends AbstractModuleTest
 
         // Test call unknown function
         $this->expectExceptionObject(
-            RequestException::create(
+            SDKException::create(
                 [
                     'message' => 'Contract execution was terminated with error: code 11, value: 128513',
                     'code'    => 414,

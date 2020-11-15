@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Params;
-use RuntimeException;
+use Extraton\TonClient\Exception\DataException;
+
+use function sprintf;
 
 class MessageSource implements Params
 {
@@ -158,7 +160,7 @@ class MessageSource implements Params
             $result['call_set'] = $this->callSet;
             $result['processing_try_index'] = $this->processingTryIndex;
         } else {
-            throw new RuntimeException('Unknown type.');
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
 
         return $result;

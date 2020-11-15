@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+/**
+ * Module interface
+ */
 interface Module
 {
     /**

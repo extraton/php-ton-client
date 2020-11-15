@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use RuntimeException;
+use Extraton\TonClient\Exception\LogicException;
 
 class ParamsOfQueryCollection extends AbstractQuery
 {
@@ -23,6 +23,6 @@ class ParamsOfQueryCollection extends AbstractQuery
 
     public function getTimeout(): ?int
     {
-        throw new RuntimeException('Method ParamsOfQueryCollection::getTimeout is not implemented.');
+        throw new LogicException('Method ParamsOfQueryCollection::getTimeout is not implemented.');
     }
 }

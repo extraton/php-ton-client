@@ -6,6 +6,7 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Utils module
@@ -18,6 +19,7 @@ class Utils extends AbstractModule
      * @param string $address Ton address
      * @param AddressStringFormat $outputFormat Output format
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddress(string $address, AddressStringFormat $outputFormat): ResultOfConvertAddress
     {
@@ -37,6 +39,7 @@ class Utils extends AbstractModule
      *
      * @param string $address Ton address
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToAccountId(string $address): ResultOfConvertAddress
     {
@@ -51,6 +54,7 @@ class Utils extends AbstractModule
      *
      * @param string $address Ton address
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToHex(string $address): ResultOfConvertAddress
     {
@@ -68,6 +72,7 @@ class Utils extends AbstractModule
      * @param bool $test Is test
      * @param bool $bounce Is bounce
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToBase64(
         string $address,

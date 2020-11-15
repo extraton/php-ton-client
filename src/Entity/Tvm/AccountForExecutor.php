@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Tvm;
 
 use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\DataException;
 use RuntimeException;
 
 use function in_array;
+use function sprintf;
 
 class AccountForExecutor implements Params
 {
@@ -93,7 +95,7 @@ class AccountForExecutor implements Params
             $result['boc'] = $this->boc;
             $result['unlimited_balance'] = $this->unlimitedBalance;
         } else {
-            throw new RuntimeException('Unknown type.');
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
 
         return $result;

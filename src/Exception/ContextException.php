@@ -6,10 +6,13 @@ namespace Extraton\TonClient\Exception;
 
 use RuntimeException;
 
+/**
+ * Context exception
+ */
 class ContextException extends RuntimeException implements TonException
 {
     public function __construct()
     {
-        parent::__construct("Create context TON SDK failed.");
+        parent::__construct('Failed to create TON SDK context');
     }
 }

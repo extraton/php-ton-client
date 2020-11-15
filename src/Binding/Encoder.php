@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Binding;
 
+use Extraton\TonClient\Exception\EncoderException;
+use Extraton\TonClient\Exception\FFIException;
 use Extraton\TonClient\FFI\FFIAdapter;
 use FFI\CData;
+use FFI\Exception;
 use JsonException;
 use stdClass;
 
@@ -15,6 +18,9 @@ use function strlen;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * Encoder
+ */
 class Encoder
 {
     private FFIAdapter $ffiAdapter;
@@ -32,14 +38,18 @@ class Encoder
      *
      * @param array<mixed> $value
      * @return CData
-     * @throws JsonException
+     * @throws EncoderException
      */
     public function encodeArray(array $value): CData
     {
-        $json = (string)json_encode(
-            empty($value) ? new stdClass() : $value,
-            JSON_THROW_ON_ERROR
-        );
+        try {
+            $json = (string)json_encode(
+                empty($value) ? new stdClass() : $value,
+                JSON_THROW_ON_ERROR
+            );
+        } catch (JsonException $exception) {
+            throw new EncoderException($exception);
+        }
 
         return $this->encodeString($json);
     }
@@ -49,40 +59,53 @@ class Encoder
      *
      * @param string $value
      * @return CData
+     * @throws FFIException
      */
     public function encodeString(string $value): CData
     {
-        $cData = $this->ffiAdapter->callNew('tc_string_data_t');
+        try {
+            $cData = $this->ffiAdapter->callNew('tc_string_data_t');
 
-        $size = strlen($value);
-        // @phpstan-ignore-next-line
-        $cData->content = $this->ffiAdapter->callNew("char[{$size}]", false);
-        // @phpstan-ignore-next-line
-        $cData->len = $size;
+            $size = strlen($value);
+            // @phpstan-ignore-next-line
+            $cData->content = $this->ffiAdapter->callNew("char[{$size}]", false);
+            // @phpstan-ignore-next-line
+            $cData->len = $size;
 
-        $content = &$cData->content;
-        $this->ffiAdapter->callMemCpy($content, $value, $size);
+            $content = &$cData->content;
+            $this->ffiAdapter->callMemCpy($content, $value, $size);
 
-        return $cData;
+            return $cData;
+        } catch (Exception $exception) {
+            throw new FFIException($exception);
+        }
     }
 
     /**
      * @param CData $cData
      * @return array<mixed>
-     * @throws JsonException
+     * @throws EncoderException
      */
     public function decodeToArray(CData $cData): array
     {
-        $content = &$cData->content;
-        // @phpstan-ignore-next-line
-        $size = $cData->len;
+        try {
+            $content = &$cData->content;
+            // @phpstan-ignore-next-line
+            $size = $cData->len;
 
-        $json = $this->ffiAdapter->callString($content, $size);
+            $json = $this->ffiAdapter->callString($content, $size);
+        } catch (Exception $exception) {
+            throw new FFIException($exception);
+        }
 
         if (empty($json)) {
             return [];
         }
 
-        return (array)json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        try {
+            return (array)json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new EncoderException($exception);
+        }
     }
 }

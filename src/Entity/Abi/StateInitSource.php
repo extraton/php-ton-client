@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\DataException;
 use RuntimeException;
+
+use function sprintf;
 
 class StateInitSource implements Params
 {
@@ -128,6 +131,6 @@ class StateInitSource implements Params
             ];
         }
 
-        throw new RuntimeException('Invalid data.');
+        throw new DataException(sprintf('Unknown type %s.', $this->type));
     }
 }

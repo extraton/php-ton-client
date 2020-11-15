@@ -10,7 +10,7 @@ use Extraton\TonClient\Entity\Abi\DeploySetParams;
 use Extraton\TonClient\Entity\Abi\SignerParams;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
-use JsonException;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Message processing module
@@ -24,7 +24,7 @@ class Processing extends AbstractModule
      * @param bool $sendEvents Flag for requesting events sending
      * @param AbiParams|null $abi Optional message ABI
      * @return ResultOfSendMessage
-     * @throws JsonException
+     * @throws TonException
      */
     public function sendMessage(string $message, bool $sendEvents, ?AbiParams $abi = null): ResultOfSendMessage
     {
@@ -48,7 +48,7 @@ class Processing extends AbstractModule
      * @param bool $sendEvents Flag that enables / disables intermediate events
      * @param AbiParams|null $abi Optional ABI for decoding the transaction result
      * @return ResultOfProcessMessage
-     * @throws JsonException
+     * @throws TonException
      */
     public function waitForTransaction(
         string $message,
@@ -80,7 +80,7 @@ class Processing extends AbstractModule
      * @param int|null $processingTryIndex Processing try index
      * @param bool $sendEvents Flag for requesting events sending
      * @return ResultOfProcessMessage
-     * @throws JsonException
+     * @throws TonException
      */
     public function processMessage(
         AbiParams $abi,

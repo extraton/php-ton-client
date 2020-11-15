@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Handler;
 
 use Closure;
+use Extraton\TonClient\Exception\LogicException;
 use Generator;
 use IteratorAggregate;
-use LogicException;
 
 use function array_shift;
 
@@ -91,7 +91,7 @@ class Response implements IteratorAggregate
     public function __invoke(array $eventData): void
     {
         if ($this->eventsFinished) {
-            throw new LogicException('Response already completed.');
+            throw new LogicException('Event data cannot be transferred to a completed Response object.');
         }
 
         $this->eventData[] = $eventData;

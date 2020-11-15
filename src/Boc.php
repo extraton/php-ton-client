@@ -6,6 +6,7 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Boc module
@@ -17,6 +18,7 @@ class Boc extends AbstractModule
      *
      * @param string $boc Message boc
      * @return ResultOfParse
+     * @throws TonException
      */
     public function parseMessage(string $boc): ResultOfParse
     {
@@ -35,6 +37,7 @@ class Boc extends AbstractModule
      *
      * @param string $boc Transaction boc
      * @return ResultOfParse
+     * @throws TonException
      */
     public function parseTransaction(string $boc): ResultOfParse
     {
@@ -53,6 +56,7 @@ class Boc extends AbstractModule
      *
      * @param string $boc Account boc
      * @return ResultOfParse
+     * @throws TonException
      */
     public function parseAccount(string $boc): ResultOfParse
     {
@@ -71,6 +75,7 @@ class Boc extends AbstractModule
      *
      * @param string $boc Block boc
      * @return ResultOfParse
+     * @throws TonException
      */
     public function parseBlock(string $boc): ResultOfParse
     {
@@ -89,6 +94,7 @@ class Boc extends AbstractModule
      *
      * @param string $blockBoc Block boc
      * @return ResultOfGetBlockchainConfig
+     * @throws TonException
      */
     public function getBlockchainConfig(string $blockBoc): ResultOfGetBlockchainConfig
     {

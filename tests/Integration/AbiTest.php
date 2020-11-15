@@ -18,7 +18,7 @@ use Extraton\TonClient\Entity\Abi\SignerParams;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
-use Extraton\TonClient\Exception\RequestException;
+use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Handler\Response;
 use JsonException;
 
@@ -412,7 +412,7 @@ class AbiTest extends AbstractModuleTest
 
         // Test exception
         $this->expectExceptionObject(
-            RequestException::create(
+            SDKException::create(
                 [
                     'message' => 'Message can\'t be decoded: failed to fill whole buffer',
                     'code'    => 304,
@@ -541,7 +541,7 @@ class AbiTest extends AbstractModuleTest
         $stateInitSource = StateInitSource::fromMessage($messageSource);
 
         $this->expectExceptionObject(
-            RequestException::create(
+            SDKException::create(
                 [
                     'message' => 'Function `process_message` must not be used with external message signing.',
                     'code'    => 513,

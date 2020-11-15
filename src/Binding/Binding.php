@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Binding;
 
+use Extraton\TonClient\Exception\ConfigException;
 use Extraton\TonClient\Exception\ContextException;
+use Extraton\TonClient\Exception\EncoderException;
+use Extraton\TonClient\Exception\FFIException;
 use Extraton\TonClient\FFI\FFIAdapter;
-use JsonException;
-use RuntimeException;
+use FFI\Exception;
 
 use function file_exists;
 use function sprintf;
@@ -18,12 +20,18 @@ use function usleep;
 use const DIRECTORY_SEPARATOR;
 use const PHP_OS;
 
+/**
+ * Low-level binding to TON SDK library
+ */
 class Binding
 {
     private FFIAdapter $ffiAdapter;
 
     private Encoder $encoder;
 
+    /**
+     * @param string $libraryPath
+     */
     public function __construct(string $libraryPath)
     {
         $this->ffiAdapter = new FFIAdapter($this->getLibraryInterface(), $libraryPath);
@@ -31,6 +39,8 @@ class Binding
     }
 
     /**
+     * Get TON SDK library interface
+     *
      * @return string
      */
     public function getLibraryInterface(): string
@@ -66,7 +76,10 @@ class Binding
     }
 
     /**
+     * Create default binding
+     *
      * @return self
+     * @throws ConfigException
      */
     public static function createDefault(): self
     {
@@ -79,7 +92,7 @@ class Binding
         $os = strtolower(PHP_OS);
 
         if (!isset($paths[$os]) || !file_exists($paths[$os])) {
-            throw new RuntimeException(sprintf('Library not found in %s.', $paths[$os]));
+            throw new ConfigException(sprintf('TON SDK library not found by path %s.', $paths[$os]));
         }
 
         $path = str_replace('/', DIRECTORY_SEPARATOR, $paths[$os]);
@@ -98,24 +111,31 @@ class Binding
     /**
      * @param array<mixed> $configuration
      * @return int
-     * @throws JsonException
+     * @throws EncoderException
+     * @throws FFIException
      */
     public function createContext(array $configuration): int
     {
         $stringData = $this->encoder->encodeArray($configuration);
-        $stringHandle = $this->ffiAdapter->call(
-            'tc_create_context',
-            [
-                $stringData
-            ]
-        );
 
-        $resultStringData = $this->ffiAdapter->call(
-            'tc_read_string',
-            [
-                $stringHandle
-            ]
-        );
+        try {
+            $stringHandle = $this->ffiAdapter->call(
+                'tc_create_context',
+                [
+                    $stringData
+                ]
+            );
+
+            $resultStringData = $this->ffiAdapter->call(
+                'tc_read_string',
+                [
+                    $stringHandle
+                ]
+            );
+        } catch (Exception $exception) {
+            throw new FFIException($exception);
+        }
+
         $result = $this->encoder->decodeToArray($resultStringData);
 
         if (!empty($result['result']) && $result['result'] > 0) {
@@ -131,8 +151,8 @@ class Binding
      * @param string $functionName
      * @param array<string, mixed> $functionParams
      * @param callable $responseHandler
-     * @return void
-     * @throws JsonException
+     * @throws EncoderException
+     * @throws FFIException
      */
     public function request(
         int $context,
@@ -144,16 +164,20 @@ class Binding
         $functionNameStringData = $this->encoder->encodeString($functionName);
         $functionParamsStringData = $this->encoder->encodeArray($functionParams);
 
-        $this->ffiAdapter->call(
-            'tc_request',
-            [
-                $context,
-                $functionNameStringData,
-                $functionParamsStringData,
-                $requestId,
-                $responseHandler
-            ]
-        );
+        try {
+            $this->ffiAdapter->call(
+                'tc_request',
+                [
+                    $context,
+                    $functionNameStringData,
+                    $functionParamsStringData,
+                    $requestId,
+                    $responseHandler
+                ]
+            );
+        } catch (Exception $exception) {
+            throw new FFIException($exception);
+        }
 
         // Protect segfault
         usleep(25_000);

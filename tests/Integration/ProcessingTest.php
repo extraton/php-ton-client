@@ -12,7 +12,7 @@ use Extraton\TonClient\Entity\Abi\DeploySetParams;
 use Extraton\TonClient\Entity\Abi\FunctionHeaderParams;
 use Extraton\TonClient\Entity\Abi\SignerParams;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
-use Extraton\TonClient\Exception\RequestException;
+use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Handler\Response;
 
 /**
@@ -115,7 +115,7 @@ class ProcessingTest extends AbstractModuleTest
         $callSet = new CallSetParams('returnValue', null, ['id' => -1]);
 
         $this->expectExceptionObject(
-            RequestException::create(
+            SDKException::create(
                 [
                     'code'    => 305,
                     'message' => "Encode deploy message failed: Wrong data format:\n-1",

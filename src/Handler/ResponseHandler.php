@@ -6,7 +6,7 @@ namespace Extraton\TonClient\Handler;
 
 use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Binding\Type\ResponseType;
-use Extraton\TonClient\Exception\RequestException;
+use Extraton\TonClient\Exception\SDKException;
 use FFI\CData;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
@@ -133,7 +133,7 @@ class ResponseHandler
     {
         $promise = $this->getPromise($requestId);
         if ($promise !== null) {
-            $promise->reject(RequestException::create($result));
+            $promise->reject(SDKException::create($result));
         }
 
         $this->unregisterPromise($requestId);

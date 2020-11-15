@@ -15,6 +15,7 @@ use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
 use Extraton\TonClient\Entity\Abi\SignerParams;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Provides message encoding and decoding according to the ABI specification
@@ -30,6 +31,7 @@ class Abi extends AbstractModule
      * @param bool $isInternal True if internal message body must be encoded
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessageBody
+     * @throws TonException
      */
     public function encodeMessageBody(
         AbiParams $abi,
@@ -59,6 +61,7 @@ class Abi extends AbstractModule
      * @param string $body Message body BOC encoded in base64
      * @param bool $isInternal True if the body belongs to the internal message
      * @return DecodedMessageBody
+     * @throws TonException
      */
     public function decodeMessageBody(AbiParams $abi, string $body, bool $isInternal = false): DecodedMessageBody
     {
@@ -84,6 +87,7 @@ class Abi extends AbstractModule
      * @param string|null $address Target address the message will be sent to
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessage
+     * @throws TonException
      */
     public function encodeMessage(
         AbiParams $abi,
@@ -114,6 +118,7 @@ class Abi extends AbstractModule
      * @param AbiParams $abi Contract ABI used to decode
      * @param string $message Boc message
      * @return DecodedMessageBody
+     * @throws TonException
      */
     public function decodeMessage(AbiParams $abi, string $message): DecodedMessageBody
     {
@@ -136,6 +141,7 @@ class Abi extends AbstractModule
      * @param string $message Unsigned message BOC encoded in base64
      * @param string $signature Signature encoded in hex
      * @return ResultOfAttachSignature
+     * @throws TonException
      */
     public function attachSignature(
         AbiParams $abi,
@@ -164,6 +170,7 @@ class Abi extends AbstractModule
      * @param string $message Unsigned message BOC. Must be encoded with base64
      * @param string $signature Signature. Must be encoded with hex
      * @return ResultOfAttachSignatureToMessageBody
+     * @throws TonException
      */
     public function attachSignatureToMessageBody(
         AbiParams $abi,
@@ -192,6 +199,7 @@ class Abi extends AbstractModule
      * @param int|null $lastTransLt Initial value for the last_trans_lt
      * @param int|null $lastPaid Initial value for the last_paid
      * @return ResultOfEncodeAccount
+     * @throws TonException
      */
     public function encodeAccount(
         StateInitSource $stateInitSource,

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Net;
 
 use Extraton\TonClient\Entity\Params;
-use RuntimeException;
+use Extraton\TonClient\Exception\LogicException;
 
 class ParamsOfSubscribeCollection extends AbstractQuery
 {
@@ -20,16 +20,16 @@ class ParamsOfSubscribeCollection extends AbstractQuery
 
     public function getOrderBy(): ?Params
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
     }
 
     public function getLimit(): ?int
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getLimit is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getLimit is not implemented.');
     }
 
     public function getTimeout(): ?int
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');
     }
 }

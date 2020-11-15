@@ -11,6 +11,7 @@ use Extraton\TonClient\Entity\Net\QueryInterface;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Net module
@@ -22,6 +23,7 @@ class Net extends AbstractModule
      *
      * @param QueryInterface|ParamsOfQueryCollection $query
      * @return ResultOfQueryCollection
+     * @throws TonException
      */
     public function queryCollection(QueryInterface $query): ResultOfQueryCollection
     {
@@ -44,6 +46,7 @@ class Net extends AbstractModule
      *
      * @param QueryInterface|ParamsOfWaitForCollection $query
      * @return ResultOfWaitForCollection
+     * @throws TonException
      */
     public function waitForCollection(QueryInterface $query): ResultOfWaitForCollection
     {
@@ -65,6 +68,7 @@ class Net extends AbstractModule
      *
      * @param QueryInterface|ParamsOfSubscribeCollection $query
      * @return ResultOfSubscribeCollection
+     * @throws TonException
      */
     public function subscribeCollection(QueryInterface $query): ResultOfSubscribeCollection
     {
@@ -85,6 +89,7 @@ class Net extends AbstractModule
      * Cancels a subscription
      *
      * @param int $handle
+     * @throws TonException
      */
     public function unsubscribe(int $handle): void
     {

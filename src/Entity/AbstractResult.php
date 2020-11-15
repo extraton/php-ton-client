@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity;
 
+use Extraton\TonClient\Exception\DataException;
+use Extraton\TonClient\Exception\LogicException;
 use Extraton\TonClient\Handler\Response;
 use Generator;
 use IteratorAggregate;
-use RuntimeException;
 
 use function array_shift;
+use function implode;
 use function is_array;
 use function is_int;
 use function is_string;
+use function sprintf;
 
 /**
  * Abstract result
@@ -53,7 +56,7 @@ abstract class AbstractResult implements IteratorAggregate
     {
         $generator = new Generator();
 
-        yield $generator->throw(new RuntimeException('Result is not iterable.'));
+        yield $generator->throw(new LogicException('Response cannot be iterated.'));
     }
 
     /**
@@ -67,13 +70,16 @@ abstract class AbstractResult implements IteratorAggregate
     /**
      * @param string ...$keys
      * @return mixed
+     * @throws DataException
      */
     protected function requireData(string ...$keys)
     {
         $result = $this->getData(...$keys);
 
         if ($result === null) {
-            throw new RuntimeException('Invalid path by array of keys');
+            $path = implode('.', $keys);
+
+            throw new DataException(sprintf('Data not found by key %s.', $path));
         }
 
         return $result;
@@ -115,13 +121,16 @@ abstract class AbstractResult implements IteratorAggregate
     /**
      * @param string ...$keys
      * @return array<mixed>
+     * @throws DataException
      */
     protected function requireArray(string ...$keys): array
     {
         $result = $this->requireData(...$keys);
 
         if (!is_array($result)) {
-            throw new RuntimeException('It\'s not an array');
+            $path = implode('.', $keys);
+
+            throw new DataException(sprintf('Data is corrupted by key %s.', $path));
         }
 
         return $result;
@@ -130,13 +139,16 @@ abstract class AbstractResult implements IteratorAggregate
     /**
      * @param string ...$keys
      * @return string
+     * @throws DataException
      */
     protected function requireString(string ...$keys): string
     {
         $result = $this->requireData(...$keys);
 
         if (!is_string($result)) {
-            throw new RuntimeException('It\'s not a string');
+            $path = implode('.', $keys);
+
+            throw new DataException(sprintf('Data is corrupted by key %s.', $path));
         }
 
         return $result;
@@ -145,13 +157,16 @@ abstract class AbstractResult implements IteratorAggregate
     /**
      * @param string ...$keys
      * @return int
+     * @throws DataException
      */
     protected function requireInt(string ...$keys): int
     {
         $result = $this->requireData(...$keys);
 
         if (!is_int($result)) {
-            throw new RuntimeException('It\'s not an integer');
+            $path = implode('.', $keys);
+
+            throw new DataException(sprintf('Data is corrupted by key %s.', $path));
         }
 
         return $result;
@@ -160,13 +175,16 @@ abstract class AbstractResult implements IteratorAggregate
     /**
      * @param string ...$keys
      * @return bool
+     * @throws DataException
      */
     protected function requireBool(string ...$keys): bool
     {
         $result = $this->requireData(...$keys);
 
         if (!is_bool($result)) {
-            throw new RuntimeException('It\'s not a boolean');
+            $path = implode('.', $keys);
+
+            throw new DataException(sprintf('Data is corrupted by key %s.', $path));
         }
 
         return $result;
