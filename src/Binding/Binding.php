@@ -84,18 +84,22 @@ class Binding
     public static function createDefault(): self
     {
         $paths = [
-            'linux'  => __DIR__ . '/../../vendor/bin/tonclient.so',
-            'darwin' => __DIR__ . '/../../vendor/bin/tonclient.dylib',
-            'win32'  => __DIR__ . '/../../vendor/bin/tonclient.dll',
+            'linux'  => __DIR__ . '/../../bin/tonclient.so',
+            'darwin' => __DIR__ . '/../../bin/tonclient.dylib',
+            'win32'  => __DIR__ . '/../../bin/tonclient.dll',
         ];
 
         $os = strtolower(PHP_OS);
 
-        if (!isset($paths[$os]) || !file_exists($paths[$os])) {
-            throw new ConfigException(sprintf('TON SDK library not found by path %s.', $paths[$os]));
+        if (!isset($paths[$os])) {
+            throw new ConfigException(sprintf('TON SDK library not found by OS %s.', $os));
         }
 
         $path = str_replace('/', DIRECTORY_SEPARATOR, $paths[$os]);
+
+        if (!file_exists($path)) {
+            throw new ConfigException(sprintf('TON SDK library not found by path %s.', $paths[$os]));
+        }
 
         return new self($path);
     }

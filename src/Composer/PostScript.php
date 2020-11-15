@@ -76,7 +76,7 @@ class PostScript
         system($downloadScript);
 
         // Get or create bin dir
-        $binDir = $event->getComposer()->getConfig()->get('bin-dir');
+        $binDir = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../../bin/');
         if (!file_exists($binDir) && !mkdir($binDir) && !is_dir($binDir)) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $binDir));
         }
