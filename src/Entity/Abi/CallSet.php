@@ -14,7 +14,7 @@ class CallSet implements Params
     private string $functionName;
 
     /** @var mixed */
-    private $input = null;
+    private $input;
 
     private ?FunctionHeader $functionHeader = null;
 

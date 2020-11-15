@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Net;
 
 use Extraton\TonClient\Entity\AbstractResult;
+use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Net;
 use Generator;
@@ -30,6 +31,9 @@ class ResultOfSubscribeCollection extends AbstractResult
         return $this->requireData('result');
     }
 
+    /**
+     * @throws TonException
+     */
     public function stop(): void
     {
         $this->net->unsubscribe($this->getHandle());

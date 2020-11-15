@@ -54,7 +54,7 @@ class Filters implements Params
     public function add(string $field, string $operator, $value): self
     {
         if (isset($this->filters[$field])) {
-            throw new LogicException(sprintf('Field %s already defined', $field));
+            throw new LogicException(sprintf('Field %s already defined.', $field));
         }
 
         if (!in_array($operator, self::OPERATORS, true)) {

@@ -6,7 +6,6 @@ namespace Extraton\TonClient\Entity\Tvm;
 
 use Extraton\TonClient\Entity\Params;
 use Extraton\TonClient\Exception\DataException;
-use RuntimeException;
 
 use function in_array;
 use function sprintf;

@@ -175,6 +175,7 @@ abstract class AbstractResult implements IteratorAggregate
 
     /**
      * @return Generator<mixed>
+     * @throws LogicException
      */
     public function getIterator(): Generator
     {

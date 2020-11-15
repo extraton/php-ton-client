@@ -35,6 +35,9 @@ class KeyPair implements Params
         return $this->secret;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function jsonSerialize(): array
     {
         return [
