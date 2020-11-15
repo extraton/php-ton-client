@@ -41,10 +41,10 @@
     "post-install-cmd": [
       "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
     ],
-    "pre-package-install": [
+    "post-package-install": [
       "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
     ],
-    "pre-package-update": [
+    "post-package-update": [
       "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
     ]
   },
