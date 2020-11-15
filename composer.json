@@ -46,6 +46,8 @@
     "sdk-version": "1.1.0"
   },
   "bin": [
-    "bin/*"
+    "bin/tonclient.dylib",
+    "bin/tonclient.so",
+    "bin/tonclient.dll"
   ]
 }
