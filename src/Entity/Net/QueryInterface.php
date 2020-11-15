@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 
 interface QueryInterface
 {
@@ -12,9 +12,9 @@ interface QueryInterface
 
     public function getResult(): string;
 
-    public function getFilters(): ?ParamsInterface;
+    public function getFilters(): ?Params;
 
-    public function getOrderBy(): ?ParamsInterface;
+    public function getOrderBy(): ?Params;
 
     public function getLimit(): ?int;
 

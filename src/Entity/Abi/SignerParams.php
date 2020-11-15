@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use LogicException;
 
-class SignerParams implements ParamsInterface
+class SignerParams implements Params
 {
     public const TYPE_NONE = 'None';
 

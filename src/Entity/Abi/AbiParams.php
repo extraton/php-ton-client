@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use JsonException;
 
 use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
 
-class AbiParams implements ParamsInterface
+class AbiParams implements Params
 {
     public const TYPE_SERIALIZED = 'Serialized';
 

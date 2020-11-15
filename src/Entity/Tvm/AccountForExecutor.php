@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Tvm;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
 use function in_array;
 
-class AccountForExecutor implements ParamsInterface
+class AccountForExecutor implements Params
 {
     public const TYPE_NONE = 'None';
 

@@ -15,18 +15,8 @@ use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 /**
  * Net module
  */
-class Net
+class Net extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Queries collection data
      *

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
 class ParamsOfSubscribeCollection extends AbstractQuery
@@ -18,7 +18,7 @@ class ParamsOfSubscribeCollection extends AbstractQuery
         $this->setFilters($filters);
     }
 
-    public function getOrderBy(): ?ParamsInterface
+    public function getOrderBy(): ?Params
     {
         throw new RuntimeException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
     }

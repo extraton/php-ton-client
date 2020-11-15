@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Crypto;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 
 /**
  * Key pair
  */
-class KeyPair implements ParamsInterface
+class KeyPair implements Params
 {
     private string $public;
 

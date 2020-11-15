@@ -10,18 +10,8 @@ use Extraton\TonClient\Entity\Boc\ResultOfParse;
 /**
  * Boc module
  */
-class Boc
+class Boc extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Parses message boc
      *

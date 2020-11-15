@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 
-class FunctionHeaderParams implements ParamsInterface
+class FunctionHeaderParams implements Params
 {
     private ?int $expire;
 

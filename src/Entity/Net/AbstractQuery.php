@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
 use function array_filter;
@@ -96,7 +96,7 @@ abstract class AbstractQuery implements QueryInterface
         return implode(' ', $fields);
     }
 
-    public function getFilters(): ?ParamsInterface
+    public function getFilters(): ?Params
     {
         return $this->filters;
     }
@@ -108,7 +108,7 @@ abstract class AbstractQuery implements QueryInterface
         return $this;
     }
 
-    public function getOrderBy(): ?ParamsInterface
+    public function getOrderBy(): ?Params
     {
         return $this->orderBy;
     }

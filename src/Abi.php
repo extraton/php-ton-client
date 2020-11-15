@@ -19,18 +19,8 @@ use Extraton\TonClient\Entity\Abi\StateInitSource;
 /**
  * Provides message encoding and decoding according to the ABI specification
  */
-class Abi
+class Abi extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Encodes message body according to ABI function call
      *
@@ -63,28 +53,22 @@ class Abi
     }
 
     /**
-     * Attach signature to message body
+     * Decodes message body using provided body BOC and ABI
      *
-     * @param AbiParams $abi Contract ABI
-     * @param string $publicKey Public key. Must be encoded with hex
-     * @param string $message Unsigned message BOC. Must be encoded with base64
-     * @param string $signature Signature. Must be encoded with hex
-     * @return ResultOfAttachSignatureToMessageBody
+     * @param AbiParams $abi Contract ABI used to decode
+     * @param string $body Message body BOC encoded in base64
+     * @param bool $isInternal True if the body belongs to the internal message
+     * @return DecodedMessageBody
      */
-    public function attachSignatureToMessageBody(
-        AbiParams $abi,
-        string $publicKey,
-        string $message,
-        string $signature
-    ): ResultOfAttachSignatureToMessageBody {
-        return new ResultOfAttachSignatureToMessageBody(
+    public function decodeMessageBody(AbiParams $abi, string $body, bool $isInternal = false): DecodedMessageBody
+    {
+        return new DecodedMessageBody(
             $this->tonClient->request(
-                'abi.attach_signature_to_message_body',
+                'abi.decode_message_body',
                 [
-                    'abi'        => $abi,
-                    'public_key' => $publicKey,
-                    'message'    => $message,
-                    'signature'  => $signature,
+                    'abi'         => $abi,
+                    'body'        => $body,
+                    'is_internal' => $isInternal,
                 ]
             )->wait()
         );
@@ -125,6 +109,26 @@ class Abi
     }
 
     /**
+     * Decodes message body using provided message BOC and ABI
+     *
+     * @param AbiParams $abi Contract ABI used to decode
+     * @param string $message Boc message
+     * @return DecodedMessageBody
+     */
+    public function decodeMessage(AbiParams $abi, string $message): DecodedMessageBody
+    {
+        return new DecodedMessageBody(
+            $this->tonClient->request(
+                'abi.decode_message',
+                [
+                    'abi'     => $abi,
+                    'message' => $message,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
      * Combines hex-encoded signature with base64-encoded unsigned_message. Returns signed message encoded in base64
      *
      * @param AbiParams $abi Contract ABI
@@ -153,42 +157,28 @@ class Abi
     }
 
     /**
-     * Decodes message body using provided message BOC and ABI
+     * Attach signature to message body
      *
-     * @param AbiParams $abi Contract ABI used to decode
-     * @param string $message Boc message
-     * @return DecodedMessageBody
+     * @param AbiParams $abi Contract ABI
+     * @param string $publicKey Public key. Must be encoded with hex
+     * @param string $message Unsigned message BOC. Must be encoded with base64
+     * @param string $signature Signature. Must be encoded with hex
+     * @return ResultOfAttachSignatureToMessageBody
      */
-    public function decodeMessage(AbiParams $abi, string $message): DecodedMessageBody
-    {
-        return new DecodedMessageBody(
+    public function attachSignatureToMessageBody(
+        AbiParams $abi,
+        string $publicKey,
+        string $message,
+        string $signature
+    ): ResultOfAttachSignatureToMessageBody {
+        return new ResultOfAttachSignatureToMessageBody(
             $this->tonClient->request(
-                'abi.decode_message',
+                'abi.attach_signature_to_message_body',
                 [
-                    'abi'     => $abi,
-                    'message' => $message,
-                ]
-            )->wait()
-        );
-    }
-
-    /**
-     * Decodes message body using provided body BOC and ABI
-     *
-     * @param AbiParams $abi Contract ABI used to decode
-     * @param string $body Message body BOC encoded in base64
-     * @param bool $isInternal True if the body belongs to the internal message
-     * @return DecodedMessageBody
-     */
-    public function decodeMessageBody(AbiParams $abi, string $body, bool $isInternal = false): DecodedMessageBody
-    {
-        return new DecodedMessageBody(
-            $this->tonClient->request(
-                'abi.decode_message_body',
-                [
-                    'abi'         => $abi,
-                    'body'        => $body,
-                    'is_internal' => $isInternal,
+                    'abi'        => $abi,
+                    'public_key' => $publicKey,
+                    'message'    => $message,
+                    'signature'  => $signature,
                 ]
             )->wait()
         );

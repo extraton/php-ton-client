@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use LogicException;
 
 use function in_array;
 
-class OrderBy implements ParamsInterface
+class OrderBy implements Params
 {
     public const ASC = 'ASC';
 

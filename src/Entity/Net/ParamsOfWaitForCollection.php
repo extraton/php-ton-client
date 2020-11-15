@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
 class ParamsOfWaitForCollection extends AbstractQuery
@@ -20,7 +20,7 @@ class ParamsOfWaitForCollection extends AbstractQuery
         $this->setTimeout($timeout);
     }
 
-    public function getOrderBy(): ?ParamsInterface
+    public function getOrderBy(): ?Params
     {
         throw new RuntimeException('Method ParamsOfWaitForCollection::getOrderBy is not implemented.');
     }

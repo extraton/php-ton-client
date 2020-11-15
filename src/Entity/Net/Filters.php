@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use LogicException;
 use RuntimeException;
 
@@ -13,7 +13,7 @@ use function in_array;
 /**
  * Filter collection
  */
-class Filters implements ParamsInterface
+class Filters implements Params
 {
     public const EQ = 'eq';
 

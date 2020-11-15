@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Utils;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
 use function in_array;
 
-class AddressStringFormat implements ParamsInterface
+class AddressStringFormat implements Params
 {
     public const TYPE_ACCOUNT_ID = 'AccountId';
 

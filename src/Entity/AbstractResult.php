@@ -14,6 +14,9 @@ use function is_array;
 use function is_int;
 use function is_string;
 
+/**
+ * Abstract result
+ */
 abstract class AbstractResult implements IteratorAggregate
 {
     private Response $response;
@@ -156,7 +159,7 @@ abstract class AbstractResult implements IteratorAggregate
 
     /**
      * @param string ...$keys
-     * @return int
+     * @return bool
      */
     protected function requireBool(string ...$keys): bool
     {

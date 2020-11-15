@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Tvm;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 
 /**
  * Execution options
  */
-class ExecutionOptions implements ParamsInterface
+class ExecutionOptions implements Params
 {
     private ?string $blockchainConfig;
 

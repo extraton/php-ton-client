@@ -15,18 +15,8 @@ use JsonException;
 /**
  * Message processing module
  */
-class Processing
+class Processing extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Sends message to the network
      *

@@ -30,18 +30,8 @@ use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
 /**
  * Crypto module
  */
-class Crypto
+class Crypto extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Performs prime factorization
      *
@@ -80,9 +70,9 @@ class Crypto
             $this->tonClient->request(
                 'crypto.modular_power',
                 [
-                    'base' => $base,
+                    'base'     => $base,
                     'exponent' => $exponent,
-                    'modulus' => $modulus,
+                    'modulus'  => $modulus,
                 ]
             )->wait()
         );
@@ -168,7 +158,7 @@ class Crypto
                 'crypto.sign',
                 [
                     'unsigned' => $unsigned,
-                    'keys' => $keyPair,
+                    'keys'     => $keyPair,
                 ]
             )->wait()
         );
@@ -253,11 +243,11 @@ class Crypto
                 'crypto.scrypt',
                 [
                     'password' => $password,
-                    'salt' => $salt,
-                    'log_n' => $logN,
-                    'r' => $r,
-                    'p' => $p,
-                    'dk_len' => $dkLen,
+                    'salt'     => $salt,
+                    'log_n'    => $logN,
+                    'r'        => $r,
+                    'p'        => $p,
+                    'dk_len'   => $dkLen,
                 ]
             )->wait()
         );
@@ -295,7 +285,7 @@ class Crypto
                 'crypto.nacl_sign',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )->wait()
         );
@@ -335,7 +325,7 @@ class Crypto
                 'crypto.nacl_sign_detached',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )->wait()
         );
@@ -388,10 +378,10 @@ class Crypto
             $this->tonClient->request(
                 'crypto.nacl_box',
                 [
-                    'decrypted' => $decrypted,
-                    'nonce' => $nonce,
+                    'decrypted'    => $decrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ],
             )->wait()
         );
@@ -406,16 +396,20 @@ class Crypto
      * @param string $secret Sender's private key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclBoxOpen
      */
-    public function naclBoxOpen(string $encrypted, string $nonce, string $theirPublic, string $secret): ResultOfNaclBoxOpen
-    {
+    public function naclBoxOpen(
+        string $encrypted,
+        string $nonce,
+        string $theirPublic,
+        string $secret
+    ): ResultOfNaclBoxOpen {
         return new ResultOfNaclBoxOpen(
             $this->tonClient->request(
                 'crypto.nacl_box_open',
                 [
-                    'encrypted' => $encrypted,
-                    'nonce' => $nonce,
+                    'encrypted'    => $encrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ],
             )->wait()
         );
@@ -436,8 +430,8 @@ class Crypto
                 'crypto.nacl_secret_box',
                 [
                     'decrypted' => $decrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ],
             )->wait()
         );
@@ -458,8 +452,8 @@ class Crypto
                 'crypto.nacl_secret_box_open',
                 [
                     'encrypted' => $encrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ],
             )->wait()
         );
@@ -515,13 +509,12 @@ class Crypto
         string $entropy,
         int $dictionary = null,
         int $wordCount = null
-    ): ResultOfGenerateMnemonic
-    {
+    ): ResultOfGenerateMnemonic {
         return new ResultOfGenerateMnemonic(
             $this->tonClient->request(
                 'crypto.mnemonic_from_entropy',
                 [
-                    'entropy' => $entropy,
+                    'entropy'    => $entropy,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -541,13 +534,12 @@ class Crypto
         string $phrase,
         int $dictionary = null,
         int $wordCount = null
-    ): ResultOfMnemonicVerify
-    {
+    ): ResultOfMnemonicVerify {
         return new ResultOfMnemonicVerify(
             $this->tonClient->request(
                 'crypto.mnemonic_verify',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -569,14 +561,13 @@ class Crypto
         string $path = null,
         int $dictionary = null,
         int $wordCount = null
-    ): ResultOfGenerateSignKeys
-    {
+    ): ResultOfGenerateSignKeys {
         return new ResultOfGenerateSignKeys(
             $this->tonClient->request(
                 'crypto.mnemonic_derive_sign_keys',
                 [
-                    'phrase' => $phrase,
-                    'path' => $path,
+                    'phrase'     => $phrase,
+                    'path'       => $path,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -596,13 +587,12 @@ class Crypto
         string $phrase,
         int $dictionary = null,
         int $wordCount = null
-    ): ResultOfHDKeyXPrv
-    {
+    ): ResultOfHDKeyXPrv {
         return new ResultOfHDKeyXPrv(
             $this->tonClient->request(
                 'crypto.hdkey_xprv_from_mnemonic',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -624,9 +614,9 @@ class Crypto
             $this->tonClient->request(
                 'crypto.hdkey_derive_from_xprv',
                 [
-                    'xprv' => $xprv,
+                    'xprv'        => $xprv,
                     'child_index' => $childIndex,
-                    'hardened' => $hardened,
+                    'hardened'    => $hardened,
                 ],
             )->wait()
         );

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 use RuntimeException;
 
-class StateInitSource implements ParamsInterface
+class StateInitSource implements Params
 {
     public const TYPE_MESSAGE = 'Message';
 
