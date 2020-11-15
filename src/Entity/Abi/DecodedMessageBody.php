@@ -6,6 +6,9 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
+/**
+ * Type DecodedMessageBody
+ */
 class DecodedMessageBody extends AbstractResult
 {
     /**
@@ -31,7 +34,7 @@ class DecodedMessageBody extends AbstractResult
     /**
      * Parameters or result value
      *
-     * @return array|null
+     * @return array<mixed>|null
      */
     public function getValue(): ?array
     {
@@ -41,7 +44,7 @@ class DecodedMessageBody extends AbstractResult
     /**
      * Function header
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getHeader(): array
     {

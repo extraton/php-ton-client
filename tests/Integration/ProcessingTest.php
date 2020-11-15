@@ -6,11 +6,11 @@ namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Abi;
 use Extraton\TonClient\Crypto;
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
-use Extraton\TonClient\Entity\Abi\FunctionHeaderParams;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\FunctionHeader;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Handler\Response;
@@ -29,17 +29,11 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessage(): void
     {
-        $abi = AbiParams::fromArray($this->dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($this->dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
-
-        $functionHeader = new FunctionHeaderParams($keyPair->getPublic());
-
-        $callSet = new CallSetParams(
-            'constructor',
-            $functionHeader
-        );
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -112,7 +106,12 @@ class ProcessingTest extends AbstractModuleTest
         );
 
         // Test contract execution error
-        $callSet = new CallSetParams('returnValue', null, ['id' => -1]);
+        $callSet = (new CallSet('returnValue'))
+            ->withInput(
+                [
+                    'id' => -1
+                ]
+            );
 
         $this->expectExceptionObject(
             SDKException::create(
@@ -139,15 +138,15 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessageWithEvents(): void
     {
-        $abi = AbiParams::fromArray($this->dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($this->dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
 
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
+        $signer = Signer::fromKeys($keyPair);
 
-        $functionHeaderParams = new FunctionHeaderParams($keyPair->getPublic());
+        $functionHeaderParams = new FunctionHeader($keyPair->getPublic());
 
-        $callSet = new CallSetParams('constructor', $functionHeaderParams);
+        $callSet = new CallSet('constructor', $functionHeaderParams);
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -243,17 +242,11 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testWaitForTransaction(): void
     {
-        $abi = AbiParams::fromArray($this->dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($this->dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
-
-        $functionHeader = new FunctionHeaderParams($keyPair->getPublic());
-
-        $callSet = new CallSetParams(
-            'constructor',
-            $functionHeader
-        );
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -339,17 +332,11 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testWaitForTransactionWithEvents(): void
     {
-        $abi = AbiParams::fromArray($this->dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($this->dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
-
-        $functionHeader = new FunctionHeaderParams($keyPair->getPublic());
-
-        $callSet = new CallSetParams(
-            'constructor',
-            $functionHeader
-        );
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,

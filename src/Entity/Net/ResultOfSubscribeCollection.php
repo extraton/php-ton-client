@@ -9,6 +9,9 @@ use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Net;
 use Generator;
 
+/**
+ * Type ResultOfSubscribeCollection
+ */
 class ResultOfSubscribeCollection extends AbstractResult
 {
     private Net $net;
@@ -19,6 +22,9 @@ class ResultOfSubscribeCollection extends AbstractResult
         $this->net = $net;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getResult(): array
     {
         return $this->requireData('result');

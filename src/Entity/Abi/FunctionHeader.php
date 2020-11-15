@@ -6,13 +6,16 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Params;
 
-class FunctionHeaderParams implements Params
+/**
+ * Type FunctionHeader
+ */
+class FunctionHeader implements Params
 {
-    private ?int $expire;
+    private ?string $pubKey;
 
     private ?int $time;
 
-    private ?string $pubKey;
+    private ?int $expire;
 
     /**
      * @param string|null $pubKey

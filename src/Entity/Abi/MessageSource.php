@@ -9,6 +9,9 @@ use Extraton\TonClient\Exception\DataException;
 
 use function sprintf;
 
+/**
+ * Type MessageSource
+ */
 class MessageSource implements Params
 {
     public const TYPE_ENCODED = 'Encoded';
@@ -19,15 +22,15 @@ class MessageSource implements Params
 
     private string $message;
 
-    private ?AbiParams $abi;
+    private ?AbiType $abi;
 
-    private SignerParams $signer;
+    private Signer $signer;
 
     private ?string $address;
 
-    private ?DeploySetParams $deploySet;
+    private ?DeploySet $deploySet;
 
-    private ?CallSetParams $callSet;
+    private ?CallSet $callSet;
 
     private ?int $processingTryIndex;
 
@@ -41,28 +44,10 @@ class MessageSource implements Params
 
     /**
      * @param string $message
-     * @return $this
+     * @param AbiType|null $abi
+     * @return self
      */
-    public function setMessage(string $message): self
-    {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    public function setAbi(?AbiParams $abi): self
-    {
-        $this->abi = $abi;
-
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @param AbiParams|null $abi
-     * @return static
-     */
-    public static function fromEncoded(string $message, ?AbiParams $abi = null): self
+    public static function fromEncoded(string $message, ?AbiType $abi = null): self
     {
         $instance = new self(self::TYPE_ENCODED);
         $instance->setMessage($message);
@@ -72,19 +57,19 @@ class MessageSource implements Params
     }
 
     /**
-     * @param AbiParams $abi
-     * @param SignerParams $signer
+     * @param AbiType $abi
+     * @param Signer $signer
      * @param string|null $address
-     * @param DeploySetParams|null $deploySet
-     * @param CallSetParams|null $callSet
+     * @param DeploySet|null $deploySet
+     * @param CallSet|null $callSet
      * @param int|null $processingTryIndex
-     * @return static
+     * @return self
      */
     public static function fromEncodingParams(
-        AbiParams $abi,
-        SignerParams $signer,
-        ?DeploySetParams $deploySet = null,
-        ?CallSetParams $callSet = null,
+        AbiType $abi,
+        Signer $signer,
+        ?DeploySet $deploySet = null,
+        ?CallSet $callSet = null,
         ?string $address = null,
         ?int $processingTryIndex = null
     ): self {
@@ -100,8 +85,30 @@ class MessageSource implements Params
     }
 
     /**
+     * @param string $message
+     * @return self
+     */
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param AbiType|null $abi
+     * @return self
+     */
+    public function setAbi(?AbiType $abi): self
+    {
+        $this->abi = $abi;
+
+        return $this;
+    }
+
+    /**
      * @param string|null $address
-     * @return $this
+     * @return self
      */
     public function setAddress(?string $address): self
     {
@@ -111,30 +118,42 @@ class MessageSource implements Params
     }
 
     /**
-     * @param DeploySetParams|null $deploySet
-     * @return $this
+     * @param DeploySet|null $deploySet
+     * @return self
      */
-    public function setDeploySet(?DeploySetParams $deploySet): self
+    public function setDeploySet(?DeploySet $deploySet): self
     {
         $this->deploySet = $deploySet;
 
         return $this;
     }
 
-    private function setCallSet(?CallSetParams $callSet): self
+    /**
+     * @param CallSet|null $callSet
+     * @return self
+     */
+    private function setCallSet(?CallSet $callSet): self
     {
         $this->callSet = $callSet;
 
         return $this;
     }
 
-    private function setSigner(SignerParams $signer): self
+    /**
+     * @param Signer $signer
+     * @return self
+     */
+    private function setSigner(Signer $signer): self
     {
         $this->signer = $signer;
 
         return $this;
     }
 
+    /**
+     * @param int|null $processingTryIndex
+     * @return self
+     */
     private function setProcessingTryIndex(?int $processingTryIndex): self
     {
         $this->processingTryIndex = $processingTryIndex;

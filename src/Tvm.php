@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
 use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
@@ -23,7 +23,7 @@ class Tvm extends AbstractModule
      * @param string $message
      * @param AccountForExecutor $accountForExecutor
      * @param ExecutionOptions|null $executionOptions
-     * @param AbiParams|null $abi
+     * @param AbiType|null $abi
      * @param bool|null $skipTransactionCheck
      * @return ResultOfRunExecutor
      * @throws TonException
@@ -32,7 +32,7 @@ class Tvm extends AbstractModule
         string $message,
         AccountForExecutor $accountForExecutor,
         ?ExecutionOptions $executionOptions = null,
-        ?AbiParams $abi = null,
+        ?AbiType $abi = null,
         ?bool $skipTransactionCheck = null
     ): ResultOfRunExecutor {
         return new ResultOfRunExecutor(
@@ -55,7 +55,7 @@ class Tvm extends AbstractModule
      * @param string $message Input message BOC. Must be encoded as base64
      * @param string $account Account BOC. Must be encoded as base64
      * @param ExecutionOptions|null $executionOptions Execution options
-     * @param AbiParams|null $abi Contract ABI for dedcoding output messages
+     * @param AbiType|null $abi Contract ABI for dedcoding output messages
      * @return ResultOfRunTvm
      * @throws TonException
      */
@@ -63,7 +63,7 @@ class Tvm extends AbstractModule
         string $message,
         string $account,
         ?ExecutionOptions $executionOptions,
-        ?AbiParams $abi
+        ?AbiType $abi
     ): ResultOfRunTvm {
         return new ResultOfRunTvm(
             $this->tonClient->request(

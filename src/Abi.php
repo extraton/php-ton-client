@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
 use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
+use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
 use Extraton\TonClient\Exception\TonException;
 
@@ -25,18 +25,18 @@ class Abi extends AbstractModule
     /**
      * Encodes message body according to ABI function call
      *
-     * @param AbiParams $abi Contract ABI
-     * @param SignerParams $signer Signing parameters
-     * @param CallSetParams $callSet Function call parameters
+     * @param AbiType $abi Contract ABI
+     * @param Signer $signer Signing parameters
+     * @param CallSet $callSet Function call parameters
      * @param bool $isInternal True if internal message body must be encoded
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessageBody
      * @throws TonException
      */
     public function encodeMessageBody(
-        AbiParams $abi,
-        SignerParams $signer,
-        CallSetParams $callSet,
+        AbiType $abi,
+        Signer $signer,
+        CallSet $callSet,
         bool $isInternal,
         ?int $processingTryIndex = null
     ): ResultOfEncodeMessageBody {
@@ -57,13 +57,13 @@ class Abi extends AbstractModule
     /**
      * Decodes message body using provided body BOC and ABI
      *
-     * @param AbiParams $abi Contract ABI used to decode
+     * @param AbiType $abi Contract ABI used to decode
      * @param string $body Message body BOC encoded in base64
      * @param bool $isInternal True if the body belongs to the internal message
      * @return DecodedMessageBody
      * @throws TonException
      */
-    public function decodeMessageBody(AbiParams $abi, string $body, bool $isInternal = false): DecodedMessageBody
+    public function decodeMessageBody(AbiType $abi, string $body, bool $isInternal = false): DecodedMessageBody
     {
         return new DecodedMessageBody(
             $this->tonClient->request(
@@ -80,20 +80,20 @@ class Abi extends AbstractModule
     /**
      * Encodes an ABI-compatible message
      *
-     * @param AbiParams $abi Contract ABI
-     * @param SignerParams $signer Signing parameters
-     * @param DeploySetParams|null $deploySet Deploy parameters
-     * @param CallSetParams|null $callSet Function call parameters
+     * @param AbiType $abi Contract ABI
+     * @param Signer $signer Signing parameters
+     * @param DeploySet|null $deploySet Deploy parameters
+     * @param CallSet|null $callSet Function call parameters
      * @param string|null $address Target address the message will be sent to
      * @param int|null $processingTryIndex Processing try index
      * @return ResultOfEncodeMessage
      * @throws TonException
      */
     public function encodeMessage(
-        AbiParams $abi,
-        SignerParams $signer,
-        ?DeploySetParams $deploySet = null,
-        ?CallSetParams $callSet = null,
+        AbiType $abi,
+        Signer $signer,
+        ?DeploySet $deploySet = null,
+        ?CallSet $callSet = null,
         ?string $address = null,
         ?int $processingTryIndex = null
     ): ResultOfEncodeMessage {
@@ -115,12 +115,12 @@ class Abi extends AbstractModule
     /**
      * Decodes message body using provided message BOC and ABI
      *
-     * @param AbiParams $abi Contract ABI used to decode
+     * @param AbiType $abi Contract ABI used to decode
      * @param string $message Boc message
      * @return DecodedMessageBody
      * @throws TonException
      */
-    public function decodeMessage(AbiParams $abi, string $message): DecodedMessageBody
+    public function decodeMessage(AbiType $abi, string $message): DecodedMessageBody
     {
         return new DecodedMessageBody(
             $this->tonClient->request(
@@ -136,7 +136,7 @@ class Abi extends AbstractModule
     /**
      * Combines hex-encoded signature with base64-encoded unsigned_message. Returns signed message encoded in base64
      *
-     * @param AbiParams $abi Contract ABI
+     * @param AbiType $abi Contract ABI
      * @param string $publicKey Public key encoded in hex
      * @param string $message Unsigned message BOC encoded in base64
      * @param string $signature Signature encoded in hex
@@ -144,7 +144,7 @@ class Abi extends AbstractModule
      * @throws TonException
      */
     public function attachSignature(
-        AbiParams $abi,
+        AbiType $abi,
         string $publicKey,
         string $message,
         string $signature
@@ -165,7 +165,7 @@ class Abi extends AbstractModule
     /**
      * Attach signature to message body
      *
-     * @param AbiParams $abi Contract ABI
+     * @param AbiType $abi Contract ABI
      * @param string $publicKey Public key. Must be encoded with hex
      * @param string $message Unsigned message BOC. Must be encoded with base64
      * @param string $signature Signature. Must be encoded with hex
@@ -173,7 +173,7 @@ class Abi extends AbstractModule
      * @throws TonException
      */
     public function attachSignatureToMessageBody(
-        AbiParams $abi,
+        AbiType $abi,
         string $publicKey,
         string $message,
         string $signature

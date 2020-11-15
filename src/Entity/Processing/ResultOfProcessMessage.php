@@ -10,9 +10,7 @@ use Extraton\TonClient\Handler\Response;
 use Generator;
 
 /**
- * Result of call method processing.wait_for_transaction
- *
- * @phpstan-implements IteratorAggregate<ProcessingEvent>
+ * Type ResultOfProcessMessage
  */
 class ResultOfProcessMessage extends AbstractResult
 {
@@ -43,7 +41,11 @@ class ResultOfProcessMessage extends AbstractResult
      */
     public function getTransactionFees(): TransactionFees
     {
-        return TransactionFees::fromArray($this->requireArray('fees'));
+        return new TransactionFees(
+            new Response(
+                $this->requireArray('fees')
+            )
+        );
     }
 
     /**
@@ -63,7 +65,11 @@ class ResultOfProcessMessage extends AbstractResult
      */
     public function getDecoded(): ?DecodedOutput
     {
-        return DecodedOutput::fromArray($this->requireArray('decoded'));
+        return new DecodedOutput(
+            new Response(
+                $this->requireArray('decoded')
+            )
+        );
     }
 
     /**

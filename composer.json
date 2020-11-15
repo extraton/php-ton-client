@@ -1,6 +1,6 @@
 {
   "name": "extraton/php-ton-client",
-  "description": "Extraton PHP TON client",
+  "description": "Extraton, PHP TON client",
   "type": "library",
   "license": "Apache-2.0",
   "homepage": "https://extraton.io/",
@@ -36,24 +36,10 @@
   },
   "scripts": {
     "post-update-cmd": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
+      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
     ],
     "post-install-cmd": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
-    ],
-    "post-package-install": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
-    ],
-    "post-package-update": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
+      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
     ]
-  },
-  "extra": {
-    "sdk-version": "1.1.0"
-  },
-  "bin": [
-    "bin/tonclient.dylib",
-    "bin/tonclient.so",
-    "bin/tonclient.dll"
-  ]
+  }
 }

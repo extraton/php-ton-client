@@ -6,17 +6,21 @@ namespace Extraton\TonClient\Entity\Tvm;
 
 use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Processing\DecodedOutput;
+use Extraton\TonClient\Handler\Response;
 
+/**
+ * Type ResultOfRunExecutor
+ */
 class ResultOfRunExecutor extends AbstractResult
 {
     /**
      * Get parsed transaction
      *
-     * @return mixed
+     * @return array<mixed>
      */
-    public function getTransaction()
+    public function getTransaction(): array
     {
-        return $this->requireData('transaction');
+        return $this->requireArray('transaction');
     }
 
     /**
@@ -32,7 +36,7 @@ class ResultOfRunExecutor extends AbstractResult
     /**
      * Get list of output messages BOCs. Encoded as base64
      *
-     * @return string[]
+     * @return array<string>
      */
     public function getOutMessages(): array
     {
@@ -46,7 +50,7 @@ class ResultOfRunExecutor extends AbstractResult
      */
     public function getTransactionFees(): TransactionFees
     {
-        return TransactionFees::fromArray($this->requireArray('fees'));
+        return new TransactionFees(new Response($this->requireArray('fees')));
     }
 
     /**
@@ -56,6 +60,11 @@ class ResultOfRunExecutor extends AbstractResult
      */
     public function getDecodedOutput(): ?DecodedOutput
     {
-        return DecodedOutput::fromArray($this->requireArray('decoded'));
+        $result = $this->getArray('decoded');
+        if ($result === null) {
+            return null;
+        }
+
+        return new DecodedOutput(new Response($result));
     }
 }

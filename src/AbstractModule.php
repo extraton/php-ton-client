@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+/**
+ * Abstract module
+ */
 abstract class AbstractModule implements Module
 {
     protected TonClient $tonClient;

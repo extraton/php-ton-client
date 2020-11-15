@@ -11,7 +11,7 @@ use function in_array;
 use function sprintf;
 
 /**
- * Filter collection
+ * Query filters
  */
 class Filters implements Params
 {
@@ -42,13 +42,14 @@ class Filters implements Params
         self::NOT_IN,
     ];
 
+    /** @var array<string, mixed> */
     private array $filters = [];
 
     /**
      * @param string $field
      * @param string $operator
      * @param mixed $value
-     * @return $this
+     * @return self
      */
     public function add(string $field, string $operator, $value): self
     {

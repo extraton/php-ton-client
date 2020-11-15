@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
 use Extraton\TonClient\Handler\Response;
@@ -41,7 +41,7 @@ class ProcessingTest extends AbstractModuleTest
     {
         $message = uniqid(microtime(), true);
         $sendEvents = (bool)random_int(0, 1);
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
 
         $response = new Response(
             [
@@ -86,7 +86,7 @@ class ProcessingTest extends AbstractModuleTest
         $message = uniqid(microtime(), true);
         $shardBlockId = uniqid(microtime(), true);
         $sendEvents = (bool)random_int(0, 1);
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
 
         $response = new Response(
             [
@@ -130,10 +130,10 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessageWithSuccessResult(): void
     {
-        $abi = AbiParams::fromArray([]);
-        $signer = SignerParams::fromNone();
-        $deploySet = new DeploySetParams(uniqid(microtime(), true));
-        $callSet = new CallSetParams(uniqid(microtime(), true));
+        $abi = AbiType::fromArray([]);
+        $signer = Signer::fromNone();
+        $deploySet = new DeploySet(uniqid(microtime(), true));
+        $callSet = new CallSet(uniqid(microtime(), true));
         $address = uniqid(microtime(), true);
         $processingTryIndex = random_int(0, PHP_INT_MAX);
         $sendEvents = (bool)random_int(0, 1);

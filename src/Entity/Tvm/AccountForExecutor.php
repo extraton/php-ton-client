@@ -49,7 +49,7 @@ class AccountForExecutor implements Params
     /**
      * @param string $boc
      * @param bool|null $unlimitedBalance
-     * @return static
+     * @return self
      */
     public static function fromAccount(string $boc, ?bool $unlimitedBalance): self
     {
@@ -62,7 +62,7 @@ class AccountForExecutor implements Params
 
     /**
      * @param string $boc
-     * @return $this
+     * @return self
      */
     private function setBoc(string $boc): self
     {
@@ -73,7 +73,7 @@ class AccountForExecutor implements Params
 
     /**
      * @param bool|null $unlimitedBalance
-     * @return $this
+     * @return self
      */
     private function setUnlimitedBalance(?bool $unlimitedBalance): self
     {

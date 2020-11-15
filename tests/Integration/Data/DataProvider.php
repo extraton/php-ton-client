@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient\Data;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\ParamsOfEncodeMessage;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\Signer;
+use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\TonClient;
+use JsonException;
 
 use function base64_encode;
 use function file_get_contents;
@@ -19,6 +20,9 @@ use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * DataProvider
+ */
 class DataProvider
 {
     private TonClient $tonClient;
@@ -47,9 +51,6 @@ class DataProvider
         return base64_encode($bin);
     }
 
-    /**
-     * @return string
-     */
     public function getHelloTvc(): string
     {
         $path = __DIR__ . '/Hello.tvc';
@@ -78,36 +79,45 @@ class DataProvider
         return file_get_contents(__DIR__ . '/Hello.abi.json');
     }
 
+    /**
+     * @return array<mixed>
+     * @throws JsonException
+     */
     public function getEventsAbiArray(): array
     {
         return (array)json_decode($this->getEventsAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @return array<mixed>
+     * @throws JsonException
+     */
     public function getHelloAbiArray(): array
     {
         return (array)json_decode($this->getHelloAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @return array<mixed>
+     * @throws JsonException
+     */
     public function getSubscriptionAbiArray(): array
     {
         return (array)json_decode($this->getSubscriptionAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @return array<mixed>
+     * @throws JsonException
+     */
     public function getGiverAbiArray(): array
     {
         return (array)json_decode($this->getGiverAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function getKeyPairJson(): string
-    {
-        return file_get_contents(__DIR__ . '/KeyPair.json');
-    }
-
-    public function getKeyPairArray(): array
-    {
-        return (array)json_decode($this->getKeyPairJson(), true, 512, JSON_THROW_ON_ERROR);
-    }
-
+    /**
+     * @return int
+     */
     public function getEventsTime(): int
     {
         return 1599458364291;
@@ -128,25 +138,17 @@ class DataProvider
         return 'cc8929d635719612a9478b9cd17675a39cfad52d8959e8a177389b8c0b9122a7';
     }
 
-    /**
-     * @return string
-     */
     public function getGiverAddress(): string
     {
         return '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
     }
 
-    /**
-     * @return string
-     */
+
     public function getWalletAddress(): string
     {
         return '0:2222222222222222222222222222222222222222222222222222222222222222';
     }
 
-    /**
-     * @return string
-     */
     public function getElectorAddress(): string
     {
         return '-1:3333333333333333333333333333333333333333333333333333333333333333';
@@ -154,14 +156,15 @@ class DataProvider
 
     /**
      * @param string $address
-     * @throws \JsonException
+     * @throws TonException
+     * @throws JsonException
      */
     public function sendTons(string $address): void
     {
-        $abi = AbiParams::fromArray($this->getGiverAbiArray());
-        $callSet = new CallSetParams('grant', null, ['addr' => $address]);
+        $abi = AbiType::fromArray($this->getGiverAbiArray());
+        $callSet = (new CallSet('grant'))->withInput(['addr' => $address]);
         $giverAddress = $this->getGiverAddress();
-        $signer = SignerParams::fromNone();
+        $signer = Signer::fromNone();
 
         $this->tonClient->getProcessing()->processMessage(
             $abi,

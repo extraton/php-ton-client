@@ -7,8 +7,16 @@ namespace Extraton\TonClient\Entity\Net;
 use Extraton\TonClient\Entity\Params;
 use Extraton\TonClient\Exception\LogicException;
 
+/**
+ * Type ParamsOfSubscribeCollection
+ */
 class ParamsOfSubscribeCollection extends AbstractQuery
 {
+    /**
+     * @param string $collection
+     * @param string[] $resultFields
+     * @param Filters|null $filters
+     */
     public function __construct(
         string $collection,
         array $resultFields = [],

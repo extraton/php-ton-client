@@ -19,6 +19,8 @@ use function sprintf;
 
 /**
  * Abstract result
+ *
+ * @implements IteratorAggregate<mixed>
  */
 abstract class AbstractResult implements IteratorAggregate
 {
@@ -33,30 +35,11 @@ abstract class AbstractResult implements IteratorAggregate
     }
 
     /**
-     * @param array<mixed> $data
-     * @return static
-     */
-    public static function fromArray(array $data): self
-    {
-        return new static(new Response($data));
-    }
-
-    /**
      * @return Response
      */
     protected function getResponse(): Response
     {
         return $this->response;
-    }
-
-    /**
-     * @return Generator<mixed>
-     */
-    public function getIterator(): Generator
-    {
-        $generator = new Generator();
-
-        yield $generator->throw(new LogicException('Response cannot be iterated.'));
     }
 
     /**
@@ -188,5 +171,15 @@ abstract class AbstractResult implements IteratorAggregate
         }
 
         return $result;
+    }
+
+    /**
+     * @return Generator<mixed>
+     */
+    public function getIterator(): Generator
+    {
+        $generator = new Generator();
+
+        yield $generator->throw(new LogicException('Response cannot be iterated.'));
     }
 }

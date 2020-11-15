@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
 use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
@@ -33,22 +33,16 @@ class TvmTest extends AbstractModuleTest
      */
     public function testExecuteMessage(): void
     {
-        $abi = AbiParams::fromArray($this->dataProvider->getSubscriptionAbiArray());
+        $abi = AbiType::fromArray($this->dataProvider->getSubscriptionAbiArray());
 
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
         $walletAddress = $this->dataProvider->getWalletAddress();
 
         // Deploy message
-        $deploySet = new DeploySetParams($this->dataProvider->getSubscriptionTvc());
-        $callSet = new CallSetParams(
-            'constructor',
-            null,
-            [
-                'wallet' => $walletAddress,
-            ]
-        );
+        $deploySet = new DeploySet($this->dataProvider->getSubscriptionTvc());
+        $callSet = (new CallSet('constructor'))->withInput(['wallet' => $walletAddress]);
 
-        $signer = SignerParams::fromKeys($keyPair);
+        $signer = Signer::fromKeys($keyPair);
 
         // Get account deploy message
         $resultOfEncodeMessage = $this->abi->encodeMessage(
@@ -85,16 +79,16 @@ class TvmTest extends AbstractModuleTest
         $balance = $resultOfParse->getParsed()['balance'];
 
         # Run executor with unlimited balance
-        $callSet = new CallSetParams(
-            'subscribe', null,
-            [
-                'subscriptionId' => $subscriptionId = '0x1111111111111111111111111111111111111111111111111111111111111111',
-                'pubkey'         => $pubKey = '0x2222222222222222222222222222222222222222222222222222222222222222',
-                'to'             => '0:3333333333333333333333333333333333333333333333333333333333333333',
-                'value'          => '0x123',
-                'period'         => '0x456'
-            ]
-        );
+        $callSet = (new CallSet('subscribe'))
+            ->withInput(
+                [
+                    'subscriptionId' => $subscriptionId = '0x1111111111111111111111111111111111111111111111111111111111111111',
+                    'pubkey'         => $pubKey = '0x2222222222222222222222222222222222222222222222222222222222222222',
+                    'to'             => '0:3333333333333333333333333333333333333333333333333333333333333333',
+                    'value'          => '0x123',
+                    'period'         => '0x456'
+                ]
+            );
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -132,13 +126,12 @@ class TvmTest extends AbstractModuleTest
         self::assertEquals($messageId, $resultOfRunExecutor->getTransaction()['in_msg']);
 
         // Check subscription
-        $callSet = new CallSetParams(
-            'getSubscription',
-            null,
-            [
-                'subscriptionId' => $subscriptionId,
-            ]
-        );
+        $callSet = (new CallSet('getSubscription'))
+            ->withInput(
+                [
+                    'subscriptionId' => $subscriptionId,
+                ]
+            );
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -257,10 +250,10 @@ class TvmTest extends AbstractModuleTest
     public function testRunExecutorWithAccountForExecutorUninit(): void
     {
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $abi = AbiParams::fromArray($this->dataProvider->getHelloAbiArray());
-        $signer = SignerParams::fromKeys($keyPair);
-        $deploySet = new DeploySetParams($this->dataProvider->getHelloTvc());
-        $callSet = new CallSetParams('constructor');
+        $abi = AbiType::fromArray($this->dataProvider->getHelloAbiArray());
+        $signer = Signer::fromKeys($keyPair);
+        $deploySet = new DeploySet($this->dataProvider->getHelloTvc());
+        $callSet = new CallSet('constructor');
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,

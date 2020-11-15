@@ -6,9 +6,14 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Params;
-use LogicException;
+use Extraton\TonClient\Exception\DataException;
 
-class SignerParams implements Params
+use function sprintf;
+
+/**
+ * Type Signer
+ */
+class Signer implements Params
 {
     public const TYPE_NONE = 'None';
 
@@ -26,16 +31,26 @@ class SignerParams implements Params
 
     private int $signingBoxHandle;
 
+    /**
+     * @param string $type
+     */
     public function __construct(string $type)
     {
         $this->type = $type;
     }
 
+    /**
+     * @return self
+     */
     public static function fromNone(): self
     {
         return new self(self::TYPE_NONE);
     }
 
+    /**
+     * @param string $publicKey
+     * @return self
+     */
     public static function fromExternal(string $publicKey): self
     {
         $instance = new self(self::TYPE_EXTERNAL);
@@ -44,7 +59,11 @@ class SignerParams implements Params
         return $instance;
     }
 
-    public static function fromKeys(KeyPair $keyPair): self
+    /**
+     * @param KeyPair $keyPair
+     * @return self
+     */
+    public static function fromKeyPair(KeyPair $keyPair): self
     {
         $instance = new self(self::TYPE_KEYS);
         $instance->setKeyPair($keyPair);
@@ -52,6 +71,19 @@ class SignerParams implements Params
         return $instance;
     }
 
+    /**
+     * @param KeyPair $keyPair
+     * @return self
+     */
+    public static function fromKeys(KeyPair $keyPair): self
+    {
+        return self::fromKeyPair($keyPair);
+    }
+
+    /**
+     * @param int $signingBoxHandle
+     * @return self
+     */
     public static function fromSigningBox(int $signingBoxHandle): self
     {
         $instance = new self(self::TYPE_SIGNING_BOX);
@@ -60,6 +92,10 @@ class SignerParams implements Params
         return $instance;
     }
 
+    /**
+     * @param string $publicKey
+     * @return self
+     */
     public function setPublicKey(string $publicKey): self
     {
         $this->publicKey = $publicKey;
@@ -67,6 +103,10 @@ class SignerParams implements Params
         return $this;
     }
 
+    /**
+     * @param KeyPair $keyPair
+     * @return self
+     */
     public function setKeyPair(KeyPair $keyPair): self
     {
         $this->keyPair = $keyPair;
@@ -74,6 +114,10 @@ class SignerParams implements Params
         return $this;
     }
 
+    /**
+     * @param int $signingBoxHandle
+     * @return self
+     */
     public function setSigningBoxHandle(int $signingBoxHandle): self
     {
         $this->signingBoxHandle = $signingBoxHandle;
@@ -81,6 +125,9 @@ class SignerParams implements Params
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function jsonSerialize(): array
     {
         $result['type'] = $this->type;
@@ -96,7 +143,7 @@ class SignerParams implements Params
         } elseif ($this->type === self::TYPE_SIGNING_BOX) {
             $result['handle'] = $this->signingBoxHandle;
         } else {
-            throw new LogicException('Unknown type.');
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
 
         return $result;

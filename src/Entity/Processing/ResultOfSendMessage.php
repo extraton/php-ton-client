@@ -9,9 +9,7 @@ use Extraton\TonClient\Handler\Response;
 use Generator;
 
 /**
- * ResultOfSendMessage
- *
- * @phpstan-implements IteratorAggregate<ProcessingEvent>
+ * Type ResultOfSendMessage
  */
 class ResultOfSendMessage extends AbstractResult
 {

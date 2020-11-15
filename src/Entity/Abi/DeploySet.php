@@ -6,7 +6,7 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\Params;
 
-class DeploySetParams implements Params
+class DeploySet implements Params
 {
     private string $tvc;
 

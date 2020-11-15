@@ -12,7 +12,7 @@ use IteratorAggregate;
 use function array_shift;
 
 /**
- * @implements IteratorAggregate<mixed>
+ * @phpstan-implements IteratorAggregate<mixed>
  */
 class Response implements IteratorAggregate
 {
@@ -42,7 +42,7 @@ class Response implements IteratorAggregate
 
     /**
      * @param array<mixed> $responseData
-     * @return $this
+     * @return self
      */
     public function setResponseData(array $responseData): self
     {
@@ -63,10 +63,12 @@ class Response implements IteratorAggregate
 
         $sleeper = new SmartSleeper();
 
+        // @phpstan-ignore-next-line
         while (!$this->dataFetched) {
             $sleeper->sleep()->increase();
         }
 
+        // @phpstan-ignore-next-line
         return $this->responseData;
     }
 

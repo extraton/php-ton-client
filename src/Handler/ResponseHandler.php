@@ -6,13 +6,18 @@ namespace Extraton\TonClient\Handler;
 
 use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Binding\Type\ResponseType;
+use Extraton\TonClient\Exception\DataException;
 use Extraton\TonClient\Exception\SDKException;
+use Extraton\TonClient\Exception\TonException;
 use FFI\CData;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
-use JsonException;
-use LogicException;
 
+use function sprintf;
+
+/**
+ * Response handler
+ */
 class ResponseHandler
 {
     /** @var Promise[] */
@@ -75,7 +80,7 @@ class ResponseHandler
      * @param CData $paramsJson
      * @param int $responseType
      * @param bool $finished
-     * @throws JsonException
+     * @throws TonException
      */
     public function __invoke(int $requestId, CData $paramsJson, int $responseType, bool $finished): void
     {
@@ -90,7 +95,7 @@ class ResponseHandler
         } elseif ($responseType === ResponseType::NOP) {
             $this->handleNop($requestId, $finished);
         } else {
-            throw new LogicException('Unknown response data.');
+            throw new DataException(sprintf('Unknown response type %s.', $responseType));
         }
     }
 

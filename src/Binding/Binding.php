@@ -98,7 +98,12 @@ class Binding
         $path = str_replace('/', DIRECTORY_SEPARATOR, $paths[$os]);
 
         if (!file_exists($path)) {
-            throw new ConfigException(sprintf('TON SDK library not found by path %s.', $paths[$os]));
+            throw new ConfigException(
+                sprintf(
+                    'TON SDK library not found by path %s. Specify the path manually.',
+                    $paths[$os]
+                )
+            );
         }
 
         return new self($path);

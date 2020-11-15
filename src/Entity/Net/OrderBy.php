@@ -9,18 +9,22 @@ use LogicException;
 
 use function in_array;
 
+/**
+ * Query OrderBy parameters
+ */
 class OrderBy implements Params
 {
     public const ASC = 'ASC';
 
     public const DESC = 'DESC';
 
+    /** @var array<string, string> */
     private array $orderBy;
 
     /**
      * @param string $field
      * @param string $direction
-     * @return $this
+     * @return self
      */
     public function add(string $field, string $direction): self
     {

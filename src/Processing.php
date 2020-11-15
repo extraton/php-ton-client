@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
 use Extraton\TonClient\Exception\TonException;
@@ -22,11 +22,11 @@ class Processing extends AbstractModule
      *
      * @param string $message Message BOC
      * @param bool $sendEvents Flag for requesting events sending
-     * @param AbiParams|null $abi Optional message ABI
+     * @param AbiType|null $abi Optional message ABI
      * @return ResultOfSendMessage
      * @throws TonException
      */
-    public function sendMessage(string $message, bool $sendEvents, ?AbiParams $abi = null): ResultOfSendMessage
+    public function sendMessage(string $message, bool $sendEvents, ?AbiType $abi = null): ResultOfSendMessage
     {
         return new ResultOfSendMessage(
             $this->tonClient->request(
@@ -46,7 +46,7 @@ class Processing extends AbstractModule
      * @param string $message Message BOC. Encoded with base64
      * @param string $shardBlockId The last generated block id of the destination account shard before the message was sent
      * @param bool $sendEvents Flag that enables / disables intermediate events
-     * @param AbiParams|null $abi Optional ABI for decoding the transaction result
+     * @param AbiType|null $abi Optional ABI for decoding the transaction result
      * @return ResultOfProcessMessage
      * @throws TonException
      */
@@ -54,7 +54,7 @@ class Processing extends AbstractModule
         string $message,
         string $shardBlockId,
         bool $sendEvents,
-        ?AbiParams $abi = null
+        ?AbiType $abi = null
     ): ResultOfProcessMessage {
         return new ResultOfProcessMessage(
             $this->tonClient->request(
@@ -72,10 +72,10 @@ class Processing extends AbstractModule
     /**
      * Creates message, sends it to the network and monitors its processing
      *
-     * @param AbiParams $abi Contract ABI
-     * @param SignerParams $signer Signing parameters
-     * @param DeploySetParams|null $deploySet Deploy parameters
-     * @param CallSetParams|null $callSet Function call parameters
+     * @param AbiType $abi Contract ABI
+     * @param Signer $signer Signing parameters
+     * @param DeploySet|null $deploySet Deploy parameters
+     * @param CallSet|null $callSet Function call parameters
      * @param string|null $address Target address the message will be sent to
      * @param int|null $processingTryIndex Processing try index
      * @param bool $sendEvents Flag for requesting events sending
@@ -83,10 +83,10 @@ class Processing extends AbstractModule
      * @throws TonException
      */
     public function processMessage(
-        AbiParams $abi,
-        SignerParams $signer,
-        ?DeploySetParams $deploySet = null,
-        ?CallSetParams $callSet = null,
+        AbiType $abi,
+        Signer $signer,
+        ?DeploySet $deploySet = null,
+        ?CallSet $callSet = null,
         ?string $address = null,
         ?int $processingTryIndex = null,
         bool $sendEvents = false

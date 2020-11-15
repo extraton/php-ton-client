@@ -1,3 +1,5 @@
+![Extraton, PHP TON Client](.github/extraton_elephant.png?raw=true)
+
 # Extraton, PHP TON Client
  
 ![php7.4, Ubuntu 20.04](https://github.com/extraton/php-ton-client/workflows/php7.4,%20Ubuntu%2020.04/badge.svg)

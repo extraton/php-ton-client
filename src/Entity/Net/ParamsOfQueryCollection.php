@@ -6,8 +6,18 @@ namespace Extraton\TonClient\Entity\Net;
 
 use Extraton\TonClient\Exception\LogicException;
 
+/**
+ * ParamsOfQueryCollection
+ */
 class ParamsOfQueryCollection extends AbstractQuery
 {
+    /**
+     * @param string $collection
+     * @param string[] $resultFields
+     * @param Filters|null $filters
+     * @param OrderBy|null $orderBy
+     * @param int|null $limit
+     */
     public function __construct(
         string $collection,
         array $resultFields = [],

@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Abi;
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
 use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
+use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
 use Extraton\TonClient\Handler\Response;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,16 +34,16 @@ class AbiTest extends AbstractModuleTest
 {
     private Abi $abi;
 
-    /** @var MockObject|AbiParams */
+    /** @var MockObject|AbiType */
     private MockObject $mockAbi;
 
-    /** @var MockObject|SignerParams */
+    /** @var MockObject|Signer */
     private MockObject $mockSigner;
 
-    /** @var MockObject|DeploySetParams */
+    /** @var MockObject|DeploySet */
     private MockObject $mockDeploySet;
 
-    /** @var MockObject|CallSetParams */
+    /** @var MockObject|CallSet */
     private MockObject $mockCallSet;
 
     /** @var MockObject|StateInitSource */
@@ -54,19 +54,19 @@ class AbiTest extends AbstractModuleTest
         parent::setUp();
         $this->abi = new Abi($this->mockTonClient);
 
-        $this->mockAbi = $this->getMockBuilder(AbiParams::class)
+        $this->mockAbi = $this->getMockBuilder(AbiType::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->mockSigner = $this->getMockBuilder(SignerParams::class)
+        $this->mockSigner = $this->getMockBuilder(Signer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->mockDeploySet = $this->getMockBuilder(DeploySetParams::class)
+        $this->mockDeploySet = $this->getMockBuilder(DeploySet::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->mockCallSet = $this->getMockBuilder(CallSetParams::class)
+        $this->mockCallSet = $this->getMockBuilder(CallSet::class)
             ->disableOriginalConstructor()
             ->getMock();
 

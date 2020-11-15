@@ -7,8 +7,17 @@ namespace Extraton\TonClient\Entity\Net;
 use Extraton\TonClient\Entity\Params;
 use Extraton\TonClient\Exception\LogicException;
 
+/**
+ * Type ParamsOfWaitForCollection
+ */
 class ParamsOfWaitForCollection extends AbstractQuery
 {
+    /**
+     * @param string $collection
+     * @param string[] $resultFields
+     * @param Filters|null $filters
+     * @param int|null $timeout
+     */
     public function __construct(
         string $collection,
         array $resultFields = [],
