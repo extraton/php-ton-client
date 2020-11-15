@@ -57,6 +57,17 @@ class StateInitSource implements Params
     }
 
     /**
+     * @param MessageSource $messageSource
+     * @return self
+     */
+    private function setMessageSource(MessageSource $messageSource): self
+    {
+        $this->messageSource = $messageSource;
+
+        return $this;
+    }
+
+    /**
      * @param string $code
      * @param string $data
      * @param string|null $library
@@ -70,36 +81,6 @@ class StateInitSource implements Params
         $instance->setLibrary($library);
 
         return $instance;
-    }
-
-    /**
-     * @param string $tvc
-     * @param string|null $publicKey
-     * @param StateInitParams|null $stateInitParams
-     * @return self
-     */
-    public static function fromTvc(
-        string $tvc,
-        ?string $publicKey = null,
-        ?StateInitParams $stateInitParams = null
-    ): self {
-        $instance = new self(self::TYPE_TVC);
-        $instance->setTvc($tvc);
-        $instance->setPublicKey($publicKey);
-        $instance->setStateInitParams($stateInitParams);
-
-        return $instance;
-    }
-
-    /**
-     * @param MessageSource $messageSource
-     * @return self
-     */
-    private function setMessageSource(MessageSource $messageSource): self
-    {
-        $this->messageSource = $messageSource;
-
-        return $this;
     }
 
     /**
@@ -133,6 +114,25 @@ class StateInitSource implements Params
         $this->library = $library;
 
         return $this;
+    }
+
+    /**
+     * @param string $tvc
+     * @param string|null $publicKey
+     * @param StateInitParams|null $stateInitParams
+     * @return self
+     */
+    public static function fromTvc(
+        string $tvc,
+        ?string $publicKey = null,
+        ?StateInitParams $stateInitParams = null
+    ): self {
+        $instance = new self(self::TYPE_TVC);
+        $instance->setTvc($tvc);
+        $instance->setPublicKey($publicKey);
+        $instance->setStateInitParams($stateInitParams);
+
+        return $instance;
     }
 
     /**

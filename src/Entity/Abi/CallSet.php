@@ -38,6 +38,17 @@ class CallSet implements Params
     }
 
     /**
+     * @param mixed $input
+     * @return self
+     */
+    private function setInput($input): self
+    {
+        $this->input = $input;
+
+        return $this;
+    }
+
+    /**
      * @param string|null $pubKey
      * @param int|null $time
      * @param int|null $expire
@@ -46,17 +57,6 @@ class CallSet implements Params
     public function withFunctionHeaderParams(?string $pubKey = null, ?int $time = null, ?int $expire = null): self
     {
         $this->setFunctionHeader(new FunctionHeader($pubKey, $time, $expire));
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $input
-     * @return self
-     */
-    private function setInput($input): self
-    {
-        $this->input = $input;
 
         return $this;
     }

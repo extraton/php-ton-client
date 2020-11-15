@@ -60,6 +60,26 @@ class Signer implements Params
     }
 
     /**
+     * @param string $publicKey
+     * @return self
+     */
+    public function setPublicKey(string $publicKey): self
+    {
+        $this->publicKey = $publicKey;
+
+        return $this;
+    }
+
+    /**
+     * @param KeyPair $keyPair
+     * @return self
+     */
+    public static function fromKeys(KeyPair $keyPair): self
+    {
+        return self::fromKeyPair($keyPair);
+    }
+
+    /**
      * @param KeyPair $keyPair
      * @return self
      */
@@ -75,9 +95,11 @@ class Signer implements Params
      * @param KeyPair $keyPair
      * @return self
      */
-    public static function fromKeys(KeyPair $keyPair): self
+    public function setKeyPair(KeyPair $keyPair): self
     {
-        return self::fromKeyPair($keyPair);
+        $this->keyPair = $keyPair;
+
+        return $this;
     }
 
     /**
@@ -90,28 +112,6 @@ class Signer implements Params
         $instance->setSigningBoxHandle($signingBoxHandle);
 
         return $instance;
-    }
-
-    /**
-     * @param string $publicKey
-     * @return self
-     */
-    public function setPublicKey(string $publicKey): self
-    {
-        $this->publicKey = $publicKey;
-
-        return $this;
-    }
-
-    /**
-     * @param KeyPair $keyPair
-     * @return self
-     */
-    public function setKeyPair(KeyPair $keyPair): self
-    {
-        $this->keyPair = $keyPair;
-
-        return $this;
     }
 
     /**

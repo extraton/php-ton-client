@@ -147,7 +147,7 @@ class Crypto extends AbstractModule
     public function generateRandomSignKeys(): ResultOfGenerateSignKeys
     {
         return new ResultOfGenerateSignKeys(
-            $this->tonClient->request('crypto.generate_random_sign_keys',)->wait()
+            $this->tonClient->request('crypto.generate_random_sign_keys')->wait()
         );
     }
 

@@ -100,9 +100,9 @@ abstract class AbstractQuery implements QueryInterface
     {
         $fields = array_merge(
             ...array_map(
-                   static fn($resultField) => explode(' ', $resultField),
-                   $this->resultFields
-               )
+                static fn ($resultField) => explode(' ', $resultField),
+                $this->resultFields
+            )
         );
 
         $fields = array_unique(array_filter(array_map('trim', $fields)));
@@ -153,6 +153,14 @@ abstract class AbstractQuery implements QueryInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getLimit(): ?int
+    {
+        return $this->limit;
+    }
+
+    /**
      * @param int|null $limit
      * @return self
      */
@@ -166,9 +174,9 @@ abstract class AbstractQuery implements QueryInterface
     /**
      * @inheritDoc
      */
-    public function getLimit(): ?int
+    public function getTimeout(): ?int
     {
-        return $this->limit;
+        return $this->timeout;
     }
 
     /**
@@ -180,13 +188,5 @@ abstract class AbstractQuery implements QueryInterface
         $this->timeout = $timeout;
 
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTimeout(): ?int
-    {
-        return $this->timeout;
     }
 }

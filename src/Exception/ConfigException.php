@@ -11,5 +11,4 @@ use RuntimeException;
  */
 class ConfigException extends RuntimeException implements TonException
 {
-
 }

@@ -9,5 +9,4 @@ namespace Extraton\TonClient\Exception;
  */
 class LogicException extends \LogicException implements TonException
 {
-
 }

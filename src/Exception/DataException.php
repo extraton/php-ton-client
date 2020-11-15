@@ -11,5 +11,4 @@ use RuntimeException;
  */
 class DataException extends RuntimeException implements TonException
 {
-
 }

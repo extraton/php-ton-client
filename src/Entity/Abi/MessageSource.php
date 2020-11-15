@@ -57,6 +57,28 @@ class MessageSource implements Params
     }
 
     /**
+     * @param string $message
+     * @return self
+     */
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param AbiType|null $abi
+     * @return self
+     */
+    public function setAbi(?AbiType $abi): self
+    {
+        $this->abi = $abi;
+
+        return $this;
+    }
+
+    /**
      * @param AbiType $abi
      * @param Signer $signer
      * @param string|null $address
@@ -85,23 +107,12 @@ class MessageSource implements Params
     }
 
     /**
-     * @param string $message
+     * @param Signer $signer
      * @return self
      */
-    public function setMessage(string $message): self
+    private function setSigner(Signer $signer): self
     {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    /**
-     * @param AbiType|null $abi
-     * @return self
-     */
-    public function setAbi(?AbiType $abi): self
-    {
-        $this->abi = $abi;
+        $this->signer = $signer;
 
         return $this;
     }
@@ -135,17 +146,6 @@ class MessageSource implements Params
     private function setCallSet(?CallSet $callSet): self
     {
         $this->callSet = $callSet;
-
-        return $this;
-    }
-
-    /**
-     * @param Signer $signer
-     * @return self
-     */
-    private function setSigner(Signer $signer): self
-    {
-        $this->signer = $signer;
 
         return $this;
     }

@@ -29,7 +29,7 @@ class ResultOfSendMessage extends AbstractResult
         $response = $this->getResponse();
 
         $response->setEventDataTransformer(
-            static fn($eventData) => new ProcessingEvent(new Response($eventData))
+            static fn ($eventData) => new ProcessingEvent(new Response($eventData))
         );
 
         yield from $response;
