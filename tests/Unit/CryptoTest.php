@@ -154,7 +154,7 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testGenerateRandomBytesWithSuccessResult(): void
     {
-        $length = hexdec(uniqid(microtime(), true));
+        $length = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -381,10 +381,10 @@ class CryptoTest extends AbstractModuleTest
     {
         $password = uniqid(microtime(), true);
         $salt = uniqid(microtime(), true);
-        $logN = hexdec(uniqid(microtime(), true));
-        $r = hexdec(uniqid(microtime(), true));
-        $p = hexdec(uniqid(microtime(), true));
-        $dkLen = hexdec(uniqid(microtime(), true));
+        $logN = hexdec(uniqid('', false));
+        $r = hexdec(uniqid('', false));
+        $p = hexdec(uniqid('', false));
+        $dkLen = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -764,7 +764,7 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testMnemonicWordsWithSuccessResult(): void
     {
-        $dictionary = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -796,8 +796,8 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testMnemonicFromRandomWithSuccessResult(): void
     {
-        $dictionary = hexdec(uniqid(microtime(), true));
-        $wordCount = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -831,8 +831,8 @@ class CryptoTest extends AbstractModuleTest
     public function testMnemonicFromEntropyWithSuccessResult(): void
     {
         $entropy = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid(microtime(), true));
-        $wordCount = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -867,8 +867,8 @@ class CryptoTest extends AbstractModuleTest
     public function testMnemonicVerifyWithSuccessResult(): void
     {
         $phrase = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid(microtime(), true));
-        $wordCount = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -904,8 +904,8 @@ class CryptoTest extends AbstractModuleTest
     {
         $phrase = uniqid(microtime(), true);
         $path = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid(microtime(), true));
-        $wordCount = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -941,8 +941,8 @@ class CryptoTest extends AbstractModuleTest
     public function testHdkeyXprvFromMnemonicWithSuccessResult(): void
     {
         $phrase = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid(microtime(), true));
-        $wordCount = hexdec(uniqid(microtime(), true));
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -977,7 +977,7 @@ class CryptoTest extends AbstractModuleTest
     public function testHdkeyDeriveFromXprvWithSuccessResult(): void
     {
         $xprv = uniqid(microtime(), true);
-        $childIndex = hexdec(uniqid(microtime(), true));
+        $childIndex = hexdec(uniqid('', false));
         $hardened = (bool)random_int(0, 1);
         $result = new Response(
             [
