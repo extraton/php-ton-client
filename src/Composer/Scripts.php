@@ -50,13 +50,13 @@ class Scripts
     private const DOWNLOAD_URL = 'http://sdkbinaries.tonlabs.io/%s';
 
     /**
-     * Download TON SDK library
+     * Download TON SDK library and save to bin directory
      */
     public static function downloadLibrary(): void
     {
         $os = strtolower(PHP_OS);
         if (!isset(self::SOURCE_FILE_NAME[$os], self::DESTINATION_FILE_NAME[$os])) {
-            throw new RuntimeException(sprintf('Unknown OS "%s"', $os));
+            throw new RuntimeException(sprintf('Unknown OS %s.', $os));
         }
 
         $srcFileName = sprintf(self::SOURCE_FILE_NAME[$os], str_replace('.', '_', self::DEFAULT_SDK_VERSION), $os);
@@ -75,7 +75,7 @@ class Scripts
         // Get or create bin dir
         $binDir = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../../bin/');
         if (!file_exists($binDir) && !mkdir($binDir) && !is_dir($binDir)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $binDir));
+            throw new RuntimeException(sprintf('The path %s does not exist.', $binDir));
         }
 
         // Destination path to library

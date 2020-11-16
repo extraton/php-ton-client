@@ -3,3 +3,4 @@ vendor/
 composer.lock
 bin/tonclient.*
 .php_cs.cache
+.phpunit.result.cache

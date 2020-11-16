@@ -59,26 +59,6 @@ class DataProvider
         return base64_encode($bin);
     }
 
-    public function getEventsAbiJson(): string
-    {
-        return file_get_contents(__DIR__ . '/Events.abi.json');
-    }
-
-    public function getSubscriptionAbiJson(): string
-    {
-        return file_get_contents(__DIR__ . '/Subscription.abi.json');
-    }
-
-    public function getGiverAbiJson(): string
-    {
-        return file_get_contents(__DIR__ . '/Giver.abi.json');
-    }
-
-    public function getHelloAbiJson(): string
-    {
-        return file_get_contents(__DIR__ . '/Hello.abi.json');
-    }
-
     /**
      * @return array<mixed>
      * @throws JsonException
@@ -86,6 +66,11 @@ class DataProvider
     public function getEventsAbiArray(): array
     {
         return (array)json_decode($this->getEventsAbiJson(), true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function getEventsAbiJson(): string
+    {
+        return file_get_contents(__DIR__ . '/Events.abi.json');
     }
 
     /**
@@ -97,6 +82,11 @@ class DataProvider
         return (array)json_decode($this->getHelloAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    public function getHelloAbiJson(): string
+    {
+        return file_get_contents(__DIR__ . '/Hello.abi.json');
+    }
+
     /**
      * @return array<mixed>
      * @throws JsonException
@@ -106,13 +96,9 @@ class DataProvider
         return (array)json_decode($this->getSubscriptionAbiJson(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    /**
-     * @return array<mixed>
-     * @throws JsonException
-     */
-    public function getGiverAbiArray(): array
+    public function getSubscriptionAbiJson(): string
     {
-        return (array)json_decode($this->getGiverAbiJson(), true, 512, JSON_THROW_ON_ERROR);
+        return file_get_contents(__DIR__ . '/Subscription.abi.json');
     }
 
     /**
@@ -137,12 +123,6 @@ class DataProvider
     {
         return 'cc8929d635719612a9478b9cd17675a39cfad52d8959e8a177389b8c0b9122a7';
     }
-
-    public function getGiverAddress(): string
-    {
-        return '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
-    }
-
 
     public function getWalletAddress(): string
     {
@@ -173,5 +153,24 @@ class DataProvider
             $callSet,
             $giverAddress
         );
+    }
+
+    /**
+     * @return array<mixed>
+     * @throws JsonException
+     */
+    public function getGiverAbiArray(): array
+    {
+        return (array)json_decode($this->getGiverAbiJson(), true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function getGiverAbiJson(): string
+    {
+        return file_get_contents(__DIR__ . '/Giver.abi.json');
+    }
+
+    public function getGiverAddress(): string
+    {
+        return '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
     }
 }

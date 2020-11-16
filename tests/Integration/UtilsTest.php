@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\Response;
 use Generator;
 
@@ -61,6 +62,7 @@ class UtilsTest extends AbstractModuleTest
      * @param bool $url
      * @param bool $test
      * @param bool $bounce
+     * @throws TonException
      */
     public function testConvertAddressToBase64WithSuccessResult(
         string $expectedAddress,

@@ -9,7 +9,6 @@ use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Abi\CallSet;
 use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
 use Extraton\TonClient\Entity\Abi\DeploySet;
-use Extraton\TonClient\Entity\Abi\FunctionHeader;
 use Extraton\TonClient\Entity\Abi\MessageSource;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
@@ -456,12 +455,12 @@ class AbiTest extends AbstractModuleTest
             $this->dataProvider->getPrivateKey(),
         );
 
-        $functionHeaderParams = new FunctionHeader(
-            $this->dataProvider->getPublicKey(),
-            $this->dataProvider->getEventsTime(),
-            $this->dataProvider->getEventsExpire(),
-        );
-        $callSet = new CallSet('constructor', $functionHeaderParams);
+        $callSet = (new CallSet('constructor'))
+            ->withFunctionHeaderParams(
+                $this->dataProvider->getPublicKey(),
+                $this->dataProvider->getEventsTime(),
+                $this->dataProvider->getEventsExpire()
+            );
 
         $signer = Signer::fromKeys($keyPair);
 

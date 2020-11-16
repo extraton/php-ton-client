@@ -14,7 +14,7 @@ class ParamsOfWaitForCollection extends AbstractQuery
 {
     /**
      * @param string $collection
-     * @param string[] $resultFields
+     * @param array<string> $resultFields
      * @param Filters|null $filters
      * @param int|null $timeout
      */

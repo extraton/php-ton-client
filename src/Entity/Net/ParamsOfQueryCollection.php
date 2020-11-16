@@ -13,7 +13,7 @@ class ParamsOfQueryCollection extends AbstractQuery
 {
     /**
      * @param string $collection
-     * @param string[] $resultFields
+     * @param array<string> $resultFields
      * @param Filters|null $filters
      * @param OrderBy|null $orderBy
      * @param int|null $limit

@@ -14,7 +14,7 @@ class ParamsOfSubscribeCollection extends AbstractQuery
 {
     /**
      * @param string $collection
-     * @param string[] $resultFields
+     * @param array<string> $resultFields
      * @param Filters|null $filters
      */
     public function __construct(

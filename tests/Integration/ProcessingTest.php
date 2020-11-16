@@ -9,7 +9,6 @@ use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Abi\CallSet;
 use Extraton\TonClient\Entity\Abi\DeploySet;
-use Extraton\TonClient\Entity\Abi\FunctionHeader;
 use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Exception\SDKException;
@@ -144,9 +143,8 @@ class ProcessingTest extends AbstractModuleTest
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
         $signer = Signer::fromKeys($keyPair);
 
-        $functionHeaderParams = new FunctionHeader($keyPair->getPublic());
-
-        $callSet = new CallSet('constructor', $functionHeaderParams);
+        $callSet = (new CallSet('constructor'))
+            ->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
