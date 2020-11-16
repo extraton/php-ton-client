@@ -37,6 +37,35 @@ composer run download-ton-sdk-library
 The TON SDK library will be installed to the directory ```YOUR_PROJECT_ROOT/vendor/extranton/php-ton-client/bin/```.
 
 ## Configuring
+Simple TonClient instantiation:
+```php
+$tonClient = TonClient::createDefault();
+```
+It uses the default configuration:
+```php
+$config = [
+    "network" => [
+        'server_address'             => 'net.ton.dev',
+        'network_retries_count'      => 5,
+        'message_retries_count'      => 5,
+        'message_processing_timeout' => 60000,
+        'wait_for_timeout'           => 60000,
+        'out_of_sync_threshold'      => 30000,
+        'access_key'                 => ''
+    ],
+    'abi'     => [
+        'workchain'                              => 0,
+        'message_expiration_timeout'             => 60000,
+        'message_expiration_timeout_grow_factor' => 1.35
+    ],
+    'crypto'  => [
+        'mnemonic_dictionary'   => 1,
+        'mnemonic_word_count'   => 12,
+        'hdkey_derivation_path' => "m/44'/396'/0'/0/0",
+        'hdkey_compliant'       => true
+    ],
+];
+```
 Minimum configuration needed to start working with TonClient:
 ```php
 $config = [
@@ -45,12 +74,12 @@ $config = [
     ]
 ];
 ```
-All configuration options are available [here](https://github.com/tonlabs/TON-SDK/blob/1.0.0/docs/mod_client.md#ClientConfig). After instantiate the TonClient will automatically detect operating system and path to the library:
+All configuration options are available [here](https://github.com/tonlabs/TON-SDK/blob/1.0.0/docs/mod_client.md#ClientConfig). After instantiate the TonClient will automatically detect operating system and path to the TON SDK library:
 ```php
-// Create new instance TonClient with default path to TON SDK library
+// Create new instance with custom configuration and default path to TON SDK library
 $tonClient = new TonClient($config);
 ```
-Default path to TON SDK library: `YOUR_PROJECT_ROOT/vendor/extraton/bin/tonclient.*`. But you can specify the path:
+Default path: `YOUR_PROJECT_ROOT/vendor/extraton/bin/tonclient.*`. Also you can specify path by the following lines of code:
 ```php
 // Create new instance TonClient with custom path to TON SDK library
 $binding = new Binding('PATH_TO_TON_SDK_LIBRARY');
@@ -89,6 +118,20 @@ echo 'Hex: ' . $result->getAddress() . PHP_EOL;
 ## Examples
 Please see [Examples](examples) and [Integration tests](tests/Integration) for more information on detailed usage.
 
+## ⚠️ Warning
+We use experemental [PHP extension FFI](https://www.php.net/manual/en/book.ffi.php). This extension allows the loading of shared libraries, calling of C functions and accessing of C data structures in pure PHP. **This is the only one possible way to async integrate with the TON SDK library.**
+
+Please read **the official warnings** from the developers of php:
+>Warning
+>This extension is EXPERIMENTAL. The behaviour of this extension including the names of its functions and any other documentation surrounding this extension may change without notice in a future release of PHP. This extension should be used at your own risk.
+
+[FFI Introduction](https://www.php.net/manual/en/intro.ffi.php)
+
+> Although this works, this functionality is not supported on all libffi platforms, is not efficient and leaks resources by the end of request.
+
+[PHP Callbacks](https://www.php.net/manual/en/ffi.examples-callback.php)
+
+We have not detected memory leaks. But sometimes we caught segmentation faults during testing. 🙏 Hopefully the FFI extension will be stabilized in future versions of php.
 ## Change log
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
