@@ -7,7 +7,6 @@ namespace Extraton\Tests\Integration\TonClient;
 use Extraton\Tests\Integration\TonClient\Data\DataProvider;
 use Extraton\Tests\Integration\TonClient\Data\EventSaver;
 use Extraton\TonClient\Abi;
-use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Boc;
 use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Net;
@@ -44,7 +43,7 @@ abstract class AbstractModuleTest extends TestCase
 
     public function setUp(): void
     {
-        $this->tonClient = $this->getTonClient();
+        $this->tonClient = TonClient::createDefault();
         $this->processing = $this->tonClient->getProcessing();
         $this->crypto = $this->tonClient->getCrypto();
         $this->abi = $this->tonClient->getAbi();
@@ -54,29 +53,5 @@ abstract class AbstractModuleTest extends TestCase
         $this->tvm = $this->tonClient->getTvm();
         $this->dataProvider = new DataProvider($this->tonClient);
         $this->eventSaver = new EventSaver();
-    }
-
-    protected function getTonClient(): TonClient
-    {
-        return new TonClient(
-            [
-                'network' => [
-                    'server_address'             => 'net.ton.dev',
-                    'message_retries_count'      => 5,
-                    'message_processing_timeout' => 40000,
-                    'wait_for_timeout'           => 40000,
-                    'out_of_sync_threshold'      => 15000,
-                    'access_key'                 => ''
-                ],
-                'crypto'  => [
-                    'fish_param' => ''
-                ],
-                'abi'     => [
-                    'message_expiration_timeout'             => 40000,
-                    'message_expiration_timeout_grow_factor' => 1.5
-                ]
-            ],
-            Binding::createDefault()
-        );
     }
 }

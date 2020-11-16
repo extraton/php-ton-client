@@ -56,6 +56,39 @@ class TonClient
     }
 
     /**
+     * Create TonClient with default configuration
+     *
+     * @return self
+     */
+    public static function createDefault(): self
+    {
+        $config = [
+            "network" => [
+                'server_address'             => 'net.ton.dev',
+                'network_retries_count'      => 5,
+                'message_retries_count'      => 5,
+                'message_processing_timeout' => 60000,
+                'wait_for_timeout'           => 60000,
+                'out_of_sync_threshold'      => 30000,
+                'access_key'                 => ''
+            ],
+            'abi'     => [
+                'workchain'                              => 0,
+                'message_expiration_timeout'             => 60000,
+                'message_expiration_timeout_grow_factor' => 1.35
+            ],
+            'crypto'  => [
+                'mnemonic_dictionary'   => 1,
+                'mnemonic_word_count'   => 12,
+                'hdkey_derivation_path' => "m/44'/396'/0'/0/0",
+                'hdkey_compliant'       => true
+            ],
+        ];
+
+        return new TonClient($config);
+    }
+
+    /**
      * Get Utils module
      *
      * @return Utils
