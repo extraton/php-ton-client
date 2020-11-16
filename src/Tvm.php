@@ -20,11 +20,11 @@ class Tvm extends AbstractModule
     /**
      * Run executor
      *
-     * @param string $message
-     * @param AccountForExecutor $accountForExecutor
-     * @param ExecutionOptions|null $executionOptions
-     * @param AbiType|null $abi
-     * @param bool|null $skipTransactionCheck
+     * @param string $message Input message BOC. Must be encoded as base64.
+     * @param AccountForExecutor $accountForExecutor Account to run on executor
+     * @param ExecutionOptions|null $executionOptions Execution options
+     * @param AbiType|null $abi Contract ABI for decoding output messages
+     * @param bool|null $skipTransactionCheck Skip transaction check flag
      * @return ResultOfRunExecutor
      * @throws TonException
      */
@@ -55,7 +55,7 @@ class Tvm extends AbstractModule
      * @param string $message Input message BOC. Must be encoded as base64
      * @param string $account Account BOC. Must be encoded as base64
      * @param ExecutionOptions|null $executionOptions Execution options
-     * @param AbiType|null $abi Contract ABI for dedcoding output messages
+     * @param AbiType|null $abi Contract ABI for decoding output messages
      * @return ResultOfRunTvm
      * @throws TonException
      */

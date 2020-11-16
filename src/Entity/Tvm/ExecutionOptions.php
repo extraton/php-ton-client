@@ -7,7 +7,7 @@ namespace Extraton\TonClient\Entity\Tvm;
 use Extraton\TonClient\Entity\Params;
 
 /**
- * Execution options
+ * Type ExecutionOptions
  */
 class ExecutionOptions implements Params
 {

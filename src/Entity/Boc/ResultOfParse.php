@@ -12,10 +12,12 @@ use Extraton\TonClient\Entity\AbstractResult;
 class ResultOfParse extends AbstractResult
 {
     /**
-     * @return array<mixed>
+     * Get JSON containing parsed BOC
+     *
+     * @return mixed
      */
     public function getParsed(): array
     {
-        return $this->requireArray('parsed');
+        return $this->getData('parsed');
     }
 }

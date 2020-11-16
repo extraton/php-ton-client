@@ -29,11 +29,17 @@ class ParamsOfWaitForCollection extends AbstractQuery
         $this->setTimeout($timeout);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getOrderBy(): ?Params
     {
         throw new LogicException('Method ParamsOfWaitForCollection::getOrderBy is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getLimit(): ?int
     {
         throw new LogicException('Method ParamsOfWaitForCollection::getLimit is not implemented.');

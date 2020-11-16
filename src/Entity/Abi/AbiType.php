@@ -39,7 +39,9 @@ class AbiType implements Params
     }
 
     /**
-     * @param string $json
+     * Create Abi object from json
+     *
+     * @param string $json Abi josn
      * @return self
      * @throws EncoderException
      */
@@ -53,6 +55,8 @@ class AbiType implements Params
     }
 
     /**
+     * Create Abi object from array
+     *
      * @param array<mixed> $arrayValue
      * @return self
      */
@@ -65,18 +69,9 @@ class AbiType implements Params
     }
 
     /**
-     * @param array<mixed> $arrayValue
-     * @return self
-     */
-    private function setArrayValue(array $arrayValue): self
-    {
-        $this->arrayValue = $arrayValue;
-
-        return $this;
-    }
-
-    /**
-     * @param int $handle
+     * Create Abi object from handle
+     *
+     * @param int $handle Handle
      * @return self
      */
     public static function fromHandle(int $handle): self
@@ -88,7 +83,22 @@ class AbiType implements Params
     }
 
     /**
-     * @param int $handle
+     * Set array value
+     *
+     * @param array<mixed> $arrayValue
+     * @return self
+     */
+    private function setArrayValue(array $arrayValue): self
+    {
+        $this->arrayValue = $arrayValue;
+
+        return $this;
+    }
+
+    /**
+     * Set handle
+     *
+     * @param int $handle Handle
      * @return self
      */
     private function setHandle(int $handle): self

@@ -14,10 +14,10 @@ use Extraton\TonClient\Exception\TonException;
 class Utils extends AbstractModule
 {
     /**
-     * Convert Ton address
+     * Converts address from any TON format to any TON format
      *
-     * @param string $address Ton address
-     * @param AddressStringFormat $outputFormat Output format
+     * @param string $address Account address in any TON format
+     * @param AddressStringFormat $outputFormat Specify the format to convert to
      * @return ResultOfConvertAddress
      * @throws TonException
      */
@@ -35,9 +35,9 @@ class Utils extends AbstractModule
     }
 
     /**
-     * Convert Ton address to account id
+     * Converts address from any TON format to AccountID
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @return ResultOfConvertAddress
      * @throws TonException
      */
@@ -50,9 +50,9 @@ class Utils extends AbstractModule
     }
 
     /**
-     * Convert Ton address to hex
+     * Converts address from any TON format to HEX
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @return ResultOfConvertAddress
      * @throws TonException
      */
@@ -65,9 +65,9 @@ class Utils extends AbstractModule
     }
 
     /**
-     * Convert Ton address to base64
+     * Converts address from any TON format to Base64
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @param bool $url Is url
      * @param bool $test Is test
      * @param bool $bounce Is bounce

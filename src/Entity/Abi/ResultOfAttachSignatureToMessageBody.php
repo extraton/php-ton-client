@@ -6,10 +6,13 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
+/**
+ * Type ResultOfAttachSignatureToMessageBody
+ */
 class ResultOfAttachSignatureToMessageBody extends AbstractResult
 {
     /**
-     * Get result
+     * Get body
      *
      * @return string
      */

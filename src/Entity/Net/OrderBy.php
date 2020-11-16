@@ -23,6 +23,8 @@ class OrderBy implements Params
     private array $orderBy;
 
     /**
+     * Add OrderBy condition
+     *
      * @param string $field
      * @param string $direction
      * @return self

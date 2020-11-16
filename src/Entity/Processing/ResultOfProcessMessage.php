@@ -65,14 +65,28 @@ class ResultOfProcessMessage extends AbstractResult
      */
     public function getDecoded(): ?DecodedOutput
     {
-        return new DecodedOutput(
-            new Response(
-                $this->requireArray('decoded')
-            )
-        );
+        return $this->getDecodedOutput();
     }
 
     /**
+     * Get optional decoded message bodies according to the optional abi parameter.
+     *
+     * @return DecodedOutput|null
+     */
+    public function getDecodedOutput(): ?DecodedOutput
+    {
+        $result = $this->getArray('decoded');
+
+        if ($result === null) {
+            return null;
+        }
+
+        return new DecodedOutput(new Response($result));
+    }
+
+    /**
+     * Get generator for iterate ProcessingEvent objects
+     *
      * @return Generator<ProcessingEvent>
      */
     public function getIterator(): Generator

@@ -19,7 +19,7 @@ class CallSet implements Params
     private ?FunctionHeader $functionHeader = null;
 
     /**
-     * @param string $functionName
+     * @param string $functionName Function name that is being called
      */
     public function __construct(string $functionName)
     {
@@ -27,7 +27,9 @@ class CallSet implements Params
     }
 
     /**
-     * @param mixed $input
+     * Set function input parameters
+     *
+     * @param mixed $input Function input parameters according to ABI
      * @return self
      */
     public function withInput($input = null): self
@@ -38,7 +40,9 @@ class CallSet implements Params
     }
 
     /**
-     * @param mixed $input
+     * Set function input parameters
+     *
+     * @param mixed $input Function input parameters according to ABI
      * @return self
      */
     private function setInput($input): self
@@ -49,9 +53,11 @@ class CallSet implements Params
     }
 
     /**
-     * @param string|null $pubKey
-     * @param int|null $time
-     * @param int|null $expire
+     * Set FunctionHeader by params
+     *
+     * @param string|null $pubKey Public key used to sign message. Encoded with hex
+     * @param int|null $time Message creation time in milliseconds
+     * @param int|null $expire Message expiration time in seconds
      * @return self
      */
     public function withFunctionHeaderParams(?string $pubKey = null, ?int $time = null, ?int $expire = null): self
@@ -62,7 +68,10 @@ class CallSet implements Params
     }
 
     /**
-     * @param FunctionHeader $functionHeader
+     * Set FunctionHeader
+     *
+     * @param FunctionHeader $functionHeader Function header. If an application omits some header parameters required
+     *                                       by the contract's ABI, the library will set the default values forthem.
      * @return self
      */
     private function setFunctionHeader(FunctionHeader $functionHeader): self

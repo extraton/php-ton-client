@@ -26,16 +26,25 @@ class ParamsOfSubscribeCollection extends AbstractQuery
         $this->setFilters($filters);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getOrderBy(): ?Params
     {
         throw new LogicException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getLimit(): ?int
     {
         throw new LogicException('Method ParamsOfSubscribeCollection::getLimit is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getTimeout(): ?int
     {
         throw new LogicException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');

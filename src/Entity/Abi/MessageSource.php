@@ -35,7 +35,7 @@ class MessageSource implements Params
     private ?int $processingTryIndex;
 
     /**
-     * @param string $type
+     * @param string $type Type
      */
     public function __construct(string $type)
     {
@@ -43,8 +43,10 @@ class MessageSource implements Params
     }
 
     /**
-     * @param string $message
-     * @param AbiType|null $abi
+     * Create MessageSource from encoded
+     *
+     * @param string $message Message
+     * @param AbiType|null $abi Contract ABI
      * @return self
      */
     public static function fromEncoded(string $message, ?AbiType $abi = null): self
@@ -57,34 +59,14 @@ class MessageSource implements Params
     }
 
     /**
-     * @param string $message
-     * @return self
-     */
-    public function setMessage(string $message): self
-    {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    /**
-     * @param AbiType|null $abi
-     * @return self
-     */
-    public function setAbi(?AbiType $abi): self
-    {
-        $this->abi = $abi;
-
-        return $this;
-    }
-
-    /**
-     * @param AbiType $abi
-     * @param Signer $signer
-     * @param string|null $address
-     * @param DeploySet|null $deploySet
-     * @param CallSet|null $callSet
-     * @param int|null $processingTryIndex
+     * Create MessageSource from encoding params
+     *
+     * @param AbiType $abi Contract ABI
+     * @param Signer $signer Signing parameters
+     * @param string|null $address Target address the message will be sent to
+     * @param DeploySet|null $deploySet Deploy parameters. Must be specified in case of deploy message
+     * @param CallSet|null $callSet Function call parameters. Must be specified in case of non-deploy message
+     * @param int|null $processingTryIndex Processing try index
      * @return self
      */
     public static function fromEncodingParams(
@@ -107,7 +89,35 @@ class MessageSource implements Params
     }
 
     /**
-     * @param Signer $signer
+     * Set message
+     *
+     * @param string $message Message
+     * @return self
+     */
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * Set contract ABI
+     *
+     * @param AbiType|null $abi Contract ABI
+     * @return self
+     */
+    public function setAbi(?AbiType $abi): self
+    {
+        $this->abi = $abi;
+
+        return $this;
+    }
+
+    /**
+     * Set signing parameters
+     *
+     * @param Signer $signer Signing parameters
      * @return self
      */
     private function setSigner(Signer $signer): self
@@ -118,7 +128,9 @@ class MessageSource implements Params
     }
 
     /**
-     * @param string|null $address
+     * Set target address the message will be sent to. Must be specified in case of non-deploy message.
+     *
+     * @param string|null $address Target address the message will be sent to
      * @return self
      */
     public function setAddress(?string $address): self
@@ -129,7 +141,9 @@ class MessageSource implements Params
     }
 
     /**
-     * @param DeploySet|null $deploySet
+     * Set deploy parameters. Must be specified in case of deploy message.
+     *
+     * @param DeploySet|null $deploySet Deploy parameters
      * @return self
      */
     public function setDeploySet(?DeploySet $deploySet): self
@@ -140,7 +154,9 @@ class MessageSource implements Params
     }
 
     /**
-     * @param CallSet|null $callSet
+     * Set function call parameters. Must be specified in case of non-deploy message.
+     *
+     * @param CallSet|null $callSet Function call parameters
      * @return self
      */
     private function setCallSet(?CallSet $callSet): self
@@ -151,7 +167,9 @@ class MessageSource implements Params
     }
 
     /**
-     * @param int|null $processingTryIndex
+     * Set processing try index. Used in message processing with retries (if contract's ABI includes "expire" header).
+     *
+     * @param int|null $processingTryIndex Processing try index
      * @return self
      */
     private function setProcessingTryIndex(?int $processingTryIndex): self

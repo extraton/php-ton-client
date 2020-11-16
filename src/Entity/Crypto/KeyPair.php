@@ -7,7 +7,7 @@ namespace Extraton\TonClient\Entity\Crypto;
 use Extraton\TonClient\Entity\Params;
 
 /**
- * Key pair
+ * Type KeyPair
  */
 class KeyPair implements Params
 {
@@ -25,11 +25,21 @@ class KeyPair implements Params
         $this->secret = $secret;
     }
 
+    /**
+     * Get public key - 64 symbols hex string
+     *
+     * @return string
+     */
     public function getPublic(): string
     {
         return $this->public;
     }
 
+    /**
+     * Get private key - u64 symbols hex string
+     *
+     * @return string
+     */
     public function getSecret(): string
     {
         return $this->secret;

@@ -22,6 +22,8 @@ class ResultOfSendMessage extends AbstractResult
     }
 
     /**
+     * Get generator for iterate ProcessingEvent objects
+     *
      * @return Generator<ProcessingEvent>
      */
     public function getIterator(): Generator

@@ -17,8 +17,8 @@ class StateInitParams implements Params
     private $value;
 
     /**
-     * @param AbiType $abi
-     * @param mixed $value
+     * @param AbiType $abi Abi
+     * @param mixed $value Value
      */
     public function __construct(AbiType $abi, $value)
     {

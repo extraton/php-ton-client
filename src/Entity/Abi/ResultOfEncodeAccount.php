@@ -6,6 +6,9 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
+/**
+ * Type ResultOfEncodeAccount
+ */
 class ResultOfEncodeAccount extends AbstractResult
 {
     /**

@@ -11,12 +11,19 @@ use Extraton\TonClient\Entity\AbstractResult;
  */
 class ResultOfBuildInfo extends AbstractResult
 {
+    /**
+     * Get build number
+     *
+     * @return int
+     */
     public function getBuildNumber(): int
     {
         return $this->requireInt('build_info', 'build_number');
     }
 
     /**
+     * Get dependencies
+     *
      * @return array<mixed>
      */
     public function getDependencies(): array

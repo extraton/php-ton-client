@@ -12,6 +12,8 @@ use Extraton\TonClient\Entity\AbstractResult;
 class ResultOfQueryCollection extends AbstractResult
 {
     /**
+     * Get objects that match the provided criteria
+     *
      * @return array<mixed>
      */
     public function getResult(): array

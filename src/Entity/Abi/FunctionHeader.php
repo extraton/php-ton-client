@@ -18,9 +18,9 @@ class FunctionHeader implements Params
     private ?int $expire;
 
     /**
-     * @param string|null $pubKey
-     * @param int|null $time
-     * @param int|null $expire
+     * @param string|null $pubKey Public key used to sign message. Encoded with hex
+     * @param int|null $time Message creation time in milliseconds
+     * @param int|null $expire Message expiration time in seconds
      */
     public function __construct(?string $pubKey = null, ?int $time = null, ?int $expire = null)
     {

@@ -6,6 +6,9 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
+/**
+ * Type ResultOfEncodeMessage
+ */
 class ResultOfEncodeMessage extends AbstractResult
 {
     /**
@@ -25,7 +28,7 @@ class ResultOfEncodeMessage extends AbstractResult
      */
     public function getDataToSign(): ?string
     {
-        return $this->requireData('data_to_sign');
+        return $this->getString('data_to_sign');
     }
 
     /**

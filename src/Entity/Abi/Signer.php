@@ -40,6 +40,9 @@ class Signer implements Params
     }
 
     /**
+     * Create with type none
+     * No keys are provided. Creates an unsigned message
+     *
      * @return self
      */
     public static function fromNone(): self
@@ -48,7 +51,9 @@ class Signer implements Params
     }
 
     /**
-     * @param string $publicKey
+     * Create from external public key
+     *
+     * @param string $publicKey Public key
      * @return self
      */
     public static function fromExternal(string $publicKey): self
@@ -60,18 +65,9 @@ class Signer implements Params
     }
 
     /**
-     * @param string $publicKey
-     * @return self
-     */
-    public function setPublicKey(string $publicKey): self
-    {
-        $this->publicKey = $publicKey;
-
-        return $this;
-    }
-
-    /**
-     * @param KeyPair $keyPair
+     * Create Signer from KeyPair
+     *
+     * @param KeyPair $keyPair Key pair
      * @return self
      */
     public static function fromKeys(KeyPair $keyPair): self
@@ -80,7 +76,9 @@ class Signer implements Params
     }
 
     /**
-     * @param KeyPair $keyPair
+     * Create Signer from KeyPair
+     *
+     * @param KeyPair $keyPair Key pair
      * @return self
      */
     public static function fromKeyPair(KeyPair $keyPair): self
@@ -92,7 +90,22 @@ class Signer implements Params
     }
 
     /**
-     * @param KeyPair $keyPair
+     * Set public key
+     *
+     * @param string $publicKey Public key
+     * @return self
+     */
+    public function setPublicKey(string $publicKey): self
+    {
+        $this->publicKey = $publicKey;
+
+        return $this;
+    }
+
+    /**
+     * Set key pair
+     *
+     * @param KeyPair $keyPair Key pair
      * @return self
      */
     public function setKeyPair(KeyPair $keyPair): self
@@ -103,7 +116,9 @@ class Signer implements Params
     }
 
     /**
-     * @param int $signingBoxHandle
+     * Create Signer from signing box handle
+     *
+     * @param int $signingBoxHandle Signing box handle
      * @return self
      */
     public static function fromSigningBox(int $signingBoxHandle): self
@@ -115,7 +130,9 @@ class Signer implements Params
     }
 
     /**
-     * @param int $signingBoxHandle
+     * Set signing box handle
+     *
+     * @param int $signingBoxHandle Signing box handle
      * @return self
      */
     public function setSigningBoxHandle(int $signingBoxHandle): self

@@ -12,6 +12,8 @@ use Extraton\TonClient\Entity\AbstractResult;
 class ResultOfFactorize extends AbstractResult
 {
     /**
+     * Get two factors of composite or empty if composite can't be factorized
+     *
      * @return array<string>
      */
     public function getFactors(): array

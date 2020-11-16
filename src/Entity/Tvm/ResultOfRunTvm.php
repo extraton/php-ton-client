@@ -9,7 +9,7 @@ use Extraton\TonClient\Entity\Processing\DecodedOutput;
 use Extraton\TonClient\Handler\Response;
 
 /**
- * Result of run tvm
+ * Type ResultOfRunTvm
  */
 class ResultOfRunTvm extends AbstractResult
 {
@@ -35,6 +35,16 @@ class ResultOfRunTvm extends AbstractResult
     }
 
     /**
+     * Get optional decoded message bodies according to the optional abi parameter.
+     *
+     * @return DecodedOutput|null
+     */
+    public function getDecoded(): ?DecodedOutput
+    {
+        return $this->getDecodedOutput();
+    }
+
+    /**
      * Get optional decoded message bodies according to the optional abi parameter
      *
      * @return DecodedOutput|null
@@ -43,10 +53,10 @@ class ResultOfRunTvm extends AbstractResult
     {
         $result = $this->getArray('decoded');
 
-        if ($result !== null) {
-            return new DecodedOutput(new Response($result));
+        if ($result === null) {
+            return null;
         }
 
-        return null;
+        return new DecodedOutput(new Response($result));
     }
 }

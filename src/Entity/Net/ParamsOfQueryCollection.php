@@ -7,7 +7,7 @@ namespace Extraton\TonClient\Entity\Net;
 use Extraton\TonClient\Exception\LogicException;
 
 /**
- * ParamsOfQueryCollection
+ * Type ParamsOfQueryCollection
  */
 class ParamsOfQueryCollection extends AbstractQuery
 {
@@ -31,6 +31,9 @@ class ParamsOfQueryCollection extends AbstractQuery
         $this->setLimit($limit);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getTimeout(): ?int
     {
         throw new LogicException('Method ParamsOfQueryCollection::getTimeout is not implemented.');

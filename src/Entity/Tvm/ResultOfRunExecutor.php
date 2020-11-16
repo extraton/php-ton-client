@@ -54,6 +54,16 @@ class ResultOfRunExecutor extends AbstractResult
     }
 
     /**
+     * Get optional decoded message bodies according to the optional abi parameter.
+     *
+     * @return DecodedOutput|null
+     */
+    public function getDecoded(): ?DecodedOutput
+    {
+        return $this->getDecodedOutput();
+    }
+
+    /**
      * Get optional decoded message bodies according to the optional abi parameter
      *
      * @return DecodedOutput|null
@@ -61,6 +71,7 @@ class ResultOfRunExecutor extends AbstractResult
     public function getDecodedOutput(): ?DecodedOutput
     {
         $result = $this->getArray('decoded');
+
         if ($result === null) {
             return null;
         }

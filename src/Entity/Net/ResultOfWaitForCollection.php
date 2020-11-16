@@ -12,10 +12,12 @@ use Extraton\TonClient\Entity\AbstractResult;
 class ResultOfWaitForCollection extends AbstractResult
 {
     /**
-     * @return array<mixed>
+     * Get first found object that matches the provided criteria
+     *
+     * @return mixed
      */
-    public function getResult(): array
+    public function getResult()
     {
-        return $this->requireData('result');
+        return $this->getData('result');
     }
 }

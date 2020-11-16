@@ -101,6 +101,22 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
+
+    /**
+     * @param string ...$keys
+     * @return string|null
+     */
+    protected function getString(string ...$keys): ?string
+    {
+        $result = $this->getData(...$keys);
+
+        if (!is_string($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
     /**
      * @param string ...$keys
      * @return array<mixed>

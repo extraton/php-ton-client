@@ -45,7 +45,9 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param MessageSource $messageSource
+     * Create StateInitSource from MessageSource
+     *
+     * @param MessageSource $messageSource Message source
      * @return self
      */
     public static function fromMessage(MessageSource $messageSource): self
@@ -57,20 +59,11 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param MessageSource $messageSource
-     * @return self
-     */
-    private function setMessageSource(MessageSource $messageSource): self
-    {
-        $this->messageSource = $messageSource;
-
-        return $this;
-    }
-
-    /**
-     * @param string $code
-     * @param string $data
-     * @param string|null $library
+     * Create StateInitSource from state init parameters
+     *
+     * @param string $code Code BOC. Encoded in base64
+     * @param string $data Data BOC. Encoded in base64
+     * @param string|null $library Library BOC. Encoded in base64
      * @return self
      */
     public static function fromStateInit(string $code, string $data, ?string $library = null): self
@@ -84,42 +77,11 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param string $code
-     * @return self
-     */
-    private function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    /**
-     * @param string $data
-     * @return self
-     */
-    private function setData(string $data): self
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * @param string|null $library
-     * @return self
-     */
-    private function setLibrary(?string $library): self
-    {
-        $this->library = $library;
-
-        return $this;
-    }
-
-    /**
-     * @param string $tvc
-     * @param string|null $publicKey
-     * @param StateInitParams|null $stateInitParams
+     * Create StateInitSource from tvc
+     *
+     * @param string $tvc Tvc
+     * @param string|null $publicKey Public key
+     * @param StateInitParams|null $stateInitParams State init params
      * @return self
      */
     public static function fromTvc(
@@ -136,7 +98,61 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param string $tvc
+     * Set message source
+     *
+     * @param MessageSource $messageSource
+     * @return self
+     */
+    private function setMessageSource(MessageSource $messageSource): self
+    {
+        $this->messageSource = $messageSource;
+
+        return $this;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code Code BOC. Encoded in base64
+     * @return self
+     */
+    private function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Set data boc
+     *
+     * @param string $data Data BOC. Encoded in base64
+     * @return self
+     */
+    private function setData(string $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Set library boc
+     *
+     * @param string|null $library Library BOC. Encoded in base64
+     * @return self
+     */
+    private function setLibrary(?string $library): self
+    {
+        $this->library = $library;
+
+        return $this;
+    }
+
+    /**
+     * Set tvc
+     *
+     * @param string $tvc Tvc
      * @return self
      */
     public function setTvc(string $tvc): self
@@ -147,7 +163,9 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param string|null $publicKey
+     * Set public key
+     *
+     * @param string|null $publicKey Public key
      * @return self
      */
     public function setPublicKey(?string $publicKey): self
@@ -158,7 +176,9 @@ class StateInitSource implements Params
     }
 
     /**
-     * @param StateInitParams|null $stateInitParams
+     * Set state init parameters
+     *
+     * @param StateInitParams|null $stateInitParams State init parameters
      * @return self
      */
     public function setStateInitParams(?StateInitParams $stateInitParams): self

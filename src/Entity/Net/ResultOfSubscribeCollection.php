@@ -17,6 +17,10 @@ class ResultOfSubscribeCollection extends AbstractResult
 {
     private Net $net;
 
+    /**
+     * @param Response $response
+     * @param Net $net
+     */
     public function __construct(Response $response, Net $net)
     {
         parent::__construct($response);
@@ -24,14 +28,8 @@ class ResultOfSubscribeCollection extends AbstractResult
     }
 
     /**
-     * @return array<mixed>
-     */
-    public function getResult(): array
-    {
-        return $this->requireData('result');
-    }
-
-    /**
+     * Stop watching
+     *
      * @throws TonException
      */
     public function stop(): void
@@ -39,12 +37,19 @@ class ResultOfSubscribeCollection extends AbstractResult
         $this->net->unsubscribe($this->getHandle());
     }
 
+    /**
+     * Get subscription handle. Must be closed with unsubscribe
+     *
+     * @return int
+     */
     public function getHandle(): int
     {
         return $this->requireInt('handle');
     }
 
     /**
+     * Get generator for iterate Event objects
+     *
      * @return Generator<Event>
      */
     public function getIterator(): Generator
@@ -52,7 +57,7 @@ class ResultOfSubscribeCollection extends AbstractResult
         $response = $this->getResponse();
 
         $response->setEventDataTransformer(
-            static fn ($eventData) => new Event(new Response($eventData))
+            static fn($eventData) => new Event(new Response($eventData))
         );
 
         yield from $response;
