@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
-use Extraton\Tests\Integration\TonClient\Data\DataProvider;
 use Extraton\TonClient\Abi;
 use Extraton\TonClient\Crypto;
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\CallSetParams;
-use Extraton\TonClient\Entity\Abi\DeploySetParams;
-use Extraton\TonClient\Entity\Abi\FunctionHeaderParams;
-use Extraton\TonClient\Entity\Abi\ParamsOfEncodeMessage;
-use Extraton\TonClient\Entity\Abi\SignerParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
-use Extraton\TonClient\Exception\RequestException;
+use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Handler\Response;
-use Extraton\TonClient\Processing;
 
 /**
  * Integration tests for Processing module
@@ -25,20 +21,6 @@ use Extraton\TonClient\Processing;
  */
 class ProcessingTest extends AbstractModuleTest
 {
-    private Processing $processing;
-
-    private Crypto $crypto;
-
-    private Abi $abi;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->processing = $this->tonClient->getProcessing();
-        $this->crypto = $this->tonClient->getCrypto();
-        $this->abi = $this->tonClient->getAbi();
-    }
-
     /**
      * @covers ::processMessage
      * @covers \Extraton\TonClient\Abi::encodeMessage
@@ -46,19 +28,11 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessage(): void
     {
-        $dataProvider = new DataProvider($this->tonClient);
-
-        $abi = AbiParams::fromArray($dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
-
-        $functionHeader = new FunctionHeaderParams($keyPair->getPublic());
-
-        $callSet = new CallSetParams(
-            'constructor',
-            $functionHeader
-        );
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -69,14 +43,7 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $dataProvider->sendGrams($address);
-
-        $paramsOfEncodeMessage = new ParamsOfEncodeMessage(
-            $abi,
-            $signer,
-            $deploySet,
-            $callSet
-        );
+        $this->dataProvider->sendTons($address);
 
         $expected = new ResultOfProcessMessage(
             new Response(
@@ -98,12 +65,7 @@ class ProcessingTest extends AbstractModuleTest
                         ],
                     'fees'         =>
                         [
-                            'in_msg_fwd_fee'     => 9887000,
-                            'storage_fee'        => 1,
-                            'gas_fee'            => 4777000,
-                            'out_msgs_fwd_fee'   => 0,
-                            'total_account_fees' => 14664001,
-                            'total_output'       => 0,
+                            // .. more data lines
                         ],
 
                 ]
@@ -111,42 +73,60 @@ class ProcessingTest extends AbstractModuleTest
         );
 
         $result = $this->processing->processMessage(
-            $paramsOfEncodeMessage,
-            false
-        );
-
-        self::assertGreaterThan(0, $result->getTransactionFees()->getTotalAccountFees());
-        self::assertEquals($expected->getOutMessages(), $result->getOutMessages());
-        self::assertEquals($expected->getDecoded(), $result->getDecoded());
-        self::assertEquals($expected->getTransaction()['status'], $result->getTransaction()['status']);
-        self::assertEquals($expected->getTransaction()['status_name'], $result->getTransaction()['status_name']);
-
-        // Test contract execution error
-        $callSet = new CallSetParams('returnValue', null, ['id' => -1]);
-        $paramsOfEncodeMessage = new ParamsOfEncodeMessage(
             $abi,
             $signer,
             $deploySet,
-            $callSet,
-            $address
+            $callSet
         );
 
+        self::assertGreaterThan(
+            0,
+            $result->getTransactionFees()->getTotalAccountFees()
+        );
+
+        self::assertEquals(
+            $expected->getOutMessages(),
+            $result->getOutMessages()
+        );
+
+        self::assertEquals(
+            $expected->getDecoded(),
+            $result->getDecoded()
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status'],
+            $result->getTransaction()['status']
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status_name'],
+            $result->getTransaction()['status_name']
+        );
+
+        // Test contract execution error
+        $callSet = (new CallSet('returnValue'))
+            ->withInput(
+                [
+                    'id' => -1
+                ]
+            );
+
         $this->expectExceptionObject(
-            RequestException::create(
+            SDKException::create(
                 [
                     'code'    => 305,
                     'message' => "Encode deploy message failed: Wrong data format:\n-1",
-                    'data'    =>
-                        [
-                            'core_version' => '1.1.0',
-                        ],
                 ]
             )
         );
 
         $this->processing->processMessage(
-            $paramsOfEncodeMessage,
-            false
+            $abi,
+            $signer,
+            $deploySet,
+            $callSet,
+            $address
         );
     }
 
@@ -157,17 +137,14 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessageWithEvents(): void
     {
-        $dataProvider = new DataProvider($this->tonClient);
-
-        $abi = AbiParams::fromArray($dataProvider->getEventsAbiArray());
-        $deploySet = new DeploySetParams($dataProvider->getEventsTvc());
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
 
         $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
-        $signer = SignerParams::fromKeys($keyPair);
+        $signer = Signer::fromKeys($keyPair);
 
-        $functionHeaderParams = new FunctionHeaderParams($keyPair->getPublic());
-
-        $callSet = new CallSetParams('constructor', $functionHeaderParams);
+        $callSet = (new CallSet('constructor'))
+            ->withFunctionHeaderParams($keyPair->getPublic());
 
         $resultOfEncodeMessage = $this->abi->encodeMessage(
             $abi,
@@ -178,21 +155,46 @@ class ProcessingTest extends AbstractModuleTest
 
         $address = $resultOfEncodeMessage->getAddress();
 
-        $dataProvider->sendGrams($address);
+        $this->dataProvider->sendTons($address);
 
-        $paramsOfEncodeMessage = new ParamsOfEncodeMessage(
-            $abi,
-            $signer,
-            $deploySet,
-            $callSet
+        $expected = new ResultOfProcessMessage(
+            new Response(
+                [
+                    'transaction'  =>
+                        [
+                            // .. more data lines
+                            'status'      => 3,
+                            'status_name' => 'finalized',
+                            // .. more data lines
+                        ],
+                    'out_messages' =>
+                        [],
+                    'decoded'      =>
+                        [
+                            'out_messages' =>
+                                [],
+                            'output'       => null,
+                        ],
+                    'fees'         =>
+                        [
+                            // .. more data lines
+                        ],
+
+                ]
+            )
         );
 
         $resultOfProcessMessage = $this->processing->processMessage(
-            $paramsOfEncodeMessage,
+            $abi,
+            $signer,
+            $deploySet,
+            $callSet,
+            null,
+            null,
             true
         );
 
-        foreach ($resultOfProcessMessage as $event) {
+        foreach ($resultOfProcessMessage->getIterator() as $event) {
             self::assertContains(
                 $event->getType(),
                 [
@@ -204,6 +206,229 @@ class ProcessingTest extends AbstractModuleTest
             );
         }
 
-        self::assertGreaterThan(0, $resultOfProcessMessage->getFees()->getTotalAccountFees());
+        self::assertGreaterThan(
+            0,
+            $resultOfProcessMessage->getTransactionFees()->getTotalAccountFees()
+        );
+
+        self::assertEquals(
+            $expected->getOutMessages(),
+            $resultOfProcessMessage->getOutMessages()
+        );
+
+        self::assertEquals(
+            $expected->getDecoded(),
+            $resultOfProcessMessage->getDecoded()
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status'],
+            $resultOfProcessMessage->getTransaction()['status']
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status_name'],
+            $resultOfProcessMessage->getTransaction()['status_name']
+        );
+    }
+
+    /**
+     * @covers ::waitForTransaction
+     * @covers ::sendMessage
+     * @covers \Extraton\TonClient\Abi::encodeMessage
+     * @covers \Extraton\TonClient\Crypto::generateRandomSignKeys
+     */
+    public function testWaitForTransaction(): void
+    {
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
+        $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
+
+        $resultOfEncodeMessage = $this->abi->encodeMessage(
+            $abi,
+            $signer,
+            $deploySet,
+            $callSet
+        );
+
+        $address = $resultOfEncodeMessage->getAddress();
+
+        $this->dataProvider->sendTons($address);
+
+        $resultOfSendMessage = $this->processing->sendMessage(
+            $resultOfEncodeMessage->getMessage(),
+            false,
+            $abi
+        );
+
+        $shardBlockId = $resultOfSendMessage->getShardBlockId();
+
+        $expected = new ResultOfProcessMessage(
+            new Response(
+                [
+                    'transaction'  =>
+                        [
+                            // more
+                            'status'      => 3,
+                            'status_name' => 'finalized',
+                            // .. more data lines
+                        ],
+                    'out_messages' => [],
+                    'decoded'      =>
+                        [
+                            'out_messages' => [],
+                            'output'       => null,
+                        ],
+                    'fees'         =>
+                        [
+                            // .. more data lines
+                        ],
+                ]
+            )
+        );
+
+        $resultOfProcessMessage = $this->processing->waitForTransaction(
+            $resultOfEncodeMessage->getMessage(),
+            $shardBlockId,
+            false,
+            $abi
+        );
+
+        self::assertGreaterThan(
+            0,
+            $resultOfProcessMessage->getTransactionFees()->getTotalAccountFees()
+        );
+
+        self::assertEquals(
+            $expected->getOutMessages(),
+            $resultOfProcessMessage->getOutMessages()
+        );
+
+        self::assertEquals(
+            $expected->getDecoded(),
+            $resultOfProcessMessage->getDecoded()
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status'],
+            $resultOfProcessMessage->getTransaction()['status']
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status_name'],
+            $resultOfProcessMessage->getTransaction()['status_name']
+        );
+    }
+
+    /**
+     * @covers ::waitForTransaction
+     * @covers ::sendMessage
+     * @covers \Extraton\TonClient\Abi::encodeMessage
+     * @covers \Extraton\TonClient\Crypto::generateRandomSignKeys
+     */
+    public function testWaitForTransactionWithEvents(): void
+    {
+        $abi = AbiType::fromArray($this->dataProvider->getEventsAbiArray());
+        $deploySet = new DeploySet($this->dataProvider->getEventsTvc());
+        $keyPair = $this->crypto->generateRandomSignKeys()->getKeyPair();
+        $signer = Signer::fromKeys($keyPair);
+        $callSet = (new CallSet('constructor'))->withFunctionHeaderParams($keyPair->getPublic());
+
+        $resultOfEncodeMessage = $this->abi->encodeMessage(
+            $abi,
+            $signer,
+            $deploySet,
+            $callSet
+        );
+
+        $address = $resultOfEncodeMessage->getAddress();
+
+        $this->dataProvider->sendTons($address);
+
+        $resultOfSendMessage = $this->processing->sendMessage(
+            $resultOfEncodeMessage->getMessage(),
+            true,
+            $abi
+        );
+
+        foreach ($resultOfSendMessage->getIterator() as $event) {
+            self::assertContains(
+                $event->getType(),
+                [
+                    'WillFetchFirstBlock',
+                    'WillSend',
+                    'DidSend'
+                ]
+            );
+        }
+
+        $shardBlockId = $resultOfSendMessage->getShardBlockId();
+
+        $expected = new ResultOfProcessMessage(
+            new Response(
+                [
+                    'transaction'  =>
+                        [
+                            // more
+                            'status'      => 3,
+                            'status_name' => 'finalized',
+                            // .. more data lines
+                        ],
+                    'out_messages' => [],
+                    'decoded'      =>
+                        [
+                            'out_messages' => [],
+                            'output'       => null,
+                        ],
+                    'fees'         =>
+                        [
+                            // .. more data lines
+                        ],
+                ]
+            )
+        );
+
+        $resultOfProcessMessage = $this->processing->waitForTransaction(
+            $resultOfEncodeMessage->getMessage(),
+            $shardBlockId,
+            true,
+            $abi
+        );
+
+        foreach ($resultOfProcessMessage->getIterator() as $event) {
+            self::assertContains(
+                $event->getType(),
+                [
+                    'WillFetchNextBlock',
+                ]
+            );
+        }
+
+        self::assertGreaterThan(
+            0,
+            $resultOfProcessMessage->getTransactionFees()->getTotalAccountFees()
+        );
+
+        self::assertEquals(
+            $expected->getOutMessages(),
+            $resultOfProcessMessage->getOutMessages()
+        );
+
+        self::assertEquals(
+            $expected->getDecoded(),
+            $resultOfProcessMessage->getDecoded()
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status'],
+            $resultOfProcessMessage->getTransaction()['status']
+        );
+
+        self::assertEquals(
+            $expected->getTransaction()['status_name'],
+            $resultOfProcessMessage->getTransaction()['status_name']
+        );
     }
 }

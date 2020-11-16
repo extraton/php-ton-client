@@ -6,10 +6,13 @@ namespace Extraton\TonClient\Entity\Abi;
 
 use Extraton\TonClient\Entity\AbstractResult;
 
+/**
+ * Type DecodedMessageBody
+ */
 class DecodedMessageBody extends AbstractResult
 {
     /**
-     * Type of the message body content
+     * Get type of the message body content
      *
      * @return string
      */
@@ -19,7 +22,7 @@ class DecodedMessageBody extends AbstractResult
     }
 
     /**
-     * Function or event name
+     * Get function or event name
      *
      * @return string
      */
@@ -29,22 +32,27 @@ class DecodedMessageBody extends AbstractResult
     }
 
     /**
-     * Parameters or result value
+     * Get parameters or result value
      *
-     * @return array|null
+     * @return mixed
      */
-    public function getValue(): ?array
+    public function getValue()
     {
-        return $this->requireData('value');
+        return $this->getData('value');
     }
 
     /**
-     * Function header
+     * Get function header
      *
-     * @return array
+     * @return FunctionHeader|null
      */
-    public function getHeader(): array
+    public function getFunctionHeader(): ?FunctionHeader
     {
-        return $this->requireArray('header');
+        $result = $this->getArray('header');
+        if ($result === null) {
+            return null;
+        }
+
+        return new FunctionHeader();
     }
 }

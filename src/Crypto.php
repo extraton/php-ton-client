@@ -26,22 +26,13 @@ use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Crypto module
  */
-class Crypto
+class Crypto extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Performs prime factorization
      *
@@ -51,6 +42,7 @@ class Crypto
      *
      * @param string $composite Hexadecimal representation of u64 composite number
      * @return ResultOfFactorize
+     * @throws TonException
      */
     public function factorize(string $composite): ResultOfFactorize
     {
@@ -73,6 +65,7 @@ class Crypto
      * @param string $exponent exponent argument of calculation
      * @param string $modulus modulus argument of calculation
      * @return ResultOfModularPower
+     * @throws TonException
      */
     public function modularPower(string $base, string $exponent, string $modulus): ResultOfModularPower
     {
@@ -80,9 +73,9 @@ class Crypto
             $this->tonClient->request(
                 'crypto.modular_power',
                 [
-                    'base' => $base,
+                    'base'     => $base,
                     'exponent' => $exponent,
-                    'modulus' => $modulus,
+                    'modulus'  => $modulus,
                 ]
             )->wait()
         );
@@ -93,6 +86,7 @@ class Crypto
      *
      * @param string $data Input data for CRC calculation. Encoded with base64
      * @return ResultOfTonCrc16
+     * @throws TonException
      */
     public function tonCrc16(string $data): ResultOfTonCrc16
     {
@@ -111,6 +105,7 @@ class Crypto
      *
      * @param int $length Size of random byte array
      * @return ResultOfGenerateRandomBytes
+     * @throws TonException
      */
     public function generateRandomBytes(int $length): ResultOfGenerateRandomBytes
     {
@@ -129,6 +124,7 @@ class Crypto
      *
      * @param string $publicKey Public key - 64 symbols hex string
      * @return ResultOfConvertPublicKeyToTonSafeFormat
+     * @throws TonException
      */
     public function convertPublicKeyToTonSafeFormat(string $publicKey): ResultOfConvertPublicKeyToTonSafeFormat
     {
@@ -146,11 +142,12 @@ class Crypto
      * Generates random ed25519 key pair.
      *
      * @return ResultOfGenerateSignKeys
+     * @throws TonException
      */
     public function generateRandomSignKeys(): ResultOfGenerateSignKeys
     {
         return new ResultOfGenerateSignKeys(
-            $this->tonClient->request('crypto.generate_random_sign_keys',)->wait()
+            $this->tonClient->request('crypto.generate_random_sign_keys')->wait()
         );
     }
 
@@ -160,6 +157,7 @@ class Crypto
      * @param string $unsigned Data that must be signed encoded in base64
      * @param KeyPair $keyPair Sign keys
      * @return ResultOfSign
+     * @throws TonException
      */
     public function sign(string $unsigned, KeyPair $keyPair): ResultOfSign
     {
@@ -168,7 +166,7 @@ class Crypto
                 'crypto.sign',
                 [
                     'unsigned' => $unsigned,
-                    'keys' => $keyPair,
+                    'keys'     => $keyPair,
                 ]
             )->wait()
         );
@@ -180,6 +178,7 @@ class Crypto
      * @param string $signed Signed data that must be verified encoded in base64
      * @param string $public Signer's public key - 64 symbols hex string
      * @return ResultOfVerifySignature
+     * @throws TonException
      */
     public function verifySignature(string $signed, string $public): ResultOfVerifySignature
     {
@@ -199,6 +198,7 @@ class Crypto
      *
      * @param string $data Input data for hash calculation. Encoded with base64
      * @return ResultOfHash
+     * @throws TonException
      */
     public function sha256(string $data): ResultOfHash
     {
@@ -217,6 +217,7 @@ class Crypto
      *
      * @param string $data Input data for hash calculation. Encoded with base64
      * @return ResultOfHash
+     * @throws TonException
      */
     public function sha512(string $data): ResultOfHash
     {
@@ -232,7 +233,7 @@ class Crypto
 
     /**
      * Derives key from password and key using scrypt algorithm.
-     * See [https://en.wikipedia.org/wiki/Scrypt].
+     * See https://en.wikipedia.org/wiki/Scrypt.
      *
      * @param string $password The password bytes to be hashed. Must be encoded with base64.
      * @param string $salt A salt bytes that modifies the hash to protect against Rainbow table attacks.
@@ -245,6 +246,7 @@ class Crypto
      *               Must be greater than 0 and less than 4294967295.
      * @param int $dkLen Intended output length in octets of the derived key.
      * @return ResultOfScrypt
+     * @throws TonException
      */
     public function scrypt(string $password, string $salt, int $logN, int $r, int $p, int $dkLen): ResultOfScrypt
     {
@@ -253,11 +255,11 @@ class Crypto
                 'crypto.scrypt',
                 [
                     'password' => $password,
-                    'salt' => $salt,
-                    'log_n' => $logN,
-                    'r' => $r,
-                    'p' => $p,
-                    'dk_len' => $dkLen,
+                    'salt'     => $salt,
+                    'log_n'    => $logN,
+                    'r'        => $r,
+                    'p'        => $p,
+                    'dk_len'   => $dkLen,
                 ]
             )->wait()
         );
@@ -268,6 +270,7 @@ class Crypto
      *
      * @param string $secret Secret key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfGenerateSignKeys
+     * @throws TonException
      */
     public function naclSignKeyPairFromSecretKey(string $secret): ResultOfGenerateSignKeys
     {
@@ -287,6 +290,7 @@ class Crypto
      * @param string $unsigned Data that must be signed encoded in base64
      * @param string $secret Signer's secret key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclSign
+     * @throws TonException
      */
     public function naclSign(string $unsigned, string $secret): ResultOfNaclSign
     {
@@ -295,7 +299,7 @@ class Crypto
                 'crypto.nacl_sign',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )->wait()
         );
@@ -307,6 +311,7 @@ class Crypto
      * @param string $signed Signed data that must be unsigned. Encoded with base64
      * @param string $public Signer's public key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclSignOpen
+     * @throws TonException
      */
     public function naclSignOpen(string $signed, string $public): ResultOfNaclSignOpen
     {
@@ -327,6 +332,7 @@ class Crypto
      * @param string $unsigned Data that must be signed encoded in base64
      * @param string $secret Signer's secret key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclSignDetached
+     * @throws TonException
      */
     public function naclSignDetached(string $unsigned, string $secret): ResultOfNaclSignDetached
     {
@@ -335,7 +341,7 @@ class Crypto
                 'crypto.nacl_sign_detached',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )->wait()
         );
@@ -345,6 +351,7 @@ class Crypto
      * Generate keypair.
      *
      * @return ResultOfGenerateSignKeys
+     * @throws TonException
      */
     public function naclBoxKeypair(): ResultOfGenerateSignKeys
     {
@@ -358,6 +365,7 @@ class Crypto
      *
      * @param string $secret Secret key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfGenerateSignKeys
+     * @throws TonException
      */
     public function naclBoxKeypairFromSecretKey(string $secret): ResultOfGenerateSignKeys
     {
@@ -373,7 +381,6 @@ class Crypto
 
     /**
      * Public key authenticated encryption.
-     *
      * Encrypt and authenticate a message using the senders secret key, the recievers public key, and a nonce.
      *
      * @param string $decrypted Data that must be encrypted encoded in base64
@@ -381,6 +388,7 @@ class Crypto
      * @param string $theirPublic Receiver's public key - unprefixed 0-padded to 64 symbols hex string
      * @param string $secret Sender's private key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclBox
+     * @throws TonException
      */
     public function naclBox(string $decrypted, string $nonce, string $theirPublic, string $secret): ResultOfNaclBox
     {
@@ -388,10 +396,10 @@ class Crypto
             $this->tonClient->request(
                 'crypto.nacl_box',
                 [
-                    'decrypted' => $decrypted,
-                    'nonce' => $nonce,
+                    'decrypted'    => $decrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ],
             )->wait()
         );
@@ -405,17 +413,22 @@ class Crypto
      * @param string $theirPublic Receiver's public key - unprefixed 0-padded to 64 symbols hex string
      * @param string $secret Sender's private key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclBoxOpen
+     * @throws TonException
      */
-    public function naclBoxOpen(string $encrypted, string $nonce, string $theirPublic, string $secret): ResultOfNaclBoxOpen
-    {
+    public function naclBoxOpen(
+        string $encrypted,
+        string $nonce,
+        string $theirPublic,
+        string $secret
+    ): ResultOfNaclBoxOpen {
         return new ResultOfNaclBoxOpen(
             $this->tonClient->request(
                 'crypto.nacl_box_open',
                 [
-                    'encrypted' => $encrypted,
-                    'nonce' => $nonce,
+                    'encrypted'    => $encrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ],
             )->wait()
         );
@@ -428,6 +441,7 @@ class Crypto
      * @param string $nonce Nonce, encoded in hex
      * @param string $key Secret key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclBox
+     * @throws TonException
      */
     public function naclSecretBox(string $decrypted, string $nonce, string $key): ResultOfNaclBox
     {
@@ -436,8 +450,8 @@ class Crypto
                 'crypto.nacl_secret_box',
                 [
                     'decrypted' => $decrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ],
             )->wait()
         );
@@ -450,6 +464,7 @@ class Crypto
      * @param string $nonce Nonce, encoded in hex
      * @param string $key Public key - unprefixed 0-padded to 64 symbols hex string
      * @return ResultOfNaclBoxOpen
+     * @throws TonException
      */
     public function naclSecretBoxOpen(string $encrypted, string $nonce, string $key): ResultOfNaclBoxOpen
     {
@@ -458,8 +473,8 @@ class Crypto
                 'crypto.nacl_secret_box_open',
                 [
                     'encrypted' => $encrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ],
             )->wait()
         );
@@ -468,10 +483,11 @@ class Crypto
     /**
      * Prints the list of words from the specified dictionary.
      *
-     * @param ?int $dictionary Dictionary identifier
+     * @param int|null $dictionary Dictionary identifier
      * @return ResultOfMnemonicWords
+     * @throws TonException
      */
-    public function mnemonicWords(int $dictionary = null): ResultOfMnemonicWords
+    public function mnemonicWords(?int $dictionary = null): ResultOfMnemonicWords
     {
         return new ResultOfMnemonicWords(
             $this->tonClient->request(
@@ -486,11 +502,12 @@ class Crypto
     /**
      * Generates a random mnemonic from the specified dictionary and word count.
      *
-     * @param ?int $dictionary Dictionary identifier
-     * @param ?int $wordCount Mnemonic word count
+     * @param int|null $dictionary Dictionary identifier
+     * @param int|null $wordCount Mnemonic word count
      * @return ResultOfGenerateMnemonic
+     * @throws TonException
      */
-    public function mnemonicFromRandom(int $dictionary = null, int $wordCount = null): ResultOfGenerateMnemonic
+    public function mnemonicFromRandom(?int $dictionary = null, ?int $wordCount = null): ResultOfGenerateMnemonic
     {
         return new ResultOfGenerateMnemonic(
             $this->tonClient->request(
@@ -507,21 +524,21 @@ class Crypto
      * Generates mnemonic from pre-generated entropy.
      *
      * @param string $entropy Entropy bytes. Hex encoded.
-     * @param ?int $dictionary Dictionary identifier
-     * @param ?int $wordCount Mnemonic word count
+     * @param int|null $dictionary Dictionary identifier
+     * @param int|null $wordCount Mnemonic word count
      * @return ResultOfGenerateMnemonic
+     * @throws TonException
      */
     public function mnemonicFromEntropy(
         string $entropy,
-        int $dictionary = null,
-        int $wordCount = null
-    ): ResultOfGenerateMnemonic
-    {
+        ?int $dictionary = null,
+        ?int $wordCount = null
+    ): ResultOfGenerateMnemonic {
         return new ResultOfGenerateMnemonic(
             $this->tonClient->request(
                 'crypto.mnemonic_from_entropy',
                 [
-                    'entropy' => $entropy,
+                    'entropy'    => $entropy,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -533,21 +550,21 @@ class Crypto
      * The phrase supplied will be checked for word length and validated according to the checksum specified in BIP0039.
      *
      * @param string $phrase Phrase
-     * @param ?int $dictionary Dictionary identifier
-     * @param ?int $wordCount Mnemonic word count
+     * @param int|null $dictionary Dictionary identifier
+     * @param int|null $wordCount Mnemonic word count
      * @return ResultOfMnemonicVerify
+     * @throws TonException
      */
     public function mnemonicVerify(
         string $phrase,
-        int $dictionary = null,
-        int $wordCount = null
-    ): ResultOfMnemonicVerify
-    {
+        ?int $dictionary = null,
+        ?int $wordCount = null
+    ): ResultOfMnemonicVerify {
         return new ResultOfMnemonicVerify(
             $this->tonClient->request(
                 'crypto.mnemonic_verify',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -559,24 +576,24 @@ class Crypto
      * Validates the seed phrase, generates master key and then derives the key pair from the master key and the specified path.
      *
      * @param string $phrase Phrase
-     * @param ?string $path Derivation path, for instance "m/44'/396'/0'/0/0"
-     * @param ?int $dictionary Dictionary identifier
-     * @param ?int $wordCount Mnemonic word count
+     * @param string|null $path Derivation path, for instance "m/44'/396'/0'/0/0"
+     * @param int|null $dictionary Dictionary identifier
+     * @param int|null $wordCount Mnemonic word count
      * @return ResultOfGenerateSignKeys
+     * @throws TonException
      */
     public function mnemonicDeriveSignKeys(
         string $phrase,
-        string $path = null,
-        int $dictionary = null,
-        int $wordCount = null
-    ): ResultOfGenerateSignKeys
-    {
+        ?string $path = null,
+        ?int $dictionary = null,
+        ?int $wordCount = null
+    ): ResultOfGenerateSignKeys {
         return new ResultOfGenerateSignKeys(
             $this->tonClient->request(
                 'crypto.mnemonic_derive_sign_keys',
                 [
-                    'phrase' => $phrase,
-                    'path' => $path,
+                    'phrase'     => $phrase,
+                    'path'       => $path,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -588,21 +605,21 @@ class Crypto
      * Generates an extended master private key that will be the root for all the derived keys.
      *
      * @param string $phrase Phrase
-     * @param ?int $dictionary Dictionary identifier
-     * @param ?int $wordCount Mnemonic word count
+     * @param int|null $dictionary Dictionary identifier
+     * @param int|null $wordCount Mnemonic word count
      * @return ResultOfHDKeyXPrv
+     * @throws TonException
      */
     public function hdkeyXprvFromMnemonic(
         string $phrase,
-        int $dictionary = null,
-        int $wordCount = null
-    ): ResultOfHDKeyXPrv
-    {
+        ?int $dictionary = null,
+        ?int $wordCount = null
+    ): ResultOfHDKeyXPrv {
         return new ResultOfHDKeyXPrv(
             $this->tonClient->request(
                 'crypto.hdkey_xprv_from_mnemonic',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ],
@@ -617,6 +634,7 @@ class Crypto
      * @param int $childIndex Child index (see BIP-0032)
      * @param bool $hardened Indicates the derivation of hardened/not-hardened key (see BIP-0032)
      * @return ResultOfHDKeyXPrv
+     * @throws TonException
      */
     public function hdkeyDeriveFromXprv(string $xprv, int $childIndex, bool $hardened): ResultOfHDKeyXPrv
     {
@@ -624,9 +642,9 @@ class Crypto
             $this->tonClient->request(
                 'crypto.hdkey_derive_from_xprv',
                 [
-                    'xprv' => $xprv,
+                    'xprv'        => $xprv,
                     'child_index' => $childIndex,
-                    'hardened' => $hardened,
+                    'hardened'    => $hardened,
                 ],
             )->wait()
         );
@@ -638,6 +656,7 @@ class Crypto
      * @param string $xprv Serialized extended private key
      * @param string $path Derivation path, for instance "m/44'/396'/0'/0/0"
      * @return ResultOfHDKeyXPrv
+     * @throws TonException
      */
     public function hdkeyDeriveFromXprvPath(string $xprv, string $path): ResultOfHDKeyXPrv
     {
@@ -657,6 +676,7 @@ class Crypto
      *
      * @param string $xprv Serialized extended private key
      * @return ResultOfHDKeySecretFromXPrv
+     * @throws TonException
      */
     public function hdkeySecretFromXprv(string $xprv): ResultOfHDKeySecretFromXPrv
     {
@@ -675,6 +695,7 @@ class Crypto
      *
      * @param string $xprv Serialized extended private key
      * @return ResultOfHDKeyPublicFromXPrv
+     * @throws TonException
      */
     public function hdkeyPublicFromXprv(string $xprv): ResultOfHDKeyPublicFromXPrv
     {

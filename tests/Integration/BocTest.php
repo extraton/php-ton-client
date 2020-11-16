@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
-use Extraton\TonClient\Boc;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
@@ -16,14 +15,6 @@ use Extraton\TonClient\Handler\Response;
  */
 class BocTest extends AbstractModuleTest
 {
-    private Boc $boc;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->boc = $this->tonClient->getBoc();
-    }
-
     /**
      * @covers ::parseMessage
      */

@@ -7,8 +7,6 @@ namespace Extraton\TonClient\FFI;
 use FFI;
 use FFI\CData;
 
-use function call_user_func_array;
-
 class FFIAdapter
 {
     private string $libraryInterface;

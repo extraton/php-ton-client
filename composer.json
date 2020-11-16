@@ -1,6 +1,6 @@
 {
   "name": "extraton/php-ton-client",
-  "description": "Extraton PHP TON client",
+  "description": "Extraton, PHP TON client",
   "type": "library",
   "license": "Apache-2.0",
   "homepage": "https://extraton.io/",
@@ -9,6 +9,10 @@
       "name": "Maxim Karanaev",
       "email": "imaxvx@gmail.com",
       "homepage": "https://github.com/maxvx"
+    },
+    {
+      "name": "qwertys318",
+      "homepage": "https://github.com/qwertys318"
     }
   ],
   "require": {
@@ -19,9 +23,9 @@
     "guzzlehttp/promises": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.0",
+    "phpunit/phpunit": "^9.4.3",
     "friendsofphp/php-cs-fixer": "^2.16.7",
-    "phpstan/phpstan": "^0.12.54"
+    "phpstan/phpstan": "^0.12.55"
   },
   "autoload": {
     "psr-4": {
@@ -32,16 +36,10 @@
   },
   "scripts": {
     "post-update-cmd": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
+      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
     ],
     "post-install-cmd": [
-      "Extraton\\TonClient\\Composer\\PostScript::downloadLibrary"
+      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
     ]
-  },
-  "extra": {
-    "sdk-version": "1.1.0"
-  },
-  "bin": [
-    "bin/*"
-  ]
+  }
 }

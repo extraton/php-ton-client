@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use LogicException;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\LogicException;
 
 use function in_array;
+use function sprintf;
 
 /**
- * Filter collection
+ * Query filters
  */
-class Filters implements ParamsInterface
+class Filters implements Params
 {
     public const EQ = 'eq';
 
@@ -42,22 +42,23 @@ class Filters implements ParamsInterface
         self::NOT_IN,
     ];
 
+    /** @var array<string, mixed> */
     private array $filters = [];
 
     /**
      * @param string $field
      * @param string $operator
      * @param mixed $value
-     * @return $this
+     * @return self
      */
     public function add(string $field, string $operator, $value): self
     {
         if (isset($this->filters[$field])) {
-            throw new LogicException('Already exists.');
+            throw new LogicException(sprintf('Field %s already defined.', $field));
         }
 
         if (!in_array($operator, self::OPERATORS, true)) {
-            throw new RuntimeException('Unknown operator.');
+            throw new LogicException(sprintf('Unknown operator %s.', $operator));
         }
 
         $this->filters[$field] = [

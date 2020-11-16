@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Utils;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\DataException;
 
 use function in_array;
+use function sprintf;
 
-class AddressStringFormat implements ParamsInterface
+class AddressStringFormat implements Params
 {
     public const TYPE_ACCOUNT_ID = 'AccountId';
 
@@ -32,7 +33,7 @@ class AddressStringFormat implements ParamsInterface
         bool $bounce = false
     ) {
         if (!in_array($type, [self::TYPE_ACCOUNT_ID, self::TYPE_HEX, self::TYPE_BASE64], true)) {
-            throw new RuntimeException('Unknown address type');
+            throw new DataException(sprintf('Unknown type %s.', $type));
         }
 
         $this->type = $type;
@@ -41,23 +42,42 @@ class AddressStringFormat implements ParamsInterface
         $this->bounce = $bounce;
     }
 
+    /**
+     * @return self
+     */
     public static function accountId(): self
     {
         return new self(self::TYPE_ACCOUNT_ID);
     }
 
+    /**
+     * @return self
+     */
     public static function hex(): self
     {
         return new self(self::TYPE_HEX);
     }
 
+    /**
+     * @param bool $url Is url
+     * @param bool $test Is test
+     * @param bool $bounce Is bounce
+     * @return self
+     */
     public static function base64(bool $url = false, bool $test = false, bool $bounce = false): self
     {
         return new self(self::TYPE_BASE64, $url, $test, $bounce);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function jsonSerialize(): array
     {
+        if (!in_array($this->type, [self::TYPE_ACCOUNT_ID, self::TYPE_HEX, self::TYPE_BASE64], true)) {
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
+        }
+
         $result = [
             'type' => $this->type,
         ];

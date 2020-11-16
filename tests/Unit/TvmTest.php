@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
 use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
@@ -46,7 +46,7 @@ class TvmTest extends AbstractModuleTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
         $skipTransactionCheck = (bool)random_int(0, 1);
 
         $response = new Response(
@@ -101,7 +101,7 @@ class TvmTest extends AbstractModuleTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
 
         $response = new Response(
             [

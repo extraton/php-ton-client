@@ -7,7 +7,7 @@ namespace Extraton\TonClient\Entity\Tvm;
 use Extraton\TonClient\Entity\AbstractResult;
 
 /**
- * Result of call method tvm.run_get
+ * Type ResultOfRunGet
  */
 class ResultOfRunGet extends AbstractResult
 {

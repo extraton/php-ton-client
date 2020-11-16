@@ -8,14 +8,14 @@ use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Entity\Client\ResultOfGetApiReference;
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
+use Extraton\TonClient\Exception\LogicException;
+use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\ResponseHandler;
 use Extraton\TonClient\Handler\SmartSleeper;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
-use JsonException;
-use LogicException;
 
-use function print_r;
+use function sprintf;
 
 /**
  * Ton client
@@ -159,17 +159,17 @@ class TonClient
      * @param string $functionName Function name
      * @param array<string, mixed> $functionParams Function params
      * @return Promise
-     * @throws JsonException
+     * @throws TonException
      */
     public function request(string $functionName, array $functionParams = []): Promise
     {
         $responseHandler = $this->getResponseHandler();
         $promise = new Promise(
-            static function () use (&$promise) {
+            static function () use (&$promise, $functionName) {
                 $sleeper = new SmartSleeper();
 
                 if ($promise === null) {
-                    throw new LogicException('Unknown condition');
+                    throw new LogicException(sprintf('Promise for the %s function not found.', $functionName));
                 }
 
                 while (Is::pending($promise)) {
@@ -180,12 +180,6 @@ class TonClient
 
         $requestId = $responseHandler->registerPromise($promise);
         $context = $this->getContext();
-
-//        print_r(
-//            [
-//                $requestId => $functionName,
-//            ]
-//        );
 
         $this->binding->request(
             $context,
@@ -230,6 +224,7 @@ class TonClient
      * Get sdk client version
      *
      * @return ResultOfVersion
+     * @throws TonException
      */
     public function version(): ResultOfVersion
     {
@@ -244,6 +239,7 @@ class TonClient
      * Get build info
      *
      * @return ResultOfBuildInfo
+     * @throws TonException
      */
     public function buildInfo(): ResultOfBuildInfo
     {
@@ -258,6 +254,7 @@ class TonClient
      * Get api version
      *
      * @return ResultOfGetApiReference
+     * @throws TonException
      */
     public function getApiReference(): ResultOfGetApiReference
     {

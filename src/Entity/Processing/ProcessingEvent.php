@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Entity\Processing;
 
 use Extraton\TonClient\Entity\AbstractResult;
+use Extraton\TonClient\Entity\Client\ClientError;
+use Extraton\TonClient\Handler\Response;
 
+/**
+ * Type ProcessingEvent
+ */
 class ProcessingEvent extends AbstractResult
 {
     public const TYPE_WILL_FETCH_FIRST_BLOCK = 'WillFetchFirstBlock';
@@ -24,13 +29,53 @@ class ProcessingEvent extends AbstractResult
 
     public const TYPE_MESSAGE_EXPIRED = 'MessageExpired';
 
+    /**
+     * Get event type
+     *
+     * @return string
+     */
     public function getType(): string
     {
         return $this->requireString('type');
     }
 
-    public function getError(): string
+    /**
+     * Get client error
+     *
+     * @return ClientError
+     */
+    public function getError(): ClientError
     {
-        return $this->requireData('error');
+        return new ClientError(new Response($this->requireArray('error')));
+    }
+
+    /**
+     * Get shard block ID
+     *
+     * @return string
+     */
+    public function getShardBlockId(): string
+    {
+        return $this->requireString('shard_block_id');
+    }
+
+    /**
+     * Get message ID
+     *
+     * @return string
+     */
+    public function getMessageId(): string
+    {
+        return $this->requireString('message_id');
+    }
+
+    /**
+     * Get message
+     *
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->requireString('message');
     }
 }

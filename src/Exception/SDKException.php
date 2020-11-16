@@ -6,7 +6,10 @@ namespace Extraton\TonClient\Exception;
 
 use RuntimeException;
 
-class RequestException extends RuntimeException implements TonException
+/**
+ * Default TON SDK exception
+ */
+class SDKException extends RuntimeException implements TonException
 {
     /** @var array<mixed> */
     private array $data;
@@ -18,7 +21,7 @@ class RequestException extends RuntimeException implements TonException
     public static function create(array $result): self
     {
         $exception = new self(
-            $result['message'] ?? 'Unknown request error',
+            $result['message'] ?? 'Unknown TON SDK error',
             $result['code'] ?? 0
         );
         $exception->data = $result['data'] ?? [];
@@ -27,6 +30,8 @@ class RequestException extends RuntimeException implements TonException
     }
 
     /**
+     * Get extra data
+     *
      * @return array<mixed>
      */
     public function getData(): array

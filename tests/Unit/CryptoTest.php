@@ -29,10 +29,10 @@ use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
 use Extraton\TonClient\Handler\Response;
 
-use function microtime;
-use function uniqid;
 use function hexdec;
+use function microtime;
 use function random_int;
+use function uniqid;
 
 /**
  * Unit tests for Crypto module
@@ -105,9 +105,9 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.modular_power',
                 [
-                    'base' => $base,
+                    'base'     => $base,
                     'exponent' => $exponent,
-                    'modulus' => $modulus,
+                    'modulus'  => $modulus,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -154,7 +154,7 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testGenerateRandomBytesWithSuccessResult(): void
     {
-        $length = hexdec(uniqid());
+        $length = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -266,7 +266,7 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.sign',
                 [
                     'unsigned' => $unsigned,
-                    'keys' => $keyPair,
+                    'keys'     => $keyPair,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -381,10 +381,10 @@ class CryptoTest extends AbstractModuleTest
     {
         $password = uniqid(microtime(), true);
         $salt = uniqid(microtime(), true);
-        $logN = hexdec(uniqid());
-        $r = hexdec(uniqid());
-        $p = hexdec(uniqid());
-        $dkLen = hexdec(uniqid());
+        $logN = hexdec(uniqid('', false));
+        $r = hexdec(uniqid('', false));
+        $p = hexdec(uniqid('', false));
+        $dkLen = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -402,11 +402,11 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.scrypt',
                 [
                     'password' => $password,
-                    'salt' => $salt,
-                    'log_n' => $logN,
-                    'r' => $r,
-                    'p' => $p,
-                    'dk_len' => $dkLen,
+                    'salt'     => $salt,
+                    'log_n'    => $logN,
+                    'r'        => $r,
+                    'p'        => $p,
+                    'dk_len'   => $dkLen,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -472,7 +472,7 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.nacl_sign',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -540,7 +540,7 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.nacl_sign_detached',
                 [
                     'unsigned' => $unsigned,
-                    'secret' => $secret,
+                    'secret'   => $secret,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -636,10 +636,10 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.nacl_box',
                 [
-                    'decrypted' => $decrypted,
-                    'nonce' => $nonce,
+                    'decrypted'    => $decrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -674,10 +674,10 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.nacl_box_open',
                 [
-                    'encrypted' => $encrypted,
-                    'nonce' => $nonce,
+                    'encrypted'    => $encrypted,
+                    'nonce'        => $nonce,
                     'their_public' => $theirPublic,
-                    'secret' => $secret,
+                    'secret'       => $secret,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -712,8 +712,8 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.nacl_secret_box',
                 [
                     'decrypted' => $decrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -748,8 +748,8 @@ class CryptoTest extends AbstractModuleTest
                 'crypto.nacl_secret_box_open',
                 [
                     'encrypted' => $encrypted,
-                    'nonce' => $nonce,
-                    'key' => $key,
+                    'nonce'     => $nonce,
+                    'key'       => $key,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -764,7 +764,7 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testMnemonicWordsWithSuccessResult(): void
     {
-        $dictionary = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -796,8 +796,8 @@ class CryptoTest extends AbstractModuleTest
      */
     public function testMnemonicFromRandomWithSuccessResult(): void
     {
-        $dictionary = hexdec(uniqid());
-        $wordCount = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -831,8 +831,8 @@ class CryptoTest extends AbstractModuleTest
     public function testMnemonicFromEntropyWithSuccessResult(): void
     {
         $entropy = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid());
-        $wordCount = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -849,7 +849,7 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.mnemonic_from_entropy',
                 [
-                    'entropy' => $entropy,
+                    'entropy'    => $entropy,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ]
@@ -867,8 +867,8 @@ class CryptoTest extends AbstractModuleTest
     public function testMnemonicVerifyWithSuccessResult(): void
     {
         $phrase = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid());
-        $wordCount = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -885,7 +885,7 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.mnemonic_verify',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ]
@@ -904,8 +904,8 @@ class CryptoTest extends AbstractModuleTest
     {
         $phrase = uniqid(microtime(), true);
         $path = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid());
-        $wordCount = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -922,8 +922,8 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.mnemonic_derive_sign_keys',
                 [
-                    'phrase' => $phrase,
-                    'path' => $path,
+                    'phrase'     => $phrase,
+                    'path'       => $path,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ]
@@ -941,8 +941,8 @@ class CryptoTest extends AbstractModuleTest
     public function testHdkeyXprvFromMnemonicWithSuccessResult(): void
     {
         $phrase = uniqid(microtime(), true);
-        $dictionary = hexdec(uniqid());
-        $wordCount = hexdec(uniqid());
+        $dictionary = hexdec(uniqid('', false));
+        $wordCount = hexdec(uniqid('', false));
         $result = new Response(
             [
                 uniqid(microtime(), true)
@@ -959,7 +959,7 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.hdkey_xprv_from_mnemonic',
                 [
-                    'phrase' => $phrase,
+                    'phrase'     => $phrase,
                     'dictionary' => $dictionary,
                     'word_count' => $wordCount,
                 ]
@@ -977,7 +977,7 @@ class CryptoTest extends AbstractModuleTest
     public function testHdkeyDeriveFromXprvWithSuccessResult(): void
     {
         $xprv = uniqid(microtime(), true);
-        $childIndex = hexdec(uniqid());
+        $childIndex = hexdec(uniqid('', false));
         $hardened = (bool)random_int(0, 1);
         $result = new Response(
             [
@@ -995,9 +995,9 @@ class CryptoTest extends AbstractModuleTest
             ->with(
                 'crypto.hdkey_derive_from_xprv',
                 [
-                    'xprv' => $xprv,
+                    'xprv'        => $xprv,
                     'child_index' => $childIndex,
-                    'hardened' => $hardened,
+                    'hardened'    => $hardened,
                 ]
             )
             ->willReturn($this->mockPromise);

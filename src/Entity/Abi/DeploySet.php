@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
+use Extraton\TonClient\Entity\Params;
 
-class DeploySetParams implements ParamsInterface
+/**
+ * Type DeploySet
+ */
+class DeploySet implements Params
 {
     private string $tvc;
 

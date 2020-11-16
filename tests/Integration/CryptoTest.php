@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
-use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
@@ -39,14 +38,6 @@ use function explode;
  */
 class CryptoTest extends AbstractModuleTest
 {
-    private Crypto $crypto;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->crypto = $this->tonClient->getCrypto();
-    }
-
     /**
      * @covers ::factorize
      */
@@ -167,7 +158,7 @@ class CryptoTest extends AbstractModuleTest
         $expected = new ResultOfSign(
             new Response(
                 [
-                    'signed' => 'spsrMiTVkuTZA1SynA43GkLyR4bKa/BpfPA+S8tiJP924+C53WPi6gES8Wek7YLDCP9cxqO1NmHTI3+7EnToDXRlc3QgZGF0YQ==',
+                    'signed'    => 'spsrMiTVkuTZA1SynA43GkLyR4bKa/BpfPA+S8tiJP924+C53WPi6gES8Wek7YLDCP9cxqO1NmHTI3+7EnToDXRlc3QgZGF0YQ==',
                     'signature' => 'b29b2b3224d592e4d90354b29c0e371a42f24786ca6bf0697cf03e4bcb6224ff76e3e0b9dd63e2ea0112f167a4ed82c308ff5cc6a3b53661d3237fbb1274e80d',
                 ]
             )

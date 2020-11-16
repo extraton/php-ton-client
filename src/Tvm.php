@@ -4,45 +4,35 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
+use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
 use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunGet;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunTvm;
-use JsonException;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Tvm module
  */
-class Tvm
+class Tvm extends AbstractModule
 {
-    private TonClient $tonClient;
-
-    /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
     /**
      * Run executor
      *
-     * @param string $message
-     * @param AccountForExecutor $accountForExecutor
-     * @param ExecutionOptions|null $executionOptions
-     * @param AbiParams|null $abi
-     * @param bool|null $skipTransactionCheck
+     * @param string $message Input message BOC. Must be encoded as base64.
+     * @param AccountForExecutor $accountForExecutor Account to run on executor
+     * @param ExecutionOptions|null $executionOptions Execution options
+     * @param AbiType|null $abi Contract ABI for decoding output messages
+     * @param bool|null $skipTransactionCheck Skip transaction check flag
      * @return ResultOfRunExecutor
-     * @throws JsonException
+     * @throws TonException
      */
     public function runExecutor(
         string $message,
         AccountForExecutor $accountForExecutor,
         ?ExecutionOptions $executionOptions = null,
-        ?AbiParams $abi = null,
+        ?AbiType $abi = null,
         ?bool $skipTransactionCheck = null
     ): ResultOfRunExecutor {
         return new ResultOfRunExecutor(
@@ -65,15 +55,15 @@ class Tvm
      * @param string $message Input message BOC. Must be encoded as base64
      * @param string $account Account BOC. Must be encoded as base64
      * @param ExecutionOptions|null $executionOptions Execution options
-     * @param AbiParams|null $abi Contract ABI for dedcoding output messages
+     * @param AbiType|null $abi Contract ABI for decoding output messages
      * @return ResultOfRunTvm
-     * @throws JsonException
+     * @throws TonException
      */
     public function runTvm(
         string $message,
         string $account,
         ?ExecutionOptions $executionOptions,
-        ?AbiParams $abi
+        ?AbiType $abi
     ): ResultOfRunTvm {
         return new ResultOfRunTvm(
             $this->tonClient->request(
@@ -89,14 +79,14 @@ class Tvm
     }
 
     /**
-     * Executes getmethod and returns data from TVM stack
+     * Executes get method and returns data from TVM stack
      *
      * @param string $account Account BOC in base64
      * @param string $functionName Function name
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param mixed $input Input parameters
      * @return ResultOfRunGet
-     * @throws JsonException
+     * @throws TonException
      */
     public function runGet(
         string $account,

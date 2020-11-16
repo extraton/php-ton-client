@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\DataException;
 
-class StateInitSource implements ParamsInterface
+use function sprintf;
+
+/**
+ * Type StateInitSource
+ */
+class StateInitSource implements Params
 {
     public const TYPE_MESSAGE = 'Message';
 
@@ -17,19 +22,19 @@ class StateInitSource implements ParamsInterface
 
     private string $type;
 
-    private string $tvc;
-
-    private ?string $publicKey = null;
-
-    private ?StateInitParams $initParams = null;
+    private MessageSource $messageSource;
 
     private string $code;
 
     private string $data;
 
-    private ?string $library = null;
+    private ?string $library;
 
-    private MessageSource $messageSource;
+    private string $tvc;
+
+    private ?string $publicKey;
+
+    private ?StateInitParams $stateInitParams;
 
     /**
      * @param string $type
@@ -39,6 +44,12 @@ class StateInitSource implements ParamsInterface
         $this->type = $type;
     }
 
+    /**
+     * Create StateInitSource from MessageSource
+     *
+     * @param MessageSource $messageSource Message source
+     * @return self
+     */
     public static function fromMessage(MessageSource $messageSource): self
     {
         $instance = new self(self::TYPE_MESSAGE);
@@ -47,25 +58,50 @@ class StateInitSource implements ParamsInterface
         return $instance;
     }
 
+    /**
+     * Create StateInitSource from state init parameters
+     *
+     * @param string $code Code BOC. Encoded in base64
+     * @param string $data Data BOC. Encoded in base64
+     * @param string|null $library Library BOC. Encoded in base64
+     * @return self
+     */
     public static function fromStateInit(string $code, string $data, ?string $library = null): self
     {
         $instance = new self(self::TYPE_STATE_INIT);
-        $instance->setStateInitParams($code, $data, $library);
-
-        return $instance;
-    }
-
-    public static function fromTvc(string $tvc, ?string $publicKey = null, ?StateInitParams $initParams = null): self
-    {
-        $instance = new self(self::TYPE_TVC);
-        $instance->setTvcParams($tvc, $publicKey, $initParams);
+        $instance->setCode($code);
+        $instance->setData($data);
+        $instance->setLibrary($library);
 
         return $instance;
     }
 
     /**
+     * Create StateInitSource from tvc
+     *
+     * @param string $tvc Tvc
+     * @param string|null $publicKey Public key
+     * @param StateInitParams|null $stateInitParams State init params
+     * @return self
+     */
+    public static function fromTvc(
+        string $tvc,
+        ?string $publicKey = null,
+        ?StateInitParams $stateInitParams = null
+    ): self {
+        $instance = new self(self::TYPE_TVC);
+        $instance->setTvc($tvc);
+        $instance->setPublicKey($publicKey);
+        $instance->setStateInitParams($stateInitParams);
+
+        return $instance;
+    }
+
+    /**
+     * Set message source
+     *
      * @param MessageSource $messageSource
-     * @return $this
+     * @return self
      */
     private function setMessageSource(MessageSource $messageSource): self
     {
@@ -74,26 +110,80 @@ class StateInitSource implements ParamsInterface
         return $this;
     }
 
-    private function setStateInitParams(string $code, string $data, ?string $library): self
+    /**
+     * Set code
+     *
+     * @param string $code Code BOC. Encoded in base64
+     * @return self
+     */
+    private function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Set data boc
+     *
+     * @param string $data Data BOC. Encoded in base64
+     * @return self
+     */
+    private function setData(string $data): self
+    {
         $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Set library boc
+     *
+     * @param string|null $library Library BOC. Encoded in base64
+     * @return self
+     */
+    private function setLibrary(?string $library): self
+    {
         $this->library = $library;
 
         return $this;
     }
 
     /**
-     * @param string $tvc
-     * @param string|null $publicKey
-     * @param StateInitParams|null $initParams
-     * @return $this
+     * Set tvc
+     *
+     * @param string $tvc Tvc
+     * @return self
      */
-    private function setTvcParams(string $tvc, ?string $publicKey, ?StateInitParams $initParams): self
+    public function setTvc(string $tvc): self
     {
         $this->tvc = $tvc;
+
+        return $this;
+    }
+
+    /**
+     * Set public key
+     *
+     * @param string|null $publicKey Public key
+     * @return self
+     */
+    public function setPublicKey(?string $publicKey): self
+    {
         $this->publicKey = $publicKey;
-        $this->initParams = $initParams;
+
+        return $this;
+    }
+
+    /**
+     * Set state init parameters
+     *
+     * @param StateInitParams|null $stateInitParams State init parameters
+     * @return self
+     */
+    public function setStateInitParams(?StateInitParams $stateInitParams): self
+    {
+        $this->stateInitParams = $stateInitParams;
 
         return $this;
     }
@@ -103,31 +193,23 @@ class StateInitSource implements ParamsInterface
      */
     public function jsonSerialize(): array
     {
+        $result['type'] = $this->type;
+
         if ($this->type === self::TYPE_MESSAGE) {
-            return [
-                'type'   => $this->type,
-                'source' => $this->messageSource,
-            ];
+            $result['source'] = $this->messageSource;
+        } elseif ($this->type === self::TYPE_STATE_INIT) {
+            $result['code'] = $this->code;
+            $result['data'] = $this->data;
+            $result['library'] = $this->library;
+        } elseif ($this->type === self::TYPE_TVC) {
+            $result['type'] = $this->type;
+            $result['tvc'] = $this->tvc;
+            $result['public_key'] = $this->publicKey;
+            $result['init_params'] = $this->stateInitParams;
+        } else {
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
 
-        if ($this->type === self::TYPE_STATE_INIT) {
-            return [
-                'type'    => $this->type,
-                'code'    => $this->code,
-                'data'    => $this->data,
-                'library' => $this->library,
-            ];
-        }
-
-        if ($this->type === self::TYPE_TVC) {
-            return [
-                'type'        => $this->type,
-                'tvc'         => $this->tvc,
-                'public_key'  => $this->publicKey,
-                'init_params' => $this->initParams,
-            ];
-        }
-
-        throw new RuntimeException('Invalid data.');
+        return $result;
     }
 }

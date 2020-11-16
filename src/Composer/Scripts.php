@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Composer;
 
-use Composer\Script\Event;
 use RuntimeException;
 
 use function fclose;
@@ -32,7 +31,7 @@ use const PHP_OS;
 /**
  * Composer script for post-install and post-update execute
  */
-class PostScript
+class Scripts
 {
     private const DEFAULT_SDK_VERSION = '1.0.0';
 
@@ -51,23 +50,21 @@ class PostScript
     private const DOWNLOAD_URL = 'http://sdkbinaries.tonlabs.io/%s';
 
     /**
-     * Download TON SDK library
-     *
-     * @param Event $event
+     * Download TON SDK library and save to bin directory
      */
-    public static function downloadLibrary(Event $event): void
+    public static function downloadLibrary(): void
     {
-        $extra = $event->getComposer()->getPackage()->getExtra();
-        $binSdkVersion = $extra['sdk-version'] ?? self::DEFAULT_SDK_VERSION;
-
         $os = strtolower(PHP_OS);
         if (!isset(self::SOURCE_FILE_NAME[$os], self::DESTINATION_FILE_NAME[$os])) {
-            throw new RuntimeException(sprintf('Unknown OS "%s"', $os));
+            throw new RuntimeException(sprintf('Unknown OS %s.', $os));
         }
 
-        $srcFileName = sprintf(self::SOURCE_FILE_NAME[$os], str_replace('.', '_', $binSdkVersion), $os);
+        $srcFileName = sprintf(self::SOURCE_FILE_NAME[$os], str_replace('.', '_', self::DEFAULT_SDK_VERSION), $os);
         $downloadUrl = sprintf(self::DOWNLOAD_URL, $srcFileName);
         $tmpPath = tempnam(sys_get_temp_dir(), 'ton_client_');
+        if ($tmpPath === false) {
+            throw new RuntimeException(sprintf('Failed to create temporary file %s.', $tmpPath));
+        }
 
         $downloadScript = <<<DOWNLOAD
             php -r "copy('{$downloadUrl}', '{$tmpPath}');"
@@ -76,9 +73,9 @@ class PostScript
         system($downloadScript);
 
         // Get or create bin dir
-        $binDir = $event->getComposer()->getConfig()->get('bin-dir');
+        $binDir = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../../bin/');
         if (!file_exists($binDir) && !mkdir($binDir) && !is_dir($binDir)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $binDir));
+            throw new RuntimeException(sprintf('The path %s does not exist.', $binDir));
         }
 
         // Destination path to library
@@ -86,7 +83,15 @@ class PostScript
 
         // Unpack gz file
         $tmpFileHandler = gzopen($tmpPath, 'rb');
+        if ($tmpFileHandler === false) {
+            throw new RuntimeException(sprintf('Could not open file %s.', $tmpPath));
+        }
+
         $dstFileHandler = fopen($dstPath, 'wb');
+        if ($dstFileHandler === false) {
+            throw new RuntimeException(sprintf('Could not open file %s.', $dstPath));
+        }
+
         while (!gzeof($tmpFileHandler)) {
             fwrite($dstFileHandler, gzread($tmpFileHandler, 4096));
         }

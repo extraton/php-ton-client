@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\LogicException;
 
+/**
+ * Type ParamsOfWaitForCollection
+ */
 class ParamsOfWaitForCollection extends AbstractQuery
 {
+    /**
+     * @param string $collection
+     * @param array<string> $resultFields
+     * @param Filters|null $filters
+     * @param int|null $timeout
+     */
     public function __construct(
         string $collection,
         array $resultFields = [],
@@ -20,13 +29,19 @@ class ParamsOfWaitForCollection extends AbstractQuery
         $this->setTimeout($timeout);
     }
 
-    public function getOrderBy(): ?ParamsInterface
+    /**
+     * @inheritDoc
+     */
+    public function getOrderBy(): ?Params
     {
-        throw new RuntimeException('Method ParamsOfWaitForCollection::getOrderBy is not implemented.');
+        throw new LogicException('Method ParamsOfWaitForCollection::getOrderBy is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getLimit(): ?int
     {
-        throw new RuntimeException('Method ParamsOfWaitForCollection::getLimit is not implemented.');
+        throw new LogicException('Method ParamsOfWaitForCollection::getLimit is not implemented.');
     }
 }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\Response;
-use Extraton\TonClient\Utils;
 use Generator;
 
 /**
@@ -16,14 +16,6 @@ use Generator;
  */
 class UtilsTest extends AbstractModuleTest
 {
-    private Utils $utils;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->utils = $this->tonClient->getUtils();
-    }
-
     /**
      * @covers ::convertAddressToAccountId
      */
@@ -70,6 +62,7 @@ class UtilsTest extends AbstractModuleTest
      * @param bool $url
      * @param bool $test
      * @param bool $bounce
+     * @throws TonException
      */
     public function testConvertAddressToBase64WithSuccessResult(
         string $expectedAddress,

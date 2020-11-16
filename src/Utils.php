@@ -6,28 +6,20 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Exception\TonException;
 
 /**
  * Utils module
  */
-class Utils
+class Utils extends AbstractModule
 {
-    private TonClient $tonClient;
-
     /**
-     * @param TonClient $tonClient
-     */
-    public function __construct(TonClient $tonClient)
-    {
-        $this->tonClient = $tonClient;
-    }
-
-    /**
-     * Convert Ton address
+     * Converts address from any TON format to any TON format
      *
-     * @param string $address Ton address
-     * @param AddressStringFormat $outputFormat Output format
+     * @param string $address Account address in any TON format
+     * @param AddressStringFormat $outputFormat Specify the format to convert to
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddress(string $address, AddressStringFormat $outputFormat): ResultOfConvertAddress
     {
@@ -43,10 +35,11 @@ class Utils
     }
 
     /**
-     * Convert Ton address to account id
+     * Converts address from any TON format to AccountID
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToAccountId(string $address): ResultOfConvertAddress
     {
@@ -57,10 +50,11 @@ class Utils
     }
 
     /**
-     * Convert Ton address to hex
+     * Converts address from any TON format to HEX
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToHex(string $address): ResultOfConvertAddress
     {
@@ -71,13 +65,14 @@ class Utils
     }
 
     /**
-     * Convert Ton address to base64
+     * Converts address from any TON format to Base64
      *
-     * @param string $address Ton address
+     * @param string $address Account address in any TON format
      * @param bool $url Is url
      * @param bool $test Is test
      * @param bool $bounce Is bounce
      * @return ResultOfConvertAddress
+     * @throws TonException
      */
     public function convertAddressToBase64(
         string $address,

@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
-use Extraton\TonClient\Entity\Abi\AbiParams;
-use Extraton\TonClient\Entity\Abi\ParamsOfEncodeMessage;
+use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Abi\CallSet;
+use Extraton\TonClient\Entity\Abi\DeploySet;
+use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Processing\ResultOfProcessMessage;
 use Extraton\TonClient\Entity\Processing\ResultOfSendMessage;
 use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Processing;
-use PHPUnit\Framework\MockObject\MockObject;
 
 use function microtime;
 use function random_int;
 use function uniqid;
+
+use const PHP_INT_MAX;
 
 /**
  * Unit tests for Processing module
@@ -38,7 +41,7 @@ class ProcessingTest extends AbstractModuleTest
     {
         $message = uniqid(microtime(), true);
         $sendEvents = (bool)random_int(0, 1);
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
 
         $response = new Response(
             [
@@ -83,7 +86,7 @@ class ProcessingTest extends AbstractModuleTest
         $message = uniqid(microtime(), true);
         $shardBlockId = uniqid(microtime(), true);
         $sendEvents = (bool)random_int(0, 1);
-        $abi = AbiParams::fromArray([]);
+        $abi = AbiType::fromArray([]);
 
         $response = new Response(
             [
@@ -127,11 +130,12 @@ class ProcessingTest extends AbstractModuleTest
      */
     public function testProcessMessageWithSuccessResult(): void
     {
-        /** @var MockObject|ParamsOfEncodeMessage $paramsOfEncodeMessage */
-        $paramsOfEncodeMessage = $this->getMockBuilder(ParamsOfEncodeMessage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $abi = AbiType::fromArray([]);
+        $signer = Signer::fromNone();
+        $deploySet = new DeploySet(uniqid(microtime(), true));
+        $callSet = new CallSet(uniqid(microtime(), true));
+        $address = uniqid(microtime(), true);
+        $processingTryIndex = random_int(0, PHP_INT_MAX);
         $sendEvents = (bool)random_int(0, 1);
 
         $response = new Response(
@@ -150,7 +154,14 @@ class ProcessingTest extends AbstractModuleTest
             ->with(
                 'processing.process_message',
                 [
-                    'message_encode_params' => $paramsOfEncodeMessage,
+                    'message_encode_params' => [
+                        'abi'                  => $abi,
+                        'signer'               => $signer,
+                        'deploy_set'           => $deploySet,
+                        'call_set'             => $callSet,
+                        'address'              => $address,
+                        'processing_try_index' => $processingTryIndex,
+                    ],
                     'send_events'           => $sendEvents,
                 ]
             )
@@ -161,7 +172,12 @@ class ProcessingTest extends AbstractModuleTest
         self::assertEquals(
             $expected,
             $this->processing->processMessage(
-                $paramsOfEncodeMessage,
+                $abi,
+                $signer,
+                $deploySet,
+                $callSet,
+                $address,
+                $processingTryIndex,
                 $sendEvents,
             )
         );

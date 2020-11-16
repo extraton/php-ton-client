@@ -10,9 +10,7 @@ use Extraton\TonClient\Handler\Response;
 use Generator;
 
 /**
- * Result of call method processing.wait_for_transaction
- *
- * @phpstan-implements IteratorAggregate<ProcessingEvent>
+ * Type ResultOfProcessMessage
  */
 class ResultOfProcessMessage extends AbstractResult
 {
@@ -43,7 +41,11 @@ class ResultOfProcessMessage extends AbstractResult
      */
     public function getTransactionFees(): TransactionFees
     {
-        return TransactionFees::fromArray($this->requireArray('fees'));
+        return new TransactionFees(
+            new Response(
+                $this->requireArray('fees')
+            )
+        );
     }
 
     /**
@@ -63,10 +65,28 @@ class ResultOfProcessMessage extends AbstractResult
      */
     public function getDecoded(): ?DecodedOutput
     {
-        return DecodedOutput::fromArray($this->requireArray('decoded'));
+        return $this->getDecodedOutput();
     }
 
     /**
+     * Get optional decoded message bodies according to the optional abi parameter.
+     *
+     * @return DecodedOutput|null
+     */
+    public function getDecodedOutput(): ?DecodedOutput
+    {
+        $result = $this->getArray('decoded');
+
+        if ($result === null) {
+            return null;
+        }
+
+        return new DecodedOutput(new Response($result));
+    }
+
+    /**
+     * Get generator for iterate ProcessingEvent objects
+     *
      * @return Generator<ProcessingEvent>
      */
     public function getIterator(): Generator
@@ -74,7 +94,7 @@ class ResultOfProcessMessage extends AbstractResult
         $response = $this->getResponse();
 
         $response->setEventDataTransformer(
-            static fn($eventData) => new ProcessingEvent(new Response($eventData))
+            static fn ($eventData) => new ProcessingEvent(new Response($eventData))
         );
 
         yield from $response;

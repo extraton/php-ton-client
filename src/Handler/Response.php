@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Extraton\TonClient\Handler;
 
 use Closure;
+use Extraton\TonClient\Exception\LogicException;
 use Generator;
 use IteratorAggregate;
-use LogicException;
 
 use function array_shift;
 
 /**
- * @implements IteratorAggregate<mixed>
+ * @phpstan-implements IteratorAggregate<mixed>
  */
 class Response implements IteratorAggregate
 {
@@ -42,7 +42,7 @@ class Response implements IteratorAggregate
 
     /**
      * @param array<mixed> $responseData
-     * @return $this
+     * @return self
      */
     public function setResponseData(array $responseData): self
     {
@@ -63,10 +63,12 @@ class Response implements IteratorAggregate
 
         $sleeper = new SmartSleeper();
 
+        // @phpstan-ignore-next-line
         while (!$this->dataFetched) {
             $sleeper->sleep()->increase();
         }
 
+        // @phpstan-ignore-next-line
         return $this->responseData;
     }
 
@@ -91,7 +93,7 @@ class Response implements IteratorAggregate
     public function __invoke(array $eventData): void
     {
         if ($this->eventsFinished) {
-            throw new LogicException('Response already completed.');
+            throw new LogicException('Event data cannot be transferred to a completed Response object.');
         }
 
         $this->eventData[] = $eventData;

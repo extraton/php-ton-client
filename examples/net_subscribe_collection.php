@@ -6,7 +6,7 @@ use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
 use Extraton\TonClient\TonClient;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $tonClient = new TonClient(
     [

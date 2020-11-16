@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Net;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\LogicException;
 
+/**
+ * Type ParamsOfSubscribeCollection
+ */
 class ParamsOfSubscribeCollection extends AbstractQuery
 {
+    /**
+     * @param string $collection
+     * @param array<string> $resultFields
+     * @param Filters|null $filters
+     */
     public function __construct(
         string $collection,
         array $resultFields = [],
@@ -18,18 +26,27 @@ class ParamsOfSubscribeCollection extends AbstractQuery
         $this->setFilters($filters);
     }
 
-    public function getOrderBy(): ?ParamsInterface
+    /**
+     * @inheritDoc
+     */
+    public function getOrderBy(): ?Params
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getOrderBy is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getLimit(): ?int
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getLimit is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getLimit is not implemented.');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getTimeout(): ?int
     {
-        throw new RuntimeException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');
+        throw new LogicException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');
     }
 }

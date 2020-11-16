@@ -34,7 +34,7 @@ class SmartSleeper
     }
 
     /**
-     * @return $this
+     * @return self
      */
     public function reset(): self
     {
@@ -44,7 +44,7 @@ class SmartSleeper
     }
 
     /**
-     * @return $this
+     * @return self
      */
     public function sleep(): self
     {

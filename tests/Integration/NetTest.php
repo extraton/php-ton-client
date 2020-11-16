@@ -12,7 +12,6 @@ use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 use Extraton\TonClient\Handler\Response;
-use Extraton\TonClient\Net;
 
 use function dechex;
 use function hexdec;
@@ -24,14 +23,6 @@ use function hexdec;
  */
 class NetTest extends AbstractModuleTest
 {
-    private Net $net;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->net = $this->tonClient->getNet();
-    }
-
     /**
      * @covers ::queryCollection
      */

@@ -7,7 +7,7 @@ namespace Extraton\TonClient\Entity\Tvm;
 use Extraton\TonClient\Entity\AbstractResult;
 
 /**
- * Transaction fees
+ * Type TransactionFees
  */
 class TransactionFees extends AbstractResult
 {

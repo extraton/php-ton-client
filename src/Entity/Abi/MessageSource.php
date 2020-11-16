@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Entity\Abi;
 
-use Extraton\TonClient\Entity\ParamsInterface;
-use RuntimeException;
+use Extraton\TonClient\Entity\Params;
+use Extraton\TonClient\Exception\DataException;
 
-class MessageSource implements ParamsInterface
+use function sprintf;
+
+/**
+ * Type MessageSource
+ */
+class MessageSource implements Params
 {
     public const TYPE_ENCODED = 'Encoded';
 
@@ -17,20 +22,20 @@ class MessageSource implements ParamsInterface
 
     private string $message;
 
-    private ?AbiParams $abi;
+    private ?AbiType $abi;
 
-    private SignerParams $signer;
+    private Signer $signer;
 
     private ?string $address;
 
-    private ?DeploySetParams $deploySet;
+    private ?DeploySet $deploySet;
 
-    private ?CallSetParams $callSet;
+    private ?CallSet $callSet;
 
     private ?int $processingTryIndex;
 
     /**
-     * @param string $type
+     * @param string $type Type
      */
     public function __construct(string $type)
     {
@@ -38,29 +43,13 @@ class MessageSource implements ParamsInterface
     }
 
     /**
-     * @param string $message
-     * @return $this
+     * Create MessageSource from encoded
+     *
+     * @param string $message Message
+     * @param AbiType|null $abi Contract ABI
+     * @return self
      */
-    public function setMessage(string $message): self
-    {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    public function setAbi(?AbiParams $abi): self
-    {
-        $this->abi = $abi;
-
-        return $this;
-    }
-
-    /**
-     * @param string $message
-     * @param AbiParams|null $abi
-     * @return static
-     */
-    public static function fromEncoded(string $message, ?AbiParams $abi = null): self
+    public static function fromEncoded(string $message, ?AbiType $abi = null): self
     {
         $instance = new self(self::TYPE_ENCODED);
         $instance->setMessage($message);
@@ -70,19 +59,21 @@ class MessageSource implements ParamsInterface
     }
 
     /**
-     * @param AbiParams $abi
-     * @param SignerParams $signer
-     * @param string|null $address
-     * @param DeploySetParams|null $deploySet
-     * @param CallSetParams|null $callSet
-     * @param int|null $processingTryIndex
-     * @return static
+     * Create MessageSource from encoding params
+     *
+     * @param AbiType $abi Contract ABI
+     * @param Signer $signer Signing parameters
+     * @param string|null $address Target address the message will be sent to
+     * @param DeploySet|null $deploySet Deploy parameters. Must be specified in case of deploy message
+     * @param CallSet|null $callSet Function call parameters. Must be specified in case of non-deploy message
+     * @param int|null $processingTryIndex Processing try index
+     * @return self
      */
     public static function fromEncodingParams(
-        AbiParams $abi,
-        SignerParams $signer,
-        ?DeploySetParams $deploySet = null,
-        ?CallSetParams $callSet = null,
+        AbiType $abi,
+        Signer $signer,
+        ?DeploySet $deploySet = null,
+        ?CallSet $callSet = null,
         ?string $address = null,
         ?int $processingTryIndex = null
     ): self {
@@ -98,8 +89,49 @@ class MessageSource implements ParamsInterface
     }
 
     /**
-     * @param string|null $address
-     * @return $this
+     * Set message
+     *
+     * @param string $message Message
+     * @return self
+     */
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * Set contract ABI
+     *
+     * @param AbiType|null $abi Contract ABI
+     * @return self
+     */
+    public function setAbi(?AbiType $abi): self
+    {
+        $this->abi = $abi;
+
+        return $this;
+    }
+
+    /**
+     * Set signing parameters
+     *
+     * @param Signer $signer Signing parameters
+     * @return self
+     */
+    private function setSigner(Signer $signer): self
+    {
+        $this->signer = $signer;
+
+        return $this;
+    }
+
+    /**
+     * Set target address the message will be sent to. Must be specified in case of non-deploy message.
+     *
+     * @param string|null $address Target address the message will be sent to
+     * @return self
      */
     public function setAddress(?string $address): self
     {
@@ -109,30 +141,37 @@ class MessageSource implements ParamsInterface
     }
 
     /**
-     * @param DeploySetParams|null $deploySet
-     * @return $this
+     * Set deploy parameters. Must be specified in case of deploy message.
+     *
+     * @param DeploySet|null $deploySet Deploy parameters
+     * @return self
      */
-    public function setDeploySet(?DeploySetParams $deploySet): self
+    public function setDeploySet(?DeploySet $deploySet): self
     {
         $this->deploySet = $deploySet;
 
         return $this;
     }
 
-    private function setCallSet(?CallSetParams $callSet): self
+    /**
+     * Set function call parameters. Must be specified in case of non-deploy message.
+     *
+     * @param CallSet|null $callSet Function call parameters
+     * @return self
+     */
+    private function setCallSet(?CallSet $callSet): self
     {
         $this->callSet = $callSet;
 
         return $this;
     }
 
-    private function setSigner(SignerParams $signer): self
-    {
-        $this->signer = $signer;
-
-        return $this;
-    }
-
+    /**
+     * Set processing try index. Used in message processing with retries (if contract's ABI includes "expire" header).
+     *
+     * @param int|null $processingTryIndex Processing try index
+     * @return self
+     */
     private function setProcessingTryIndex(?int $processingTryIndex): self
     {
         $this->processingTryIndex = $processingTryIndex;
@@ -158,7 +197,7 @@ class MessageSource implements ParamsInterface
             $result['call_set'] = $this->callSet;
             $result['processing_try_index'] = $this->processingTryIndex;
         } else {
-            throw new RuntimeException('Unknown type.');
+            throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
 
         return $result;

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Binding\Type;
 
+/**
+ * ResponseType
+ */
 class ResponseType
 {
     public const SUCCESS = 0;
