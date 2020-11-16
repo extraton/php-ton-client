@@ -9,7 +9,7 @@ help:
 	@echo "  codestyle                      to run php-cs-fixer on the codebase."
 
 build:
-	docker run --rm -it -v ${PWD}:/app extraton/php-ton-client-checkup:0.1 composer install
+	docker build --tag extraton/php-ton-client-checkup:0.1 .
 
 install:
 	docker run --rm -it -v ${PWD}:/app extraton/php-ton-client-checkup:0.1 composer install

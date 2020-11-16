@@ -5,6 +5,8 @@ $config = PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'declare_strict_types' => true,
+        'global_namespace_import' => true,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

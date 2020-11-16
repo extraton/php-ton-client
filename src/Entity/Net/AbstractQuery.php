@@ -100,9 +100,9 @@ abstract class AbstractQuery implements QueryInterface
     {
         $fields = array_merge(
             ...array_map(
-                   static fn($resultField) => explode(' ', $resultField),
-                   $this->resultFields
-               )
+                static fn ($resultField) => explode(' ', $resultField),
+                $this->resultFields
+            )
         );
 
         $fields = array_unique(array_filter(array_map('trim', $fields)));

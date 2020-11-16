@@ -35,11 +35,12 @@
     }
   },
   "scripts": {
+    "download-ton-sdk-library": "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary",
     "post-update-cmd": [
-      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
+      "@download-ton-sdk-library"
     ],
     "post-install-cmd": [
-      "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary"
+      "@download-ton-sdk-library"
     ]
   }
 }

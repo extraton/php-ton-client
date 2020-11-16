@@ -16,7 +16,7 @@ class ResultOfParse extends AbstractResult
      *
      * @return mixed
      */
-    public function getParsed(): array
+    public function getParsed()
     {
         return $this->getData('parsed');
     }

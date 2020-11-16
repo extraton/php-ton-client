@@ -57,7 +57,7 @@ class ResultOfSubscribeCollection extends AbstractResult
         $response = $this->getResponse();
 
         $response->setEventDataTransformer(
-            static fn($eventData) => new Event(new Response($eventData))
+            static fn ($eventData) => new Event(new Response($eventData))
         );
 
         yield from $response;
