@@ -194,7 +194,13 @@ class ProcessingTest extends AbstractModuleTest
             true
         );
 
+        // Event saver (for manual check event data)
+        $saver = $this->eventSaver->getSaver(__METHOD__);
+
         foreach ($resultOfProcessMessage->getIterator() as $event) {
+            // Save event data to dump file (tests/Integration/artifacts/*.txt)
+            $saver->send($event->getResponseData());
+
             self::assertContains(
                 $event->getType(),
                 [
@@ -353,7 +359,13 @@ class ProcessingTest extends AbstractModuleTest
             $abi
         );
 
+        // Event saver (for manual check event data)
+        $saver = $this->eventSaver->getSaver(__METHOD__);
+
         foreach ($resultOfSendMessage->getIterator() as $event) {
+            // Save event data to dump file (tests/Integration/artifacts/*.txt)
+            $saver->send($event->getResponseData());
+
             self::assertContains(
                 $event->getType(),
                 [
@@ -397,7 +409,12 @@ class ProcessingTest extends AbstractModuleTest
             $abi
         );
 
+        $saver->send('--------------------PART2--------------------');
+
         foreach ($resultOfProcessMessage->getIterator() as $event) {
+            // Save event data to dump file (tests/Integration/artifacts/*.txt)
+            $saver->send($event->getResponseData());
+
             self::assertContains(
                 $event->getType(),
                 [

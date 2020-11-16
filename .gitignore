@@ -4,3 +4,4 @@ composer.lock
 bin/tonclient.*
 .php_cs.cache
 .phpunit.result.cache
+tests/Integration/artifacts/*.txt

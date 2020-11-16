@@ -39,7 +39,7 @@ class UtilsTest extends AbstractModuleTest
      */
     public function testConvertAddressToHexWithSuccessResult(): void
     {
-        $address = '0:ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
+        $address = 'ee65d170830136253ad8bd2116a28fcbd4ac462c6f222f49a1505d2fa7f7f528';
 
         $expected = new ResultOfConvertAddress(
             new Response(

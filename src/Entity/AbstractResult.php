@@ -35,11 +35,11 @@ abstract class AbstractResult implements IteratorAggregate
     }
 
     /**
-     * @return Response
+     * @return array
      */
-    protected function getResponse(): Response
+    public function getResponseData(): array
     {
-        return $this->response;
+        return $this->response->getResponseData();
     }
 
     /**
@@ -48,6 +48,14 @@ abstract class AbstractResult implements IteratorAggregate
     public function isFinished(): bool
     {
         return $this->response->isEventsFinished();
+    }
+
+    /**
+     * @return Response
+     */
+    protected function getResponse(): Response
+    {
+        return $this->response;
     }
 
     /**
@@ -74,7 +82,7 @@ abstract class AbstractResult implements IteratorAggregate
      */
     protected function getData(string ...$keys)
     {
-        $result = $this->getResponse()->getResponseData();
+        $result = $this->getResponseData();
         while ($key = array_shift($keys)) {
             if (!is_array($result) || !isset($result[$key])) {
                 return null;

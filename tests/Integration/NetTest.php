@@ -232,8 +232,14 @@ class NetTest extends AbstractModuleTest
         self::assertFalse($result->isFinished());
         self::assertGreaterThan(0, $result->getHandle());
 
+        // Event saver (for manual check event data)
+        $saver = $this->eventSaver->getSaver(__METHOD__);
+
         $counter = 0;
-        foreach ($result as $event) {
+        foreach ($result->getIterator() as $event) {
+            // Save event data to dump file (tests/Integration/artifacts/*.txt)
+            $saver->send($event->getResult());
+
             $eventResult = $event->getResult();
 
             self::assertNotEmpty($eventResult['id']);
@@ -250,6 +256,7 @@ class NetTest extends AbstractModuleTest
 
             if (++$counter > 3) {
                 $this->net->unsubscribe($result->getHandle());
+                // or call: $result->stop();
             }
         }
 

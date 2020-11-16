@@ -20,7 +20,7 @@ To automatically download the TON SDK library add the following lines to your pr
 ``` json
 ...
   "scripts": {
-    "download-ton-sdk-library": "Extraton\\\\TonClient\\\\Composer\\\\Scripts::downloadLibrary",
+    "download-ton-sdk-library": "Extraton\\TonClient\\Composer\\Scripts::downloadLibrary",
     "post-update-cmd": [
       "@download-ton-sdk-library"
     ],
@@ -35,6 +35,29 @@ The library will be downloaded when the commands ```composer install``` and ```c
 composer run download-ton-sdk-library
 ```
 The TON SDK library will be installed to the directory ```ROOT_OF_YOUR_PROJECT/vendor/extranton/php-ton-client/bin/```.
+
+## Configuring
+Minimum configuration needed to start work with TonClient:
+```php
+$config = [
+    'network' => [
+        'server_address' => 'net.ton.dev'
+    ]
+];
+```
+All configuration options are available [here](https://github.com/tonlabs/TON-SDK/blob/1.0.0/docs/mod_client.md#ClientConfig).
+```php
+// Create new instance TonClient with default path to TON SDK library
+// YOUR_PROJECT_ROOT/vendor/extraton/bin/tonclient.*
+$tonClient = new TonClient($config);
+```
+Also you can specify the path to the library
+```php
+// Create new instance TonClient with custom path to TON SDK library
+$binding = new Binding('PATH_TO_TON_SDK_LIBRARY');
+$tonClient = new TonClient($config, $binding);
+```
+
 
 ## Examples
 Please see [Examples](examples) and [Integration tests](tests/Integration) for more information on detailed usage.

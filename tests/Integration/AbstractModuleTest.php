@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\Tests\Integration\TonClient\Data\DataProvider;
+use Extraton\Tests\Integration\TonClient\Data\EventSaver;
 use Extraton\TonClient\Abi;
 use Extraton\TonClient\Binding\Binding;
 use Extraton\TonClient\Boc;
@@ -39,6 +40,8 @@ abstract class AbstractModuleTest extends TestCase
 
     protected DataProvider $dataProvider;
 
+    protected EventSaver $eventSaver;
+
     public function setUp(): void
     {
         $this->tonClient = $this->getTonClient();
@@ -50,6 +53,7 @@ abstract class AbstractModuleTest extends TestCase
         $this->utils = $this->tonClient->getUtils();
         $this->tvm = $this->tonClient->getTvm();
         $this->dataProvider = new DataProvider($this->tonClient);
+        $this->eventSaver = new EventSaver();
     }
 
     protected function getTonClient(): TonClient
