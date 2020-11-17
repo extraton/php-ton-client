@@ -16,7 +16,7 @@ class ResultOfNaclSign extends AbstractResult
      *
      * @return string
      */
-    public function getKey(): string
+    public function getSigned(): string
     {
         return $this->requireString('signed');
     }
