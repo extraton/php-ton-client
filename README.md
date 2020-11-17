@@ -178,6 +178,28 @@ $query->addOrderBy('last_paid', OrderBy::DESC)->setLimit(2);
 $net->queryCollection($query);
 ```
 You can add your own query class that implements the interface `\Extraton\TonClient\Entity\Net\QueryInterface` or extends the class `\Extraton\TonClient\Entity\Net\AbstractQuery`.
+
+The following constants are available for filters and directions:
+```php
+class Filters implements Params
+{
+    public const EQ = 'eq';
+    public const GE = 'ge';
+    public const GT = 'gt';
+    public const IN = 'in';
+    public const LE = 'le';
+    public const LT = 'lt';
+    public const NE = 'ne';
+    public const NOT_IN = 'notIn';
+...
+```
+```php
+class OrderBy implements Params
+{
+    public const ASC = 'ASC';
+    public const DESC = 'DESC';
+...
+```
 ## Advanced usage
 Use the following example to build an application for monitoring events coming from the blockchain network:
 ```php
