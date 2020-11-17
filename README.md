@@ -136,10 +136,27 @@ We have not detected memory leaks. But sometimes we caught segmentation faults d
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ## Testing
+Run the following command to run unit tests:
 ``` bash
-make test
+make test-unit
 ```
+... and integration tests:
+```bash
+make test-integration
+```
+Some tests use TON SDK methods that listen for asynchronous events. Data from these events is saved to the directory `/tests/Integration/artifacts/`. This way you can analyze them in detail. For example, the test `\Extraton\Tests\Integration\TonClient\ProcessingTest::testProcessMessageWithEvents` uses the call of method `\Extraton\TonClient\Processing::processMessage`. Events received during generator iteration are saved in a file.
 
+## Code Quality
+We use [PHPStan](https://github.com/phpstan/phpstan) and [PHP Coding Standards Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) to control code quality. Run the following commands to analyze the code and fix code style errors:
+```bash
+make analyze
+```
+```bash
+make codestyle
+```
+```bash
+make codestyle-fix
+```
 ## Contributing
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
