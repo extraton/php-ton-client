@@ -35,4 +35,4 @@ Use php-cs-fixer to check your changes:
 
 ### Running phpstan checks
 
-    make phpstan
+    make analyze

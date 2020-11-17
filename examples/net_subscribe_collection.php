@@ -35,7 +35,7 @@ foreach ($result->getIterator() as $event) {
 
     if ($counter > 25) {
         echo 'Manual stop watching.' . PHP_EOL;
-        $result->stop();
+        $result->stop(); // or call: $net->unsubscribe($result->getHandle());
     }
 }
 

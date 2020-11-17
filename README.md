@@ -4,7 +4,26 @@
 [![php7.4, Ubuntu 20.04](https://github.com/extraton/php-ton-client/workflows/php7.4,%20Ubuntu%2020.04/badge.svg)](https://github.com/extraton/php-ton-client/actions?query=workflow%3A%22php7.4%2C+Ubuntu+20.04%22)
 [![php7.4, macOS latest](https://github.com/extraton/php-ton-client/workflows/php7.4,%20macOS%20latest/badge.svg)](https://github.com/extraton/php-ton-client/actions?query=workflow%3A%22php7.4%2C+macOS+latest%22)
 [![Total Downloads](https://img.shields.io/packagist/dt/extraton/php-ton-client.svg?style=flat&color=00e600)](https://packagist.org/packages/extraton/php-ton-client) [![Chat on Telegram](https://img.shields.io/badge/chat-on%20Telegram-9cf.svg?logo=telegram&color=0088cc)](https://t.me/extraton)
+**Extraton** is a simple and powerful php-library to binding with the [TON SDK](https://github.com/tonlabs/TON-SDK).
+It allows to develop a decentralized applications for the FreeTON blockchain.
+It has the rich abilities:
 
+ - All methods of the TON SDK v1.0.0 are implements
+ - Interaction with the TON SDK through an asynchronous calls
+ - The every method contains inline-doc
+ - The full autocomplete is available in a such IDE like the [PHPStorm](https://www.jetbrains.com/phpstorm/)
+ - Simple installation by the Composer package manager
+ - Automatic download of the TON SDK library for the current environment
+ - The client auto configuration (out-of-the-box)
+ - Covered by the unit-tests
+ - Fully covered by the integration tests
+ - Tools to maintain code quality (static analyser and codestyle checker) 
+ - Tools to the quick start to develop and deploy (see [Dockerfile](Dockerfile) + [Makefile](Makefile))
+ - The error handling by the general exception interface (see src/Exception) 
+ - Using a generators to iterate the asynchronous events
+ - You can add your own client implementation based on [FFIAdapter](\Extraton\TonClient\FFI\FFIAdapter) and [Binding](src/Binding/Binding.php)
+ - Simple interface to the graphql requests
+ - Temporary logs creation for the detailed analysis on integration tests running
 ## Requirements
 - php7.4+
 - ffi extension
@@ -66,7 +85,7 @@ $config = [
     ],
 ];
 ```
-Minimum configuration needed to start working with TonClient:
+You can start using a simple configuration for TonClient:
 ```php
 $config = [
     'network' => [
@@ -113,8 +132,82 @@ $result = $utils->convertAddressToHex('ee65d170830136253ad8bd2116a28fcbd4ac462c6
 
 echo 'Hex: ' . $result->getAddress() . PHP_EOL;
 ```
-## Advanced usage
+## Building queries
+Use special classes to easily build queries:
+ ```php
+$query = (new ParamsOfWaitForCollection('accounts'))
+    ->addResultField('id', 'last_paid')
+    ->addFilter('last_paid', Filters::IN, [1601332024, 1601331924])
+    ->setTimeout(60_000);
 
+$net->waitForCollection($query);
+```
+
+```php
+$query = (new ParamsOfSubscribeCollection('transactions'))
+    ->addResultField('id', 'block_id', 'balance_delta')
+    ->addFilter('balance_delta', Filters::GT, '0x5f5e100');
+    
+$net->subscribeCollection($query);
+```
+
+```php
+$query = new ParamsOfQueryCollection('accounts');
+$query->addResultField(
+    'acc_type',
+    'acc_type_name',
+    'balance',
+    'boc',
+    'id',
+    'last_paid',
+    'workchain_id',
+);
+$query->addFilter(
+    'last_paid',
+    Filters::IN,
+    [
+        1601332024,
+        1601331924,
+        1601332491,
+        1601332679
+    ]
+);
+$query->addOrderBy('last_paid', OrderBy::DESC)->setLimit(2);
+
+$net->queryCollection($query);
+```
+You can add your own query class that implements the interface `\Extraton\TonClient\Entity\Net\QueryInterface` or extends the class `\Extraton\TonClient\Entity\Net\AbstractQuery`.
+## Advanced usage
+Use the following example to build an application for monitoring events coming from the blockchain network:
+```php
+// Build query
+$query = (new ParamsOfSubscribeCollection('transactions'))
+    ->addResultField('id', 'block_id', 'balance_delta')
+    ->addFilter('balance_delta', Filters::GT, '0x5f5e100');
+
+// Get result with handle and start watching
+$result = $net->subscribeCollection($query);
+
+echo "Handle: {$result->getHandle()}." . PHP_EOL;
+
+$counter = 0;
+
+// Iterate generator
+foreach ($result->getIterator() as $event) {
+    $counter++;
+
+    echo "Event counter: {$counter}, event data:" . PHP_EOL;
+    var_dump($event->getResult());
+
+    if ($counter > 25) {
+        echo 'Manual stop watching.' . PHP_EOL;
+        $result->stop(); // or call: $net->unsubscribe($result->getHandle());
+    }
+}
+
+echo 'Finished.' . PHP_EOL;
+  ```
+  [Detailed example](examples/net_subscribe_collection.php)
 ## Examples
 Please see [Examples](examples) and [Integration tests](tests/Integration) for more information on detailed usage.
 
