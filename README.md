@@ -5,9 +5,7 @@
 [![php7.4, macOS latest](https://github.com/extraton/php-ton-client/workflows/php7.4,%20macOS%20latest/badge.svg)](https://github.com/extraton/php-ton-client/actions?query=workflow%3A%22php7.4%2C+macOS+latest%22)
 [![Total Downloads](https://img.shields.io/packagist/dt/extraton/php-ton-client.svg?style=flat&color=00e600)](https://packagist.org/packages/extraton/php-ton-client) [![Chat on Telegram](https://img.shields.io/badge/chat-on%20Telegram-9cf.svg?logo=telegram&color=0088cc)](https://t.me/extraton)
 
-**Extraton** is a simple and powerful php-library to binding with the [TON SDK](https://github.com/tonlabs/TON-SDK).
-It allows to develop a decentralized applications for the FreeTON blockchain.
-It has the rich abilities:
+**Extraton** is a simple and powerful php-library to binding with the [TON SDK](https://github.com/tonlabs/TON-SDK). It allows to interact with FreeTON blockchain. It has the rich abilities:
 
  - All methods of the TON SDK v1.0.0 are implements
  - Interaction with the TON SDK through an asynchronous calls
