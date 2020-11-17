@@ -5,8 +5,9 @@ help:
 	@echo "  test                           to perform all tests."
 	@echo "  test-unit                      to perform unit tests."
 	@echo "  test-integration               to perform integration tests."
-	@echo "  phpstan                        to run phpstan on the codebase."
+	@echo "  analyze                        to run phpstan on the codebase."
 	@echo "  codestyle                      to run php-cs-fixer on the codebase."
+	@echo "  codestyle-fix                  to run php-cs-fixer on the codebase with code formatting."
 
 build:
 	docker build --tag extraton/php-ton-client-checkup:0.1 .
@@ -24,10 +25,14 @@ test-unit:
 test-integration:
 	$(MAKE) test FOLDER="Integration"
 
-phpstan:
+analyze:
 	if [ ! -f "./vendor/bin/phpstan" ]; then $(MAKE) install; fi;
 	docker run --rm -it -v ${PWD}:/app extraton/php-ton-client-checkup:0.1 ./vendor/bin/phpstan analyze src
 
 codestyle:
 	if [ ! -f "./vendor/bin/php-cs-fixer" ]; then $(MAKE) install; fi;
 	docker run --rm -it -v ${PWD}:/app extraton/php-ton-client-checkup:0.1 ./vendor/bin/php-cs-fixer fix --config=.php_cs.dist --diff-format=udiff --dry-run --allow-risky=yes
+
+codestyle-fix:
+	if [ ! -f "./vendor/bin/php-cs-fixer" ]; then $(MAKE) install; fi;
+	docker run --rm -it -v ${PWD}:/app extraton/php-ton-client-checkup:0.1 ./vendor/bin/php-cs-fixer fix

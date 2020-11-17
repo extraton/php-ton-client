@@ -35,7 +35,7 @@ abstract class AbstractResult implements IteratorAggregate
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getResponseData(): array
     {
