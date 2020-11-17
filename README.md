@@ -11,18 +11,19 @@
  - Interaction with the TON SDK through an asynchronous calls
  - The every method contains inline-doc
  - The full autocomplete is available in a such IDE like the [PHPStorm](https://www.jetbrains.com/phpstorm/)
- - Simple installation by the Composer package manager
- - Automatic download of the TON SDK library for the current environment
+ - Simple installation by the [Composer](https://getcomposer.org/) package manager
+ - The automatic download of the TON SDK library for the current environment
  - The client auto configuration (out-of-the-box)
  - Covered by the unit-tests
  - Fully covered by the integration tests
  - Tools to maintain code quality (static analyser and codestyle checker) 
  - Tools to the quick start to develop (see [Dockerfile](Dockerfile) + [Makefile](Makefile))
  - The error handling by the general exception interface (see [src/Exception](src/Exception)) 
- - Using a generators to iterate the asynchronous events
+ - Using generators to iterate the asynchronous events
  - You can add your own client implementation based on [FFIAdapter](src/FFI/FFIAdapter.php) and [Binding](src/Binding/Binding.php)
- - Simple interface to the graphql requests
+ - A simple interface to the graphql requests
  - Temporary logs creation for the detailed analysis on integration tests running
+
 ## Requirements
 - php7.4+
 - ffi extension
