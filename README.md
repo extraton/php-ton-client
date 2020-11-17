@@ -19,10 +19,10 @@ It has the rich abilities:
  - Covered by the unit-tests
  - Fully covered by the integration tests
  - Tools to maintain code quality (static analyser and codestyle checker) 
- - Tools to the quick start to develop and deploy (see [Dockerfile](Dockerfile) + [Makefile](Makefile))
- - The error handling by the general exception interface (see src/Exception) 
+ - Tools to the quick start to develop (see [Dockerfile](Dockerfile) + [Makefile](Makefile))
+ - The error handling by the general exception interface (see [src/Exception](src/Exception)) 
  - Using a generators to iterate the asynchronous events
- - You can add your own client implementation based on [FFIAdapter](\Extraton\TonClient\FFI\FFIAdapter) and [Binding](src/Binding/Binding.php)
+ - You can add your own client implementation based on [FFIAdapter](src/FFI/FFIAdapter.php) and [Binding](src/Binding/Binding.php)
  - Simple interface to the graphql requests
  - Temporary logs creation for the detailed analysis on integration tests running
 ## Requirements
