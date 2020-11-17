@@ -7,7 +7,7 @@
 
 **Extraton** is a simple and powerful php-library to binding with the [TON SDK](https://github.com/tonlabs/TON-SDK). It allows to interact with FreeTON blockchain. It has the rich abilities:
 
- - All methods of the TON SDK v1.0.0 are implements
+ - All methods of the TON SDK v1.0.0 are implemented
  - Interaction with the TON SDK through an asynchronous calls
  - The every method contains inline-doc
  - The full autocomplete is available in a such IDE like the [PHPStorm](https://www.jetbrains.com/phpstorm/)
