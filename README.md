@@ -3,7 +3,7 @@
 # Extraton, PHP TON Client
 [![php7.4, Ubuntu 20.04](https://github.com/extraton/php-ton-client/workflows/php7.4,%20Ubuntu%2020.04/badge.svg)](https://github.com/extraton/php-ton-client/actions?query=workflow%3A%22php7.4%2C+Ubuntu+20.04%22)
 [![php7.4, macOS latest](https://github.com/extraton/php-ton-client/workflows/php7.4,%20macOS%20latest/badge.svg)](https://github.com/extraton/php-ton-client/actions?query=workflow%3A%22php7.4%2C+macOS+latest%22)
-[![Total Downloads](https://img.shields.io/packagist/dt/extraton/php-ton-client.svg?style=flat)](https://packagist.org/packages/extraton/php-ton-client)
+[![Total Downloads](https://img.shields.io/packagist/dt/extraton/php-ton-client.svg?style=flat)](https://packagist.org/packages/extraton/php-ton-client) [![Chat on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/ton_sdk)
 
 ## Requirements
 - php7.4+
