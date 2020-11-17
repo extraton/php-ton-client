@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 use Extraton\TonClient\TonClient;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Ton Client instantiation
-$tonClient = new TonClient(
-    [
-        'network' => [
-            'server_address' => 'net.ton.dev'
-        ]
-    ]
-);
+$tonClient = TonClient::createDefault();
 
 // Getting module crypto
 $crypto = $tonClient->getCrypto();
@@ -27,8 +21,6 @@ $secretKey = '56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f18
 $result = $crypto->naclSign($unsigned, $secretKey);
 
 // Showing result
-var_dump([
-    'unsigned' => $unsigned,
-    'secretKey' => $secretKey,
-    'signed' => $result->getSigned(),
-]);
+echo 'Unsigned: ' . $unsigned . PHP_EOL;
+echo 'Secret key: ' . $secretKey . PHP_EOL;
+echo 'Signed: ' . $result->getSigned() . PHP_EOL;

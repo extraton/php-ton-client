@@ -63,7 +63,7 @@ class TonClient
     public static function createDefault(): self
     {
         $config = [
-            "network" => [
+            'network' => [
                 'server_address'             => 'net.ton.dev',
                 'network_retries_count'      => 5,
                 'message_retries_count'      => 5,

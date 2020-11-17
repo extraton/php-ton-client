@@ -168,4 +168,4 @@ If you have any issues, just feel free and open it in this repository, thx!
 - [qwertys318](https://github.com/qwertys318)
 
 ## License
-The Apache License Version 2.0. Please see [License File](LICENSE.md) for more information.
+The Apache License Version 2.0. Please see [License File](LICENSE) for more information.

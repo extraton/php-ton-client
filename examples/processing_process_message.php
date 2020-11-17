@@ -11,17 +11,18 @@ use Extraton\TonClient\TonClient;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$tonClient = new TonClient(
-    [
-        'network' => [
-            'server_address' => 'net.ton.dev'
-        ]
-    ]
-);
+// Ton Client instantiation
+$tonClient = TonClient::createDefault();
 
 $dataProvider = new DataProvider($tonClient);
+
+// Get Processing module
 $processing = $tonClient->getProcessing();
+
+// Get Abi module
 $abi = $tonClient->getAbi();
+
+//  Get Crypto module
 $crypto = $tonClient->getCrypto();
 
 $abiParams = AbiType::fromArray($dataProvider->getEventsAbiArray());
@@ -41,6 +42,7 @@ $address = $resultOfEncodeMessage->getAddress();
 
 $dataProvider->sendTons($address);
 
+// Creates message, sends it to the network and monitors its processing
 $resultOfProcessMessage = $processing->processMessage(
     $abiParams,
     $signer,
@@ -51,8 +53,14 @@ $resultOfProcessMessage = $processing->processMessage(
     true
 );
 
-foreach ($resultOfProcessMessage as $event) {
-    var_dump($event->getType());
+// Iterate generator
+foreach ($resultOfProcessMessage->getIterator() as $event) {
+    echo 'New event ' . $event->getType() . PHP_EOL;
+
+    var_dump($event->getResponseData());
 }
 
-var_dump($resultOfProcessMessage->getFees()->getTotalAccountFees());
+echo 'Fees: ' . PHP_EOL;
+var_dump($resultOfProcessMessage->getFees());
+
+echo 'Finished.' . PHP_EOL;
