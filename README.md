@@ -50,7 +50,7 @@ To automatically download the TON SDK library add the following lines to your pr
   }
 ...
 ```
-The library will be downloaded after the commands ```composer install``` and ```composer update``` are called in your project root. To forced download the TON SDK library for your operating system, run the following command:
+The library will be downloaded after the commands ```composer install``` or ```composer update``` are called in your project root. To forced download the TON SDK library for your operating system, run the following command:
 ``` bash
 composer run download-ton-sdk-library
 ```
