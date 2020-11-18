@@ -108,7 +108,7 @@ class NetTest extends AbstractModuleTest
                     'collection' => $collection,
                     'result'     => $result,
                     'filter'     => $filters,
-                    'orderBy'    => $orderBy,
+                    'order'      => $orderBy,
                     'limit'      => $limit,
                 ]
             )
