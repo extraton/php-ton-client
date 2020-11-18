@@ -34,7 +34,7 @@ class Net extends AbstractModule
                     'collection' => $query->getCollection(),
                     'result'     => $query->getResult(),
                     'filter'     => $query->getFilters(),
-                    'orderBy'    => $query->getOrderBy(),
+                    'order'      => $query->getOrderBy(),
                     'limit'      => $query->getLimit(),
                 ]
             )->wait()
