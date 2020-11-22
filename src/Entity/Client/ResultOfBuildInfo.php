@@ -18,7 +18,7 @@ class ResultOfBuildInfo extends AbstractResult
      */
     public function getBuildNumber(): int
     {
-        return $this->requireInt('build_info', 'build_number');
+        return $this->requireInt('build_number');
     }
 
     /**
@@ -28,6 +28,6 @@ class ResultOfBuildInfo extends AbstractResult
      */
     public function getDependencies(): array
     {
-        return $this->requireArray('build_info', 'dependencies');
+        return $this->requireArray('dependencies');
     }
 }

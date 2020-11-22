@@ -9,21 +9,7 @@ use Extraton\TonClient\TonClient;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// Ton Client instantiation
-$tonClient = TonClient::createDefault();
-
-// Get Processing module
-$processing = $tonClient->getProcessing();
-
-// Giver address
-$giverAddress = '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
-
-// Destination address (change the address to yours)
-$destinationAddress = '0:c479ba10644a6715f34f3486a9c6c343c2efa44eeffa4e7d9f4515def7864d21';
-
-// Create abi from JSON
-$abi = AbiType::fromJson(
-    <<<JSON
+$giverAbiJson = <<<JSON
 {
   "ABI version": 2,
   "header": [
@@ -54,8 +40,22 @@ $abi = AbiType::fromJson(
   "events": [
   ]
 }
-JSON
-);
+JSON;
+
+// Ton Client instantiation
+$tonClient = TonClient::createDefault();
+
+// Get Processing module
+$processing = $tonClient->getProcessing();
+
+// Giver address
+$giverAddress = '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
+
+// Destination address (change the address to yours)
+$destinationAddress = '0:c479ba10644a6715f34f3486a9c6c343c2efa44eeffa4e7d9f4515def7864d21';
+
+// Create abi from JSON
+$abi = AbiType::fromJson($giverAbiJson);
 
 $callSet = (new CallSet('grant'))
     ->withInput(
@@ -66,7 +66,7 @@ $callSet = (new CallSet('grant'))
 
 $signer = Signer::fromNone();
 
-// Send tons
+// Send rubies
 $result = $processing->processMessage(
     $abi,
     $signer,

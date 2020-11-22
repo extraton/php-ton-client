@@ -62,8 +62,8 @@ class Tvm extends AbstractModule
     public function runTvm(
         string $message,
         string $account,
-        ?ExecutionOptions $executionOptions,
-        ?AbiType $abi
+        ?ExecutionOptions $executionOptions = null,
+        ?AbiType $abi = null
     ): ResultOfRunTvm {
         return new ResultOfRunTvm(
             $this->tonClient->request(

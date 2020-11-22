@@ -65,7 +65,7 @@ class AccountForExecutor implements Params
      *                                    Can be used to calculate transaction fees without balance check
      * @return self
      */
-    public static function fromAccount(string $boc, ?bool $unlimitedBalance): self
+    public static function fromAccount(string $boc, ?bool $unlimitedBalance = null): self
     {
         $instance = new self(self::TYPE_ACCOUNT);
         $instance->setBoc($boc);

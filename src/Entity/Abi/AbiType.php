@@ -7,12 +7,8 @@ namespace Extraton\TonClient\Entity\Abi;
 use Extraton\TonClient\Entity\Params;
 use Extraton\TonClient\Exception\DataException;
 use Extraton\TonClient\Exception\EncoderException;
-use JsonException;
 
-use function json_decode;
 use function sprintf;
-
-use const JSON_THROW_ON_ERROR;
 
 /**
  * Type Abi
@@ -23,12 +19,16 @@ class AbiType implements Params
 
     public const TYPE_HANDLE = 'Handle';
 
+    public const TYPE_JSON = 'Json';
+
     private string $type;
 
     private int $handle;
 
     /** @var array<mixed> */
     private array $arrayValue;
+
+    private string $json;
 
     /**
      * @param string $type
@@ -47,11 +47,10 @@ class AbiType implements Params
      */
     public static function fromJson(string $json): self
     {
-        try {
-            return self::fromArray(json_decode($json, true, 512, JSON_THROW_ON_ERROR));
-        } catch (JsonException $exception) {
-            throw new EncoderException($exception);
-        }
+        $instance = new self(self::TYPE_JSON);
+        $instance->setJson($json);
+
+        return $instance;
     }
 
     /**
@@ -96,6 +95,19 @@ class AbiType implements Params
     }
 
     /**
+     * Set json value
+     *
+     * @param string $json
+     * @return self
+     */
+    private function setJson(string $json): self
+    {
+        $this->json = $json;
+
+        return $this;
+    }
+
+    /**
      * Set handle
      *
      * @param int $handle Handle
@@ -119,6 +131,8 @@ class AbiType implements Params
             $result['value'] = $this->handle;
         } elseif ($this->type === self::TYPE_SERIALIZED) {
             $result['value'] = $this->arrayValue;
+        } elseif ($this->type === self::TYPE_JSON) {
+            $result['value'] = $this->json;
         } else {
             throw new DataException(sprintf('Unknown type %s.', $this->type));
         }
