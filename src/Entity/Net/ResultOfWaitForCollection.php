@@ -18,6 +18,6 @@ class ResultOfWaitForCollection extends AbstractResult
      */
     public function getResult()
     {
-        return $this->getData('result');
+        return $this->getOriginData('result');
     }
 }

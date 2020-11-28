@@ -18,6 +18,6 @@ class ResultOfParse extends AbstractResult
      */
     public function getParsed()
     {
-        return $this->getData('parsed');
+        return $this->getOriginData('parsed');
     }
 }

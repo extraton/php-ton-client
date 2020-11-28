@@ -31,6 +31,6 @@ class DecodedOutput extends AbstractResult
      */
     public function getOutput()
     {
-        return $this->getData('output');
+        return $this->getOriginData('output');
     }
 }

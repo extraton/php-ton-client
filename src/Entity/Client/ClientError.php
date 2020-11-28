@@ -38,6 +38,6 @@ class ClientError extends AbstractResult
      */
     public function getErrorData()
     {
-        return $this->getData('data');
+        return $this->getOriginData('data');
     }
 }

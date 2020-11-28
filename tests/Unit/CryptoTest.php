@@ -6,6 +6,7 @@ namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfFactorize;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
@@ -1103,5 +1104,41 @@ class CryptoTest extends AbstractModuleTest
         $expected = new ResultOfHDKeyPublicFromXPrv($result);
 
         self::assertEquals($expected, $this->crypto->hdkeyPublicFromXprv($xprv));
+    }
+
+    /**
+     * @covers ::chaCha20
+     */
+    public function testChaCha20WithSuccessResult(): void
+    {
+        $data = uniqid(microtime(), true);
+        $key = uniqid(microtime(), true);
+        $nonce = uniqid(microtime(), true);
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.chacha20',
+                [
+                    'data'  => $data,
+                    'key'   => $key,
+                    'nonce' => $nonce,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfChaCha20($result);
+
+        self::assertEquals($expected, $this->crypto->chaCha20($data, $key, $nonce));
     }
 }

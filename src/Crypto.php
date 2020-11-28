@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfFactorize;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
@@ -704,6 +705,29 @@ class Crypto extends AbstractModule
                 'crypto.hdkey_public_from_xprv',
                 [
                     'xprv' => $xprv,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Performs symmetric chacha20 encryption.
+     *
+     * @param string $data Source data to be encrypted or decrypted. Must be encoded with base64.
+     * @param string $key 256-bit key. Must be encoded with hex.
+     * @param string $nonce 96-bit nonce. Must be encoded with hex.
+     * @return ResultOfChaCha20
+     * @throws TonException
+     */
+    public function chaCha20(string $data, string $key, string $nonce): ResultOfChaCha20
+    {
+        return new ResultOfChaCha20(
+            $this->tonClient->request(
+                'crypto.chacha20',
+                [
+                    'data'  => $data,
+                    'key'   => $key,
+                    'nonce' => $nonce,
                 ],
             )->wait()
         );

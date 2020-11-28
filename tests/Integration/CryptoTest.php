@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateSignKeys;
@@ -27,6 +28,7 @@ use Extraton\TonClient\Handler\Response;
 
 use function array_map;
 use function array_product;
+use function base64_encode;
 use function count;
 use function dechex;
 use function explode;
@@ -642,6 +644,27 @@ class CryptoTest extends AbstractModuleTest
             )
         );
         $result = $this->crypto->hdkeyPublicFromXprv($xprv);
+
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * @covers ::chaCha20
+     */
+    public function testChaCha20WithSuccessResult(): void
+    {
+        $data = base64_encode('Message');
+        $key = str_repeat('01', 32);
+        $nonce = str_repeat('ff', 12);
+
+        $expected = new ResultOfChaCha20(
+            new Response(
+                [
+                    'data' => 'w5QOGsJodQ==',
+                ]
+            )
+        );
+        $result = $this->crypto->chaCha20($data, $key, $nonce);
 
         self::assertEquals($expected, $result);
     }

@@ -38,7 +38,7 @@ class DecodedMessageBody extends AbstractResult
      */
     public function getValue()
     {
-        return $this->getData('value');
+        return $this->getOriginData('value');
     }
 
     /**

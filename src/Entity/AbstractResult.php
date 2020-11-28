@@ -65,7 +65,7 @@ abstract class AbstractResult implements IteratorAggregate
      */
     protected function requireData(string ...$keys)
     {
-        $result = $this->getData(...$keys);
+        $result = $this->getOriginData(...$keys);
 
         if ($result === null) {
             $path = implode('.', $keys);
@@ -80,7 +80,7 @@ abstract class AbstractResult implements IteratorAggregate
      * @param string ...$keys
      * @return array|mixed|null
      */
-    protected function getData(string ...$keys)
+    protected function getOriginData(string ...$keys)
     {
         $result = $this->getResponseData();
         while ($key = array_shift($keys)) {
@@ -100,7 +100,7 @@ abstract class AbstractResult implements IteratorAggregate
      */
     protected function getArray(string ...$keys): ?array
     {
-        $result = $this->getData(...$keys);
+        $result = $this->getOriginData(...$keys);
 
         if (!is_array($result)) {
             return null;
@@ -109,14 +109,13 @@ abstract class AbstractResult implements IteratorAggregate
         return $result;
     }
 
-
     /**
      * @param string ...$keys
      * @return string|null
      */
     protected function getString(string ...$keys): ?string
     {
-        $result = $this->getData(...$keys);
+        $result = $this->getOriginData(...$keys);
 
         if (!is_string($result)) {
             return null;
