@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-1.0.3
+1.1.0
 -----
 * Added new method `Crypto::chaCha20` 
 * Added new method `Boc::parseShardstate` 
@@ -9,7 +9,7 @@ CHANGELOG
 
 1.0.2
 -----
-* Updated TON SDK library to 1.2.0
+* Updated TON SDK library to 1.1.2
 * Added default value (`null`) for some methods
 * Added new example: send rubies with comment to surf
 * Refactoring for the method `AbiType::fromJson()`
