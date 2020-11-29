@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
+use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Exception\TonException;
 
@@ -127,6 +128,25 @@ class Boc extends AbstractModule
                     'boc'          => $boc,
                     'id'           => $id,
                     'workchain_id' => $workchainId,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Calculates BOC root hash
+     *
+     * @param string $boc BOC encoded as base64
+     * @return ResultOfGetBocHash
+     * @throws TonException
+     */
+    public function getBocHash(string $boc): ResultOfGetBocHash
+    {
+        return new ResultOfGetBocHash(
+            $this->tonClient->request(
+                'boc.get_boc_hash',
+                [
+                    'boc' => $boc,
                 ]
             )->wait()
         );

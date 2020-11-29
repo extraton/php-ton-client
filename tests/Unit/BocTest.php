@@ -6,6 +6,7 @@ namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Boc;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
+use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
 
@@ -222,5 +223,37 @@ class BocTest extends AbstractModuleTest
         $expected = new ResultOfParse($response);
 
         self::assertEquals($expected, $this->boc->parseShardstate($boc, $id, $workchainId));
+    }
+
+    /**
+     * @covers ::getBocHash
+     */
+    public function testGetBocHashWithSuccessResult(): void
+    {
+        $boc = uniqid(microtime(), true);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.get_boc_hash',
+                [
+                    'boc' => $boc,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfGetBocHash($response);
+
+        self::assertEquals($expected, $this->boc->getBocHash($boc));
     }
 }

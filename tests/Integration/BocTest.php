@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
+use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
-
-use function var_export;
 
 /**
  * Integration tests for Boc module
@@ -948,5 +947,23 @@ class BocTest extends AbstractModuleTest
         self::assertEquals($id, $parsed['id']);
         self::assertEquals($workcahinId, $parsed['workchain_id']);
         self::assertEquals(0, $parsed['seq_no']);
+    }
+
+    /**
+     * @covers ::getBocHash
+     */
+    public function testGetBocHashWithSuccessResult(): void
+    {
+        $boc = 'te6ccgEBAQEAWAAAq2n+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE/zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzSsG8DgAAAAAjuOu9NAL7BxYpA';
+
+        $expected = new ResultOfGetBocHash(
+            new Response(
+                [
+                    'hash' => 'dfd47194f3058ee058bfbfad3ea40cbbd9ad17ca77cd0904d4d9f18a48c2fbca',
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $this->boc->getBocHash($boc));
     }
 }
