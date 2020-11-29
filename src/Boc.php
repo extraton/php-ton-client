@@ -107,4 +107,28 @@ class Boc extends AbstractModule
             )->wait()
         );
     }
+
+    /**
+     * Parses shardstate boc into a JSON
+     * JSON structure is compatible with GraphQL API shardstate object
+     *
+     * @param string $boc BOC encoded as base64
+     * @param string $id Shardstate identificator
+     * @param int $workchainId Workchain shardstate belongs to
+     * @return ResultOfParse
+     * @throws TonException
+     */
+    public function parseShardstate(string $boc, string $id, int $workchainId): ResultOfParse
+    {
+        return new ResultOfParse(
+            $this->tonClient->request(
+                'boc.parse_shardstate',
+                [
+                    'boc'          => $boc,
+                    'id'           => $id,
+                    'workchain_id' => $workchainId,
+                ]
+            )->wait()
+        );
+    }
 }

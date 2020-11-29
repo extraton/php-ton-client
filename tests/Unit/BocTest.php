@@ -10,6 +10,7 @@ use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
 
 use function microtime;
+use function random_int;
 use function uniqid;
 
 /**
@@ -185,5 +186,41 @@ class BocTest extends AbstractModuleTest
         $expected = new ResultOfGetBlockchainConfig($response);
 
         self::assertEquals($expected, $this->boc->getBlockchainConfig($blockBoc));
+    }
+
+    /**
+     * @covers ::parseShardstate
+     */
+    public function testParseShardstateWithSuccessResult(): void
+    {
+        $boc = uniqid(microtime(), true);
+        $id = uniqid(microtime(), true);
+        $workchainId = random_int(0, 1000);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.parse_shardstate',
+                [
+                    'boc'          => $boc,
+                    'id'           => $id,
+                    'workchain_id' => $workchainId,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfParse($response);
+
+        self::assertEquals($expected, $this->boc->parseShardstate($boc, $id, $workchainId));
     }
 }
