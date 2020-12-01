@@ -67,15 +67,15 @@ class TonClient
                 'server_address'             => 'net.ton.dev',
                 'network_retries_count'      => 5,
                 'message_retries_count'      => 5,
-                'message_processing_timeout' => 60000,
-                'wait_for_timeout'           => 60000,
-                'out_of_sync_threshold'      => 30000,
+                'message_processing_timeout' => 300000,
+                'wait_for_timeout'           => 300000,
+                'out_of_sync_threshold'      => 150000,
                 'access_key'                 => ''
             ],
             'abi'     => [
                 'workchain'                              => 0,
-                'message_expiration_timeout'             => 60000,
-                'message_expiration_timeout_grow_factor' => 1.35
+                'message_expiration_timeout'             => 300000,
+                'message_expiration_timeout_grow_factor' => 1.25
             ],
             'crypto'  => [
                 'mnemonic_dictionary'   => 1,
