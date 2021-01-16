@@ -50,7 +50,7 @@ class AbiTest extends AbstractModuleTest
                 $this->dataProvider->getEventsExpire()
             )->withInput(
                 [
-                    'id' => $id = '0x1',
+                    'id' => $id = '0x0000000000000000000000000000000000000000000000000000000000000001',
                 ]
             );
 
@@ -109,7 +109,7 @@ class AbiTest extends AbstractModuleTest
                     'name'      => 'returnValue',
                     'value'     =>
                         [
-                            'id' => '0x0',
+                            'id' => '0x0000000000000000000000000000000000000000000000000000000000000000',
                         ],
                     'header'    =>
                         [
@@ -338,7 +338,7 @@ class AbiTest extends AbstractModuleTest
                     'name'      => 'returnValue',
                     'value'     =>
                         [
-                            'id' => '0x0',
+                            'id' => '0x0000000000000000000000000000000000000000000000000000000000000000',
                         ],
                     'header'    =>
                         [
@@ -367,7 +367,7 @@ class AbiTest extends AbstractModuleTest
                     'name'      => 'EventThrown',
                     'value'     =>
                         [
-                            'id' => '0x0',
+                            'id' => '0x0000000000000000000000000000000000000000000000000000000000000000',
                         ],
                     'header'    => null,
                 ]
@@ -390,7 +390,7 @@ class AbiTest extends AbstractModuleTest
                     'body_type' => 'Output',
                     'name'      => 'returnValue',
                     'value'     => [
-                        'value0' => '0x0',
+                        'value0' => '0x0000000000000000000000000000000000000000000000000000000000000000',
                     ],
                     'header'    => null,
                 ]

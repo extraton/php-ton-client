@@ -7,6 +7,7 @@ namespace Extraton\Tests\Unit\TonClient;
 use Extraton\TonClient\Boc;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
+use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
 
@@ -255,5 +256,37 @@ class BocTest extends AbstractModuleTest
         $expected = new ResultOfGetBocHash($response);
 
         self::assertEquals($expected, $this->boc->getBocHash($boc));
+    }
+
+    /**
+     * @covers ::getCodeFromTvc
+     */
+    public function testGetCodeFromTvcSuccessResult(): void
+    {
+        $tvc = uniqid(microtime(), true);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.get_code_from_tvc',
+                [
+                    'tvc' => $tvc,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfGetCodeFromTvc($response);
+
+        self::assertEquals($expected, $this->boc->getCodeFromTvc($tvc));
     }
 }

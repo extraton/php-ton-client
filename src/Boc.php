@@ -6,6 +6,7 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
+use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Exception\TonException;
 
@@ -147,6 +148,25 @@ class Boc extends AbstractModule
                 'boc.get_boc_hash',
                 [
                     'boc' => $boc,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Extracts code from TVC contract image
+     *
+     * @param string $tvc Contract TVC image encoded as base64
+     * @return ResultOfGetCodeFromTvc
+     * @throws TonException
+     */
+    public function getCodeFromTvc(string $tvc): ResultOfGetCodeFromTvc
+    {
+        return new ResultOfGetCodeFromTvc(
+            $this->tonClient->request(
+                'boc.get_code_from_tvc',
+                [
+                    'tvc' => $tvc,
                 ]
             )->wait()
         );

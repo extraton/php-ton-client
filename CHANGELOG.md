@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+1.2.0
+-----
+* Updated TON SDK library to version 1.5.2
+* Added PHP 8 support
+* Fixed integration tests
+* Added new method `Net::query` 
+* Added new method `Net::findLastShardBlock` 
+* Added new method `Net::setEndpoints` 
+* Added new method `Net::fetchEndpoints` 
+* Added new method `Net::suspend` 
+* Added new method `Net::resume` 
+* Added new method `Boc::getCodeFromTvc` 
+
 1.1.0
 -----
 * Added new method `Crypto::chaCha20` 
@@ -9,7 +22,7 @@ CHANGELOG
 
 1.0.2
 -----
-* Updated TON SDK library to 1.1.2
+* Updated TON SDK library to version 1.1.2
 * Added default value (`null`) for some methods
 * Added new example: send rubies with comment to surf
 * Refactoring for the method `AbiType::fromJson()`
