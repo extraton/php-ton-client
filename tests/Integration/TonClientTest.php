@@ -49,6 +49,6 @@ class TonClientTest extends AbstractModuleTest
         $resultOfGetApiReference = $this->tonClient->getApiReference();
 
         self::assertEquals('1.5.2', $resultOfGetApiReference->getApi()['version']);
-        self::assertCount(8, $resultOfGetApiReference->getApi()['modules']);
+        self::assertCount(9, $resultOfGetApiReference->getApi()['modules']);
     }
 }
