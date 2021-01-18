@@ -25,10 +25,11 @@
  - Temporary logs creation for the detailed analysis on integration tests running
 
 ## Requirements
-- php7.4+
+- php7.4+ or php8.0+
 - ffi extension
 - json extension
 - zlib extension
+- TON SDK Library (included)
 
 ## Installation
 To install it via [Composer](https://getcomposer.org/) simply run:
