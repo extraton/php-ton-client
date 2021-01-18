@@ -24,6 +24,6 @@ jobs:
       - name: Install Dependencies
         run: composer install --verbose
       - name: Unit tests
-        run: ./vendor/bin/phpunit tests/Unit/
+        run: ./vendor/bin/phpunit --testdox tests/Unit/
       - name: Integration tests
-        run: ./vendor/bin/phpunit tests/Integration/
+        run: ./vendor/bin/phpunit --testdox tests/Integration/
