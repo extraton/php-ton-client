@@ -48,6 +48,7 @@ class TvmTest extends AbstractModuleTest
 
         $abi = AbiType::fromArray([]);
         $skipTransactionCheck = (bool)random_int(0, 1);
+        $returnUpdatedAccount = (bool)random_int(0, 1);
 
         $response = new Response(
             [
@@ -70,6 +71,7 @@ class TvmTest extends AbstractModuleTest
                     'execution_options'      => $executionOptions,
                     'abi'                    => $abi,
                     'skip_transaction_check' => $skipTransactionCheck,
+                    'return_updated_account' => $returnUpdatedAccount
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -83,7 +85,8 @@ class TvmTest extends AbstractModuleTest
                 $accountForExecutor,
                 $executionOptions,
                 $abi,
-                $skipTransactionCheck
+                $skipTransactionCheck,
+                $returnUpdatedAccount
             )
         );
     }
@@ -102,6 +105,7 @@ class TvmTest extends AbstractModuleTest
             ->getMock();
 
         $abi = AbiType::fromArray([]);
+        $returnUpdatedAccount = (bool)random_int(0, 1);
 
         $response = new Response(
             [
@@ -119,10 +123,11 @@ class TvmTest extends AbstractModuleTest
             ->with(
                 'tvm.run_tvm',
                 [
-                    'message'           => $message,
-                    'account'           => $account,
-                    'execution_options' => $executionOptions,
-                    'abi'               => $abi,
+                    'message'                => $message,
+                    'account'                => $account,
+                    'execution_options'      => $executionOptions,
+                    'abi'                    => $abi,
+                    'return_updated_account' => $returnUpdatedAccount
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -135,7 +140,8 @@ class TvmTest extends AbstractModuleTest
                 $message,
                 $account,
                 $executionOptions,
-                $abi
+                $abi,
+                $returnUpdatedAccount
             )
         );
     }

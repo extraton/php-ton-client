@@ -5,19 +5,19 @@
   ],
   "functions": [
     {
-      "name": "grant",
+      "name": "constructor",
       "inputs": [
-        {
-          "name": "addr",
-          "type": "address"
-        }
       ],
       "outputs": [
       ]
     },
     {
-      "name": "constructor",
+      "name": "grant",
       "inputs": [
+        {
+          "name": "dest",
+          "type": "address"
+        }
       ],
       "outputs": [
       ]

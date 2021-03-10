@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.3.0
+-----
+* Updated TON SDK library to version 1.10.0
+* Added new flag `return_updated_account` to methods `Tvm.runTvm` and `Tvm.runExecutor`
+* Fixed integration and unit tests
+
 1.2.0
 -----
 * Updated TON SDK library to version 1.5.2

@@ -639,7 +639,7 @@ class CryptoTest extends AbstractModuleTest
         $expected = new ResultOfHDKeyPublicFromXPrv(
             new Response(
                 [
-                    'public' => '02a87d9764eedaacee45b0f777b5a242939b05fa06873bf511ca9a59cb46a5f526',
+                    'public' => '302a832bad9e5c9906422a82c28b39ae465dcd60178480f7309e183ee34b5e83',
                 ]
             )
         );

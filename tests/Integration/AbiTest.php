@@ -409,7 +409,7 @@ class AbiTest extends AbstractModuleTest
         $this->expectExceptionObject(
             SDKException::create(
                 [
-                    'message' => 'Message can\'t be decoded: failed to fill whole buffer',
+                    'message' => 'Message can\'t be decoded: Invalid BOC: message BOC deserialization error: failed to fill whole buffer',
                     'code'    => 304,
                 ]
             )

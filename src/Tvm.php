@@ -25,6 +25,7 @@ class Tvm extends AbstractModule
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param AbiType|null $abi Contract ABI for decoding output messages
      * @param bool|null $skipTransactionCheck Skip transaction check flag
+     * @param bool $returnUpdatedAccount Return updated account flag (empty string is returned if the flag is false)
      * @return ResultOfRunExecutor
      * @throws TonException
      */
@@ -33,7 +34,8 @@ class Tvm extends AbstractModule
         AccountForExecutor $accountForExecutor,
         ?ExecutionOptions $executionOptions = null,
         ?AbiType $abi = null,
-        ?bool $skipTransactionCheck = null
+        ?bool $skipTransactionCheck = null,
+        bool $returnUpdatedAccount = false
     ): ResultOfRunExecutor {
         return new ResultOfRunExecutor(
             $this->tonClient->request(
@@ -44,6 +46,7 @@ class Tvm extends AbstractModule
                     'execution_options'      => $executionOptions,
                     'abi'                    => $abi,
                     'skip_transaction_check' => $skipTransactionCheck,
+                    'return_updated_account' => $returnUpdatedAccount,
                 ]
             )->wait()
         );
@@ -56,6 +59,7 @@ class Tvm extends AbstractModule
      * @param string $account Account BOC. Must be encoded as base64
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param AbiType|null $abi Contract ABI for decoding output messages
+     * @param bool $returnUpdatedAccount Return updated account flag (empty string is returned if the flag is false)
      * @return ResultOfRunTvm
      * @throws TonException
      */
@@ -63,16 +67,18 @@ class Tvm extends AbstractModule
         string $message,
         string $account,
         ?ExecutionOptions $executionOptions = null,
-        ?AbiType $abi = null
+        ?AbiType $abi = null,
+        bool $returnUpdatedAccount = false
     ): ResultOfRunTvm {
         return new ResultOfRunTvm(
             $this->tonClient->request(
                 'tvm.run_tvm',
                 [
-                    'message'           => $message,
-                    'account'           => $account,
-                    'execution_options' => $executionOptions,
-                    'abi'               => $abi,
+                    'message'                => $message,
+                    'account'                => $account,
+                    'execution_options'      => $executionOptions,
+                    'abi'                    => $abi,
+                    'return_updated_account' => $returnUpdatedAccount,
                 ]
             )->wait()
         );

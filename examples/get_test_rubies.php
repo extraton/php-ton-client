@@ -17,19 +17,19 @@ $giverAbiJson = <<<JSON
   ],
   "functions": [
     {
-      "name": "grant",
+      "name": "constructor",
       "inputs": [
-        {
-          "name": "addr",
-          "type": "address"
-        }
       ],
       "outputs": [
       ]
     },
     {
-      "name": "constructor",
+      "name": "grant",
       "inputs": [
+        {
+          "name": "dest",
+          "type": "address"
+        }
       ],
       "outputs": [
       ]
@@ -60,7 +60,7 @@ $abi = AbiType::fromJson($giverAbiJson);
 $callSet = (new CallSet('grant'))
     ->withInput(
         [
-            'addr' => $destinationAddress
+            'dest' => $destinationAddress
         ]
     );
 
