@@ -142,7 +142,7 @@ class DataProvider
     public function sendTons(string $address): void
     {
         $abi = AbiType::fromArray($this->getGiverAbiArray());
-        $callSet = (new CallSet('grant'))->withInput(['addr' => $address]);
+        $callSet = (new CallSet('grant'))->withInput(['dest' => $address]);
         $giverAddress = $this->getGiverAddress();
         $signer = Signer::fromNone();
 

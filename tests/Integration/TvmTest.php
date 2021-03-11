@@ -106,12 +106,13 @@ class TvmTest extends AbstractModuleTest
             $resultOfEncodeMessage->getMessage(),
             $accountForExecutor,
             null,
-            $abi
+            $abi,
+            null,
+            true
         );
 
-        # Unlimited balance should not affect account balance
         $resultOfParse = $this->boc->parseAccount($resultOfRunExecutor->getAccount());
-        self::assertEquals($balance, $resultOfParse->getParsed()['balance']);
+        self::assertTrue($balance < $resultOfParse->getParsed()['balance']);
 
         // Run executor with limited balance
         $accountForExecutor = AccountForExecutor::fromAccount($boc, false);
@@ -119,7 +120,9 @@ class TvmTest extends AbstractModuleTest
             $resultOfEncodeMessage->getMessage(),
             $accountForExecutor,
             null,
-            $abi
+            $abi,
+            null,
+            true
         );
 
         self::assertGreaterThan(0, $resultOfRunExecutor->getTransactionFees()->getTotalAccountFees());
@@ -224,6 +227,7 @@ class TvmTest extends AbstractModuleTest
             $accountForExecutor,
             null,
             null,
+            true,
             true
         );
 
@@ -266,7 +270,11 @@ class TvmTest extends AbstractModuleTest
 
         $resultOfRunExecutor = $this->tvm->runExecutor(
             $resultOfEncodeMessage->getMessage(),
-            $accountForExecutor
+            $accountForExecutor,
+            null,
+            null,
+            null,
+            true
         );
 
         $resultOfParse = $this->boc->parseAccount($resultOfRunExecutor->getAccount());
