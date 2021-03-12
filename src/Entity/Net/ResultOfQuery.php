@@ -22,7 +22,7 @@ class ResultOfQuery extends AbstractResult
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getData(): array
     {
@@ -30,7 +30,7 @@ class ResultOfQuery extends AbstractResult
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getMessages(): array
     {

@@ -6,6 +6,7 @@ namespace Extraton\TonClient\FFI;
 
 use FFI;
 use FFI\CData;
+use RuntimeException;
 
 class FFIAdapter
 {
@@ -74,7 +75,12 @@ class FFIAdapter
      */
     public function callNew(string $type, bool $owned = true): FFI\CData
     {
-        return $this->getFFI()->new($type, $owned);
+        $cData = $this->getFFI()->new($type, $owned);
+        if ($cData === null) {
+            throw new RuntimeException('Invalid data from call FFI::new().');
+        }
+
+        return $cData;
     }
 
     /**

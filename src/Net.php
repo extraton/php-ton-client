@@ -108,7 +108,7 @@ class Net extends AbstractModule
      * Performs DAppServer GraphQL query
      *
      * @param string $query GraphQL query text
-     * @param array|null $variables Variables used in query. Must be a map with named values that can be used in query.
+     * @param array<mixed>|null $variables Variables used in query. Must be a map with named values that can be used in query.
      * @return ResultOfQuery
      * @throws TonException
      */
@@ -147,7 +147,7 @@ class Net extends AbstractModule
     /**
      * Sets the list of endpoints to use on reinit
      *
-     * @param array $endpoints List of endpoints provided by server
+     * @param array<string> $endpoints List of endpoints provided by server
      * @throws TonException
      */
     public function setEndpoints(array $endpoints): void

@@ -1,8 +1,8 @@
-FROM php:7.4
+FROM php:8.0
 
 WORKDIR /app
 
-COPY --from=composer:1.10.10 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.0.11 /usr/bin/composer /usr/local/bin/composer
 
 RUN apt-get update && apt-get install -y \
     zip git libffi-dev \

@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.3.1
+-----
+* Fix dev tools
+* Fix code-style
+* Update docker image to php8.0
+
 1.3.0
 -----
 * Updated TON SDK library to version 1.10.0

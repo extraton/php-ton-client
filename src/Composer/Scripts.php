@@ -93,7 +93,12 @@ class Scripts
         }
 
         while (!gzeof($tmpFileHandler)) {
-            fwrite($dstFileHandler, gzread($tmpFileHandler, 4096));
+            $data = gzread($tmpFileHandler, 4096);
+            if ($data === false) {
+                throw new RuntimeException('Call function gzread failed.');
+            }
+
+            fwrite($dstFileHandler, $data);
         }
         fclose($dstFileHandler);
         gzclose($tmpFileHandler);
