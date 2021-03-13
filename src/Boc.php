@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\Entity\Boc\BuilderOp;
+use Extraton\TonClient\Entity\Boc\CacheType;
+use Extraton\TonClient\Entity\Boc\ResultOfBocCacheGet;
+use Extraton\TonClient\Entity\Boc\ResultOfBocCacheSet;
+use Extraton\TonClient\Entity\Boc\ResultOfEncodeBoc;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
@@ -167,6 +172,86 @@ class Boc extends AbstractModule
                 'boc.get_code_from_tvc',
                 [
                     'tvc' => $tvc,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Get BOC from cache
+     *
+     * @param string $bocRef Reference to the cached BOC
+     * @return ResultOfBocCacheGet
+     * @throws TonException
+     */
+    public function cacheGet(string $bocRef): ResultOfBocCacheGet
+    {
+        return new ResultOfBocCacheGet(
+            $this->tonClient->request(
+                'boc.cache_get',
+                [
+                    'boc_ref' => $bocRef,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Get BOC from cache
+     *
+     * @param string $boc BOC encoded as base64 or BOC reference
+     * @param CacheType $cacheType Cache type
+     * @return ResultOfBocCacheSet
+     * @throws TonException
+     */
+    public function cacheSet(string $boc, CacheType $cacheType): ResultOfBocCacheSet
+    {
+        return new ResultOfBocCacheSet(
+            $this->tonClient->request(
+                'boc.cache_set',
+                [
+                    'boc'        => $boc,
+                    'cache_type' => $cacheType,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Unpin BOCs with specified pin
+     *
+     * @param string $pin Pinned name
+     * @param string|null $bocRef Reference to the cached BOC (if it is provided then only referenced BOC is unpinned)
+     * @return void
+     * @throws TonException
+     */
+    public function cacheUnpin(string $pin, ?string $bocRef = null): void
+    {
+        $this->tonClient->request(
+            'boc.cache_unpin',
+            [
+                'pin'     => $pin,
+                'boc_ref' => $bocRef,
+            ]
+        )->wait();
+    }
+
+    /**
+     * Encodes BOC from builder operations
+     *
+     * @param array<BuilderOp> $builderOps
+     * @param CacheType|null $cacheType Cache type
+     * @return ResultOfEncodeBoc
+     * @throws TonException
+     */
+    public function encodeBoc(array $builderOps, ?CacheType $cacheType = null): ResultOfEncodeBoc
+    {
+        return new ResultOfEncodeBoc(
+            $this->tonClient->request(
+                'boc.encode_boc',
+                [
+                    'builder'    => $builderOps,
+                    'cache_type' => $cacheType,
                 ]
             )->wait()
         );

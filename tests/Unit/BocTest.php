@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Boc;
+use Extraton\TonClient\Entity\Boc\BuilderOp;
+use Extraton\TonClient\Entity\Boc\CacheType;
+use Extraton\TonClient\Entity\Boc\ResultOfBocCacheGet;
+use Extraton\TonClient\Entity\Boc\ResultOfBocCacheSet;
+use Extraton\TonClient\Entity\Boc\ResultOfEncodeBoc;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
@@ -288,5 +293,140 @@ class BocTest extends AbstractModuleTest
         $expected = new ResultOfGetCodeFromTvc($response);
 
         self::assertEquals($expected, $this->boc->getCodeFromTvc($tvc));
+    }
+
+    /**
+     * @covers ::cacheGet
+     */
+    public function testCacheGetSuccessResult(): void
+    {
+        $bocRef = uniqid(microtime(), true);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.cache_get',
+                [
+                    'boc_ref' => $bocRef,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfBocCacheGet($response);
+
+        self::assertEquals($expected, $this->boc->cacheGet($bocRef));
+    }
+
+    /**
+     * @covers ::cacheSet
+     */
+    public function testCacheSetSuccessResult(): void
+    {
+        $boc = uniqid(microtime(), true);
+        $cacheType = CacheType::fromPinned(uniqid(microtime(), true));
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.cache_set',
+                [
+                    'boc'        => $boc,
+                    'cache_type' => $cacheType,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfBocCacheSet($response);
+
+        self::assertEquals($expected, $this->boc->cacheSet($boc, $cacheType));
+    }
+
+    /**
+     * @covers ::cacheUnpin
+     */
+    public function testCacheUnpinSuccessResult(): void
+    {
+        $pin = uniqid(microtime(), true);
+        $bocRef = uniqid(microtime(), true);
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.cache_unpin',
+                [
+                    'pin'     => $pin,
+                    'boc_ref' => $bocRef,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $this->boc->cacheUnpin($pin, $bocRef);
+    }
+
+    /**
+     * @covers ::encodeBoc
+     */
+    public function testEncodeBocSuccessResult(): void
+    {
+        $builderOps = [
+            BuilderOp::fromBitString(uniqid(microtime(), true)),
+            BuilderOp::fromCellBoc(uniqid(microtime(), true)),
+        ];
+        $cacheType = CacheType::fromPinned(uniqid(microtime(), true));
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'boc.encode_boc',
+                [
+                    'builder'    => $builderOps,
+                    'cache_type' => $cacheType,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfEncodeBoc($response);
+
+        self::assertEquals($expected, $this->boc->encodeBoc($builderOps, $cacheType));
     }
 }

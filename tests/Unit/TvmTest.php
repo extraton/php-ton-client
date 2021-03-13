@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Boc\CacheType;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
 use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
@@ -40,6 +41,7 @@ class TvmTest extends AbstractModuleTest
     {
         $message = uniqid(microtime(), true);
         $accountForExecutor = AccountForExecutor::fromNone();
+        $cacheType = CacheType::fromPinned(uniqid(microtime(), true));
 
         /** @var MockObject|ExecutionOptions $executionOptions */
         $executionOptions = $this->getMockBuilder(ExecutionOptions::class)
@@ -71,7 +73,8 @@ class TvmTest extends AbstractModuleTest
                     'execution_options'      => $executionOptions,
                     'abi'                    => $abi,
                     'skip_transaction_check' => $skipTransactionCheck,
-                    'return_updated_account' => $returnUpdatedAccount
+                    'return_updated_account' => $returnUpdatedAccount,
+                    'boc_cache'              => $cacheType
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -86,7 +89,8 @@ class TvmTest extends AbstractModuleTest
                 $executionOptions,
                 $abi,
                 $skipTransactionCheck,
-                $returnUpdatedAccount
+                $returnUpdatedAccount,
+                $cacheType
             )
         );
     }
@@ -98,6 +102,7 @@ class TvmTest extends AbstractModuleTest
     {
         $message = uniqid(microtime(), true);
         $account = uniqid(microtime(), true);
+        $cacheType = CacheType::fromPinned(uniqid(microtime(), true));
 
         /** @var MockObject|ExecutionOptions $executionOptions */
         $executionOptions = $this->getMockBuilder(ExecutionOptions::class)
@@ -127,7 +132,8 @@ class TvmTest extends AbstractModuleTest
                     'account'                => $account,
                     'execution_options'      => $executionOptions,
                     'abi'                    => $abi,
-                    'return_updated_account' => $returnUpdatedAccount
+                    'return_updated_account' => $returnUpdatedAccount,
+                    'boc_cache'              => $cacheType
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -141,7 +147,8 @@ class TvmTest extends AbstractModuleTest
                 $account,
                 $executionOptions,
                 $abi,
-                $returnUpdatedAccount
+                $returnUpdatedAccount,
+                $cacheType
             )
         );
     }

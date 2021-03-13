@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Abi\AbiType;
+use Extraton\TonClient\Entity\Boc\CacheType;
 use Extraton\TonClient\Entity\Tvm\AccountForExecutor;
 use Extraton\TonClient\Entity\Tvm\ExecutionOptions;
 use Extraton\TonClient\Entity\Tvm\ResultOfRunExecutor;
@@ -26,6 +27,7 @@ class Tvm extends AbstractModule
      * @param AbiType|null $abi Contract ABI for decoding output messages
      * @param bool|null $skipTransactionCheck Skip transaction check flag
      * @param bool $returnUpdatedAccount Return updated account flag (empty string is returned if the flag is false)
+     * @param CacheType|null $cacheType Cache type to put the result (the BOC itself returned if no cache type provided)
      * @return ResultOfRunExecutor
      * @throws TonException
      */
@@ -35,7 +37,8 @@ class Tvm extends AbstractModule
         ?ExecutionOptions $executionOptions = null,
         ?AbiType $abi = null,
         ?bool $skipTransactionCheck = null,
-        bool $returnUpdatedAccount = false
+        bool $returnUpdatedAccount = false,
+        ?CacheType $cacheType = null
     ): ResultOfRunExecutor {
         return new ResultOfRunExecutor(
             $this->tonClient->request(
@@ -47,6 +50,7 @@ class Tvm extends AbstractModule
                     'abi'                    => $abi,
                     'skip_transaction_check' => $skipTransactionCheck,
                     'return_updated_account' => $returnUpdatedAccount,
+                    'boc_cache'              => $cacheType,
                 ]
             )->wait()
         );
@@ -60,6 +64,7 @@ class Tvm extends AbstractModule
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param AbiType|null $abi Contract ABI for decoding output messages
      * @param bool $returnUpdatedAccount Return updated account flag (empty string is returned if the flag is false)
+     * @param CacheType|null $cacheType Cache type to put the result (the BOC itself returned if no cache type provided)
      * @return ResultOfRunTvm
      * @throws TonException
      */
@@ -68,7 +73,8 @@ class Tvm extends AbstractModule
         string $account,
         ?ExecutionOptions $executionOptions = null,
         ?AbiType $abi = null,
-        bool $returnUpdatedAccount = false
+        bool $returnUpdatedAccount = false,
+        ?CacheType $cacheType = null
     ): ResultOfRunTvm {
         return new ResultOfRunTvm(
             $this->tonClient->request(
@@ -79,6 +85,7 @@ class Tvm extends AbstractModule
                     'execution_options'      => $executionOptions,
                     'abi'                    => $abi,
                     'return_updated_account' => $returnUpdatedAccount,
+                    'boc_cache'              => $cacheType,
                 ]
             )->wait()
         );
