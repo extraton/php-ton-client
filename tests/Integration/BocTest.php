@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\TonClient\Entity\Boc\CacheType;
+use Extraton\TonClient\Entity\Boc\ResultOfBocCacheGet;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBlockchainConfig;
 use Extraton\TonClient\Entity\Boc\ResultOfGetBocHash;
 use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
 use Extraton\TonClient\Entity\Boc\ResultOfParse;
 use Extraton\TonClient\Handler\Response;
+
+use function strlen;
+use function uniqid;
 
 /**
  * Integration tests for Boc module
@@ -987,5 +992,65 @@ class BocTest extends AbstractModuleTest
         );
 
         self::assertEquals($expected, $this->boc->getCodeFromTvc($tvc));
+    }
+
+    /**
+     * @covers ::cacheSet
+     * @covers ::cacheGet
+     */
+    public function testUnpinnedCache(): void
+    {
+        $tvc = $this->dataProvider->getHelloTvc();
+        $resultOfBocCacheSet = $this->boc->cacheSet($tvc, CacheType::fromUnpinned());
+        $bocRef = $resultOfBocCacheSet->getBocRef();
+
+        $expected = new ResultOfBocCacheGet(
+            new Response(
+                [
+                    'boc' => $tvc,
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $this->boc->cacheGet($bocRef));
+    }
+
+    /**
+     * @covers ::cacheSet
+     * @covers ::cacheGet
+     * @covers ::cacheUnpin
+     */
+    public function testPinnedCache(): void
+    {
+        $helloTvc = $this->dataProvider->getHelloTvc();
+        $eventsTvc = $this->dataProvider->getEventsTvc();
+
+        $pin1 = uniqid('', true);
+        $pin2 = uniqid('', true);
+
+        $resultOfBocCacheSet = $this->boc->cacheSet($helloTvc, CacheType::fromPinned($pin1));
+        $bocRef1 = $resultOfBocCacheSet->getBocRef();
+        self::assertEquals('*', $bocRef1[0]);
+        self::assertEquals(65, strlen($bocRef1));
+
+        $resultOfBocCacheGet = $this->boc->cacheGet($bocRef1);
+        self::assertEquals($helloTvc, $resultOfBocCacheGet->getBoc());
+
+        $resultOfBocCacheSet = $this->boc->cacheSet($eventsTvc, CacheType::fromPinned($pin2));
+        $bocRef2 = $resultOfBocCacheSet->getBocRef();
+        self::assertNotEquals($bocRef2, $bocRef1);
+
+        $resultOfBocCacheSet = $this->boc->cacheSet($helloTvc, CacheType::fromPinned($pin2));
+        $bocRef3 = $resultOfBocCacheSet->getBocRef();
+        self::assertEquals($bocRef3, $bocRef1);
+
+        $this->boc->cacheUnpin($pin1);
+        $resultOfBocCacheGet = $this->boc->cacheGet($bocRef1);
+        self::assertEquals($helloTvc, $resultOfBocCacheGet->getBoc());
+
+        $resultOfBocCacheGet = $this->boc->cacheGet($bocRef2);
+        self::assertNotEmpty($resultOfBocCacheGet->getBoc());
+
+        $this->boc->cacheUnpin($pin2, $bocRef1);
     }
 }
