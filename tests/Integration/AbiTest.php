@@ -15,6 +15,7 @@ use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
+use Extraton\TonClient\Entity\Boc\ResultOfGetCodeFromTvc;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
 use Extraton\TonClient\Exception\SDKException;
@@ -545,5 +546,84 @@ class AbiTest extends AbstractModuleTest
         );
 
         $this->abi->encodeAccount($stateInitSource);
+    }
+
+    /**
+     * @covers ::encodeInternalMessage
+     */
+    public function testEncodeInternalMessageRun(): void
+    {
+        $abi = AbiType::fromJson($this->dataProvider->getHelloAbiJson());
+        $address = '0:1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
+        $resultOfEncodeInternalMessage = $this->abi->encodeInternalMessage(
+            '1000000000',
+            $abi,
+            $address,
+            null,
+            null,
+            new CallSet('sayHello')
+        );
+
+        $message = $resultOfEncodeInternalMessage->getMessage();
+
+        self::assertEquals($address, $resultOfEncodeInternalMessage->getAddress());
+        self::assertEquals(
+            'te6ccgEBAQEAOgAAcGIACRorPEhV5veJGis8SFXm94kaKzxIVeb3iRorPEhV5veh3NZQAAAAAAAAAAAAAAAAAABQy+0X',
+            $message
+        );
+
+        $resultOfGetBocHash = $this->boc->getBocHash($message);
+
+        self::assertEquals(
+            $resultOfEncodeInternalMessage->getMessageId(),
+            $resultOfGetBocHash->getHash(),
+        );
+
+        $resultOfParse = $this->boc->parseMessage($message);
+        $parsed = $resultOfParse->getParsed();
+        self::assertEquals('internal', $parsed['msg_type_name']);
+        self::assertEquals('', $parsed['src']);
+        self::assertEquals($address, $parsed['dst']);
+        self::assertEquals('0x3b9aca00', $parsed['value']);
+        self::assertEquals(true, $parsed['bounce']);
+        self::assertEquals(true, $parsed['ihr_disabled']);
+    }
+
+    /**
+     * @covers ::encodeInternalMessage
+     */
+    public function testEncodeInternalMessageDeploy(): void
+    {
+        $abi = AbiType::fromJson($this->dataProvider->getHelloAbiJson());
+        $tvc = $this->dataProvider->getHelloTvc();
+
+        $resultOfEncodeInternalMessage = $this->abi->encodeInternalMessage(
+            '0',
+            $abi,
+            null,
+            null,
+            new DeploySet($tvc),
+            new CallSet('constructor')
+        );
+
+        $message = $resultOfEncodeInternalMessage->getMessage();
+
+        self::assertEquals(
+            'te6ccgECHAEABG0AAmliADYO5IoxskLmUfURre2fOB04OmP32VjPwA/lDM/Cpvh8AAAAAAAAAAAAAAAAAAIxotV8/gYBAQHAAgIDzyAFAwEB3gQAA9AgAEHYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQCJv8A9KQgIsABkvSg4YrtU1gw9KEJBwEK9KQg9KEIAAACASAMCgHo/38h0wABjiaBAgDXGCD5AQFw7UTQ9AWAQPQO8orXC/8B7Ucib3XtVwMB+RDyqN7tRNAg10nCAY4W9ATTP9MA7UcBb3EBb3YBb3MBb3LtV44Y9AXtRwFvcnBvc3BvdsiAIM9AydBvce1X4tM/Ae1HbxMhuSALAGCfMCD4I4ED6KiCCBt3QKC53pntRyFvUyDtVzCUgDTy8OIw0x8B+CO88rnTHwHxQAECASAYDQIBIBEOAQm6i1Xz+A8B+u1Hb2FujjvtRNAg10nCAY4W9ATTP9MA7UcBb3EBb3YBb3MBb3LtV44Y9AXtRwFvcnBvc3BvdsiAIM9AydBvce1X4t7tR28WkvIzl+1HcW9W7VfiAPgA0fgjtR/tRyBvETAByMsfydBvUe1X7UdvEsj0AO1HbxPPCz/tR28WEAAczwsA7UdvEc8Wye1UcGoCAWoVEgEJtAAa1sATAfztR29hbo477UTQINdJwgGOFvQE0z/TAO1HAW9xAW92AW9zAW9y7VeOGPQF7UcBb3Jwb3Nwb3bIgCDPQMnQb3HtV+Le7UdvZSBukjBw3nDtR28SgED0DvKK1wv/uvLgZPgA+kDRIMjJ+wSBA+hwgQCAyHHPCwEizwoAcc9A+CgUAI7PFiTPFiP6AnHPQHD6AnD6AoBAz0D4I88LH3LPQCDJIvsAXwUw7UdvEsj0AO1HbxPPCz/tR28WzwsA7UdvEc8Wye1UcGrbMAEJtGX2i8AWAfjtR29hbo477UTQINdJwgGOFvQE0z/TAO1HAW9xAW92AW9zAW9y7VeOGPQF7UcBb3Jwb3Nwb3bIgCDPQMnQb3HtV+Le0e1HbxHXCx/IghBQy+0XghCAAAAAsc8LHyHPCx/Ic88LAfgozxZyz0D4Jc8LP4Ahz0AgzzUizzG8FwB4lnHPQCHPF5Vxz0EhzeIgyXH7AFshwP+OHu1HbxLI9ADtR28Tzws/7UdvFs8LAO1HbxHPFsntVN5xatswAgEgGxkBCbtzEuRYGgD47UdvYW6OO+1E0CDXScIBjhb0BNM/0wDtRwFvcQFvdgFvcwFvcu1Xjhj0Be1HAW9ycG9zcG92yIAgz0DJ0G9x7Vfi3vgA0fgjtR/tRyBvETAByMsfydBvUe1X7UdvEsj0AO1HbxPPCz/tR28WzwsA7UdvEc8Wye1UcGrbMADK3XAh10kgwSCOKyDAAI4cI9Bz1yHXCwAgwAGW2zBfB9swltswXwfbMOME2ZbbMF8G2zDjBNngItMfNCB0uyCOFTAgghD/////uiCZMCCCEP////6639+W2zBfB9sw4CMh8UABXwc=',
+            $message
+        );
+
+        $resultOfGetBocHash = $this->boc->getBocHash($message);
+        self::assertEquals(
+            $resultOfEncodeInternalMessage->getMessageId(),
+            $resultOfGetBocHash->getHash(),
+        );
+
+        $resultOfParse = $this->boc->parseMessage($message);
+        $parsed = $resultOfParse->getParsed();
+
+        $resultOfGetCodeFromTvc = $this->boc->getCodeFromTvc($tvc);
+        self::assertEquals($resultOfGetCodeFromTvc->getCode(), $parsed['code']);
     }
 }

@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.5.0
+-----
+
+* Added new method `Abi::encodeInternalMessage`
+* Added new integration and unit tests
+
 1.4.0
 -----
 

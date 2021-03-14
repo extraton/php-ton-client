@@ -11,6 +11,7 @@ use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
+use Extraton\TonClient\Entity\Abi\ResultOfEncodeInternalMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
 use Extraton\TonClient\Entity\Abi\Signer;
@@ -215,6 +216,47 @@ class Abi extends AbstractModule
                     'balance'       => $balance,
                     'last_trans_lt' => $lastTransLt,
                     'last_paid'     => $lastPaid,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Encodes an internal ABI-compatible message
+     *
+     * @param string $value Value in nanotokens to be sent with message
+     * @param AbiType|null $abi Contract ABI (can be None if both deploy_set and call_set are None)
+     * @param string|null $address Target address the message will be sent to (must be specified in case of non-deploy message)
+     * @param string|null $srcAddress Source address of the message
+     * @param DeploySet|null $deploySet Deploy parameters (must be specified in case of deploy message)
+     * @param CallSet|null $callSet Function call parameters (must be specified in case of non-deploy message)
+     * @param bool $bounce Flag of bounceable message (default is true)
+     * @param bool $enableIhr Enable Instant Hypercube Routing for the message (default is false)
+     * @return ResultOfEncodeInternalMessage
+     * @throws TonException
+     */
+    public function encodeInternalMessage(
+        string $value,
+        ?AbiType $abi = null,
+        ?string $address = null,
+        ?string $srcAddress = null,
+        ?DeploySet $deploySet = null,
+        ?CallSet $callSet = null,
+        ?bool $bounce = true,
+        ?bool $enableIhr = false
+    ): ResultOfEncodeInternalMessage {
+        return new ResultOfEncodeInternalMessage(
+            $this->tonClient->request(
+                'abi.encode_internal_message',
+                [
+                    'value'       => $value,
+                    'abi'         => $abi,
+                    'address'     => $address,
+                    'src_address' => $srcAddress,
+                    'deploy_set'  => $deploySet,
+                    'call_set'    => $callSet,
+                    'bounce'      => $bounce,
+                    'enable_ihr'  => $enableIhr,
                 ]
             )->wait()
         );
