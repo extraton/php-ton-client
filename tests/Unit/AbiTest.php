@@ -12,6 +12,7 @@ use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
+use Extraton\TonClient\Entity\Abi\ResultOfEncodeInternalMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
 use Extraton\TonClient\Entity\Abi\Signer;
@@ -21,6 +22,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 use function microtime;
 use function random_int;
+use function time;
 use function uniqid;
 
 use const PHP_INT_MAX;
@@ -388,6 +390,65 @@ class AbiTest extends AbstractModuleTest
                 $balance,
                 $lastTransLt,
                 $lastPaid
+            )
+        );
+    }
+
+    /**
+     * @covers ::encodeInternalMessage
+     */
+    public function testEncodeInternalMessageWithSuccessResult(): void
+    {
+        $value = uniqid(microtime(), true);
+        $abi = AbiType::fromHandle(time());
+        $address = uniqid(microtime(), true);
+        $srcAddress = uniqid(microtime(), true);
+        $deploySet = new DeploySet(uniqid(microtime(), true));
+        $callSet = new CallSet(uniqid(microtime(), true));
+        $bounce = (bool)random_int(0, 1);
+        $enableIhr = (bool)random_int(0, 1);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'abi.encode_internal_message',
+                [
+                    'value'       => $value,
+                    'abi'         => $abi,
+                    'address'     => $address,
+                    'src_address' => $srcAddress,
+                    'deploy_set'  => $deploySet,
+                    'call_set'    => $callSet,
+                    'bounce'      => $bounce,
+                    'enable_ihr'  => $enableIhr,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfEncodeInternalMessage($response);
+
+        self::assertEquals(
+            $expected,
+            $this->abi->encodeInternalMessage(
+                $value,
+                $abi,
+                $address,
+                $srcAddress,
+                $deploySet,
+                $callSet,
+                $bounce,
+                $enableIhr
             )
         );
     }
