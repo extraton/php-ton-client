@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
+use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Exception\TonException;
 
@@ -83,6 +84,26 @@ class Utils extends AbstractModule
         return $this->convertAddress(
             $address,
             AddressStringFormat::base64($url, $test, $bounce)
+        );
+    }
+
+    /**
+     * Calculates storage fee for an account over a specified time period
+     *
+     * @param string $account Account
+     * @param int $period Period
+     * @return ResultOfCalcStorageFee
+     */
+    public function calcStorageFee(string $account, int $period): ResultOfCalcStorageFee
+    {
+        return new ResultOfCalcStorageFee(
+            $this->tonClient->request(
+                'utils.calc_storage_fee',
+                [
+                    'account' => $account,
+                    'period'  => $period,
+                ]
+            )->wait()
         );
     }
 }
