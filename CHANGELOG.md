@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.6.0
+-----
+
+* Updated TON SDK library to version 1.11.1
+* Added new method `Utils::calcStorageFee`
+* Added new integration and unit tests
+
 1.5.1
 -----
 
