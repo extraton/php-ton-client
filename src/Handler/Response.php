@@ -10,6 +10,7 @@ use Generator;
 use IteratorAggregate;
 
 use function array_shift;
+use function usleep;
 
 /**
  * @phpstan-implements IteratorAggregate<mixed>
@@ -61,11 +62,9 @@ class Response implements IteratorAggregate
             return $this->responseData;
         }
 
-        $sleeper = new SmartSleeper();
-
         // @phpstan-ignore-next-line
         while (!$this->dataFetched) {
-            $sleeper->sleep()->increase();
+            usleep(500_000);
         }
 
         // @phpstan-ignore-next-line
@@ -104,12 +103,8 @@ class Response implements IteratorAggregate
      */
     public function getIterator(): Generator
     {
-        $sleeper = new SmartSleeper();
-
         for (; ;) {
             while ($data = array_shift($this->eventData)) {
-                $sleeper->reset();
-
                 if ($this->eventDataTransformer === null) {
                     yield $data;
                 } else {
@@ -121,7 +116,7 @@ class Response implements IteratorAggregate
                 break;
             }
 
-            $sleeper->sleep()->increase();
+            usleep(500_000);
         }
     }
 }

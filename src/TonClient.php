@@ -11,11 +11,11 @@ use Extraton\TonClient\Entity\Client\ResultOfVersion;
 use Extraton\TonClient\Exception\LogicException;
 use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\ResponseHandler;
-use Extraton\TonClient\Handler\SmartSleeper;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
 
 use function sprintf;
+use function usleep;
 
 /**
  * Ton client
@@ -199,14 +199,12 @@ class TonClient
         $responseHandler = $this->getResponseHandler();
         $promise = new Promise(
             static function () use (&$promise, $functionName) {
-                $sleeper = new SmartSleeper();
-
                 if ($promise === null) {
                     throw new LogicException(sprintf('Promise for the %s function not found.', $functionName));
                 }
 
                 while (Is::pending($promise)) {
-                    $sleeper->sleep()->increase();
+                    usleep(500_000);
                 }
             }
         );

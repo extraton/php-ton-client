@@ -189,6 +189,6 @@ class Binding
         }
 
         // Protect segfault
-        usleep(25_000);
+        usleep(500_000);
     }
 }
