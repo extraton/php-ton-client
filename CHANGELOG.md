@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.5.1
+-----
+
+* Removed SmartSleeper
+* Added a fixed waiting period for async calls
+* Fix integration tests
+
 1.5.0
 -----
 
