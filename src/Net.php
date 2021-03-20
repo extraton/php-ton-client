@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Net\EndpointsSet;
+use Extraton\TonClient\Entity\Net\ParamsOfAggregateCollection;
+use Extraton\TonClient\Entity\Net\ParamsOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ParamsOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Net\QueryInterface;
+use Extraton\TonClient\Entity\Net\ResultOfAggregateCollection;
+use Extraton\TonClient\Entity\Net\ResultOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
@@ -197,5 +201,46 @@ class Net extends AbstractModule
         $this->tonClient->request(
             'net.resume'
         )->wait();
+    }
+
+    /**
+     * Aggregates collection data.
+     * Aggregates values from the specified fields for records that satisfies the filter conditions
+     *
+     * @param QueryInterface|ParamsOfAggregateCollection $query
+     * @return ResultOfAggregateCollection
+     * @throws TonException
+     */
+    public function aggregateCollection(QueryInterface $query): ResultOfAggregateCollection
+    {
+        return new ResultOfAggregateCollection(
+            $this->tonClient->request(
+                'net.aggregate_collection',
+                [
+                    'collection' => $query->getCollection(),
+                    'filter'     => $query->getFilters(),
+                    'fields'     => $query->getAggregation(),
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Performs multiple queries per single fetch
+     *
+     * @param ParamsOfBatchQuery $query List of query operations that must be performed per single fetch
+     * @return ResultOfBatchQuery
+     * @throws TonException
+     */
+    public function batchQuery(ParamsOfBatchQuery $query): ResultOfBatchQuery
+    {
+        return new ResultOfBatchQuery(
+            $this->tonClient->request(
+                'net.batch_query',
+                [
+                    'operations' => $query,
+                ]
+            )->wait()
+        );
     }
 }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\TonClient\Entity\Net\Aggregation;
 use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\OrderBy;
+use Extraton\TonClient\Entity\Net\ParamsOfAggregateCollection;
+use Extraton\TonClient\Entity\Net\ParamsOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ParamsOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
@@ -326,5 +329,55 @@ class NetTest extends AbstractModuleTest
         $expected = [];
 
         self::assertEquals($expected, $result->getEndpoints());
+    }
+
+    /**
+     * @covers ::aggregateCollection
+     */
+    public function testAggregateCollectionWithSuccessResult(): void
+    {
+        $aggregation = new Aggregation();
+        $aggregation->add('id', Aggregation::COUNT);
+        $aggregation->add('balance', Aggregation::AVERAGE);
+
+        $query = new ParamsOfAggregateCollection('accounts');
+        $query->setAggregation($aggregation);
+
+        $resultOfAggregateCollection = $this->net->aggregateCollection($query);
+
+        self::assertGreaterThan(0, $resultOfAggregateCollection->getValues()[0]);
+        self::assertGreaterThan(0, $resultOfAggregateCollection->getValues()[1]);
+    }
+
+    /**
+     * @covers ::batchQuery
+     */
+    public function testBatchQueryWithSuccessResult(): void
+    {
+        // Query 1
+        $query1 = new ParamsOfQueryCollection('blocks_signatures', ['id']);
+        $query1->setLimit(1);
+
+        // Query 2
+        $query2 = new ParamsOfWaitForCollection('transactions', ['id', 'now']);
+        $filters = new Filters();
+        $filters->add('now', Filters::GT, 20);
+        $query2->setFilters($filters);
+
+        // Query 3
+        $aggregation = new Aggregation();
+        $aggregation->add('id', Aggregation::COUNT);
+        $aggregation->add('balance', Aggregation::AVERAGE);
+        $query3 = new ParamsOfAggregateCollection('accounts');
+        $query3->setAggregation($aggregation);
+
+        $query = new ParamsOfBatchQuery();
+        $query->add($query1);
+        $query->add($query2);
+        $query->add($query3);
+
+        $resultOfBatchQuery = $this->net->batchQuery($query);
+
+        self::assertCount(3, $resultOfBatchQuery->getResults());
     }
 }

@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.7.0
+-----
+
+* Added new method `Net::aggregateCollection`
+* Added new method `Net::batchQuery`
+* Added new integration and unit tests
+
 1.6.0
 -----
 

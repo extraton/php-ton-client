@@ -9,7 +9,7 @@ use Extraton\TonClient\Entity\Params;
 /**
  * Query interface
  */
-interface QueryInterface
+interface QueryInterface extends Params
 {
     /**
      * Get collection name
@@ -52,4 +52,11 @@ interface QueryInterface
      * @return int|null
      */
     public function getTimeout(): ?int;
+
+    /**
+     * Get fields with aggregation functions
+     *
+     * @return Aggregation|null
+     */
+    public function getAggregation(): ?Aggregation;
 }
