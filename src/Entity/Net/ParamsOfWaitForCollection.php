@@ -44,4 +44,25 @@ class ParamsOfWaitForCollection extends AbstractQuery
     {
         throw new LogicException('Method ParamsOfWaitForCollection::getLimit is not implemented.');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAggregation(): ?Aggregation
+    {
+        throw new LogicException('Method ParamsOfWaitForCollection::getAggregation is not implemented.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'collection' => $this->getCollection(),
+            'result'     => $this->getResult(),
+            'filter'     => $this->getFilters(),
+            'timeout'    => $this->getTimeout(),
+        ];
+    }
 }

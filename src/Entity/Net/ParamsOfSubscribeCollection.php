@@ -49,4 +49,24 @@ class ParamsOfSubscribeCollection extends AbstractQuery
     {
         throw new LogicException('Method ParamsOfSubscribeCollection::getTimeout is not implemented.');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAggregation(): ?Aggregation
+    {
+        throw new LogicException('Method ParamsOfSubscribeCollection::getAggregation is not implemented.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'collection' => $this->getCollection(),
+            'result'     => $this->getResult(),
+            'filter'     => $this->getFilters(),
+        ];
+    }
 }

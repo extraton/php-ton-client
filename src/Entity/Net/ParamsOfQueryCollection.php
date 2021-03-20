@@ -38,4 +38,26 @@ class ParamsOfQueryCollection extends AbstractQuery
     {
         throw new LogicException('Method ParamsOfQueryCollection::getTimeout is not implemented.');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAggregation(): ?Aggregation
+    {
+        throw new LogicException('Method ParamsOfQueryCollection::getAggregation is not implemented.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'collection' => $this->getCollection(),
+            'result'     => $this->getResult(),
+            'filter'     => $this->getFilters(),
+            'order'      => $this->getOrderBy(),
+            'limit'      => $this->getLimit(),
+        ];
+    }
 }

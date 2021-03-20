@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
-use Extraton\TonClient\Entity\Crypto\ResultOfModularPower;
+use Extraton\TonClient\Entity\Net\Aggregation;
 use Extraton\TonClient\Entity\Net\EndpointsSet;
 use Extraton\TonClient\Entity\Net\Filters;
 use Extraton\TonClient\Entity\Net\OrderBy;
+use Extraton\TonClient\Entity\Net\ParamsOfBatchQuery;
 use Extraton\TonClient\Entity\Net\QueryInterface;
+use Extraton\TonClient\Entity\Net\ResultOfAggregateCollection;
+use Extraton\TonClient\Entity\Net\ResultOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
@@ -49,6 +52,8 @@ class NetTest extends AbstractModuleTest
                     'getOrderBy',
                     'getLimit',
                     'getTimeout',
+                    'getAggregation',
+                    'jsonSerialize',
                 ]
             )
             ->getMock();
@@ -403,5 +408,102 @@ class NetTest extends AbstractModuleTest
         $expected = new EndpointsSet($response);
 
         self::assertEquals($expected, $this->net->fetchEndpoints());
+    }
+
+    /**
+     * @covers ::aggregateCollection
+     */
+    public function testAggregateCollectionWithSuccessResult(): void
+    {
+        $collection = uniqid(microtime(), true);
+        $filters = new Filters();
+        $aggregation = new Aggregation();
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockQuery->expects(self::once())
+            ->method('getCollection')
+            ->with()
+            ->willReturn($collection);
+
+        $this->mockQuery->expects(self::once())
+            ->method('getFilters')
+            ->with()
+            ->willReturn($filters);
+
+        $this->mockQuery->expects(self::once())
+            ->method('getAggregation')
+            ->with()
+            ->willReturn($aggregation);
+
+        $this->mockQuery->expects(self::never())
+            ->method('getResult');
+
+        $this->mockQuery->expects(self::never())
+            ->method('getOrderBy');
+
+        $this->mockQuery->expects(self::never())
+            ->method('getLimit');
+
+        $this->mockQuery->expects(self::never())
+            ->method('getTimeout');
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'net.aggregate_collection',
+                [
+                    'collection' => $collection,
+                    'filter'     => $filters,
+                    'fields'     => $aggregation,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfAggregateCollection($response);
+
+        self::assertEquals($expected, $this->net->aggregateCollection($this->mockQuery));
+    }
+
+    /**
+     * @covers ::batchQuery
+     */
+    public function testBatchQueryWithSuccessResult(): void
+    {
+        $query = new ParamsOfBatchQuery();
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'net.batch_query',
+                [
+                    'operations' => $query,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfBatchQuery($response);
+
+        self::assertEquals($expected, $this->net->batchQuery($query));
     }
 }

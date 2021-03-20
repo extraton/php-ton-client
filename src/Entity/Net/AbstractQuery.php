@@ -31,6 +31,8 @@ abstract class AbstractQuery implements QueryInterface
 
     private ?int $timeout = null;
 
+    private ?Aggregation $aggregation = null;
+
     /**
      * @param string $collection
      * @param array<string> $resultFields
@@ -100,7 +102,7 @@ abstract class AbstractQuery implements QueryInterface
     {
         $fields = array_merge(
             ...array_map(
-                static fn ($resultField) => explode(' ', $resultField),
+                static fn ($resultField): array => explode(' ', $resultField),
                 $this->resultFields
             )
         );
@@ -188,5 +190,21 @@ abstract class AbstractQuery implements QueryInterface
         $this->timeout = $timeout;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAggregation(): ?Aggregation
+    {
+        return $this->aggregation;
+    }
+
+    /**
+     * @param Aggregation|null $aggregation
+     */
+    public function setAggregation(?Aggregation $aggregation): void
+    {
+        $this->aggregation = $aggregation;
     }
 }
