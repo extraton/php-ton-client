@@ -98,6 +98,7 @@ class Tvm extends AbstractModule
      * @param string $functionName Function name
      * @param ExecutionOptions|null $executionOptions Execution options
      * @param mixed $input Input parameters
+     * @param bool $tupleListAsArray Convert lists based on nested tuples in the result into plain arrays.
      * @return ResultOfRunGet
      * @throws TonException
      */
@@ -105,16 +106,18 @@ class Tvm extends AbstractModule
         string $account,
         string $functionName,
         ?ExecutionOptions $executionOptions = null,
-        $input = null
+        $input = null,
+        $tupleListAsArray = false
     ): ResultOfRunGet {
         return new ResultOfRunGet(
             $this->tonClient->request(
                 'tvm.run_get',
                 [
-                    'account'           => $account,
-                    'function_name'     => $functionName,
-                    'execution_options' => $executionOptions,
-                    'input'             => $input,
+                    'account'             => $account,
+                    'function_name'       => $functionName,
+                    'execution_options'   => $executionOptions,
+                    'input'               => $input,
+                    'tuple_list_as_array' => $tupleListAsArray,
                 ]
             )->wait()
         );

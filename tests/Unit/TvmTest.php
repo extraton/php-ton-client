@@ -160,6 +160,7 @@ class TvmTest extends AbstractModuleTest
     {
         $account = uniqid(microtime(), true);
         $functionName = uniqid(microtime(), true);
+        $tupleListAsArray = (bool)random_int(0, 1);
 
         /** @var MockObject|ExecutionOptions $executionOptions */
         $executionOptions = $this->getMockBuilder(ExecutionOptions::class)
@@ -184,10 +185,11 @@ class TvmTest extends AbstractModuleTest
             ->with(
                 'tvm.run_get',
                 [
-                    'account'           => $account,
-                    'function_name'     => $functionName,
-                    'execution_options' => $executionOptions,
-                    'input'             => $input,
+                    'account'             => $account,
+                    'function_name'       => $functionName,
+                    'execution_options'   => $executionOptions,
+                    'input'               => $input,
+                    'tuple_list_as_array' => $tupleListAsArray,
                 ]
             )
             ->willReturn($this->mockPromise);
@@ -200,7 +202,8 @@ class TvmTest extends AbstractModuleTest
                 $account,
                 $functionName,
                 $executionOptions,
-                $input
+                $input,
+                $tupleListAsArray
             )
         );
     }
