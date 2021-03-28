@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.8.0
+-----
+
+* Added new parameter `tuple_list_as_array`
+* Fix unit tests
+
 1.7.0
 -----
 
