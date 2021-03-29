@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Extraton\Tests\Integration\TonClient;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
@@ -22,8 +24,11 @@ use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetached;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxGetPublicKey;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
+use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Handler\Response;
 
 use function array_map;
@@ -43,7 +48,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::factorize
      */
-    public function testFactorizeWithSuccessResult(): void
+    public function testFactorize(): void
     {
         $number = 1724114033281923457;
         $numberHex = dechex($number);
@@ -59,7 +64,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::modularPower
      */
-    public function testModularPowerWithSuccessResult(): void
+    public function testModularPower(): void
     {
         $base = '0123456789ABCDEF';
         $exponent = '0123';
@@ -81,7 +86,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::tonCrc16
      */
-    public function testTonCrc16WithSuccessResult(): void
+    public function testTonCrc16(): void
     {
         $data = 'c2FtcGxlIGRhdGE=';
 
@@ -101,7 +106,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::generateRandomBytes
      */
-    public function testGenerateRandomBytesWithSuccessResult(): void
+    public function testGenerateRandomBytes(): void
     {
         $length = 32;
         $expectedBytesHexLength = $length * 2;
@@ -117,7 +122,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::convertPublicKeyToTonSafeFormat
      */
-    public function testConvertPublicKeyToTonSafeFormatWithSuccessResult(): void
+    public function testConvertPublicKeyToTonSafeFormat(): void
     {
         $publicKey = '25760703da66163fc4c189a95f807eb4363beb8d57cc95cea99fcd162b4ea536';
 
@@ -137,7 +142,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::generateRandomSignKeys
      */
-    public function testGenerateRandomSignKeysWithSuccessResult(): void
+    public function testGenerateRandomSignKeys(): void
     {
         $result = $this->crypto->generateRandomSignKeys();
         $keyPair = $result->getKeyPair();
@@ -149,7 +154,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sign
      */
-    public function testSignWithSuccessResult(): void
+    public function testSign(): void
     {
         $unsigned = 'dGVzdCBkYXRh';
         $keyPair = new KeyPair(
@@ -174,7 +179,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::verifySignature
      */
-    public function testVerifySignatureWithSuccessResult(): void
+    public function testVerifySignature(): void
     {
         $signed = 'spsrMiTVkuTZA1SynA43GkLyR4bKa/BpfPA+S8tiJP924+C53WPi6gES8Wek7YLDCP9cxqO1NmHTI3+7EnToDXRlc3QgZGF0YQ==';
         $public = '25760703da66163fc4c189a95f807eb4363beb8d57cc95cea99fcd162b4ea536';
@@ -195,7 +200,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sha256
      */
-    public function testSha256WithSuccessResult(): void
+    public function testSha256(): void
     {
         $data = 'TWVzc2FnZSB0byBoYXNo';
 
@@ -215,7 +220,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sha512
      */
-    public function testSha512WithSuccessResult(): void
+    public function testSha512(): void
     {
         $data = 'TWVzc2FnZSB0byBoYXNo';
 
@@ -235,7 +240,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::scrypt
      */
-    public function testScryptWithSuccessResult(): void
+    public function testScrypt(): void
     {
         $password = base64_encode('Test Password');
         $salt = base64_encode('Test Salt');
@@ -260,7 +265,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignKeyPairFromSecretKey
      */
-    public function testNaclSignKeyPairFromSecretKeyWithSuccessResult(): void
+    public function testNaclSignKeyPairFromSecretKey(): void
     {
         $secret = 'e207b5966fb2c5be1b71ed94ea813202706ab84253bdf4dc55232f82a1caf0d4';
 
@@ -281,7 +286,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSign
      */
-    public function testNaclSignWithSuccessResult(): void
+    public function testNaclSign(): void
     {
         $unsigned = base64_encode('Test Message');
         $secret = '56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e';
@@ -302,7 +307,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignOpen
      */
-    public function testNaclSignOpenWithSuccessResult(): void
+    public function testNaclSignOpen(): void
     {
         $signed = '+wz+QO6l1slgZS5s65BNqKcu4vz24FCJz4NSAxef9lu0jFfs8x3PzSZRC+pn5k8+aJi3xYMA3BQzglQmjK3hA1Rlc3QgTWVzc2FnZQ==';
         $public = '1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e';
@@ -323,7 +328,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignDetached
      */
-    public function testNaclSignDetachedWithSuccessResult(): void
+    public function testNaclSignDetached(): void
     {
         $unsigned = base64_encode('Test Message');
         $secret = '56b6a77093d6fdf14e593f36275d872d75de5b341942376b2a08759f3cbae78f1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e';
@@ -344,7 +349,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxKeypair
      */
-    public function testNaclBoxKeypairWithSuccessResult(): void
+    public function testNaclBoxKeypair(): void
     {
         $result = $this->crypto->naclBoxKeypair();
         $keyPair = $result->getKeyPair();
@@ -356,7 +361,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxKeypairFromSecretKey
      */
-    public function testNaclBoxKeypairFromSecretKeyWithSuccessResult(): void
+    public function testNaclBoxKeypairFromSecretKey(): void
     {
         $secret = 'e207b5966fb2c5be1b71ed94ea813202706ab84253bdf4dc55232f82a1caf0d4';
 
@@ -376,7 +381,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBox
      */
-    public function testNaclBoxWithSuccessResult(): void
+    public function testNaclBox(): void
     {
         $decrypted = base64_encode('Test Message');
         $nonce = 'cd7f99924bf422544046e83595dd5803f17536f5c9a11746';
@@ -398,7 +403,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxOpen
      */
-    public function testNaclBoxOpenWithSuccessResult(): void
+    public function testNaclBoxOpen(): void
     {
         $encrypted = 'li4XED4kx/pjQ2qdP0eR2d/K30uN94voNADxwA==';
         $nonce = 'cd7f99924bf422544046e83595dd5803f17536f5c9a11746';
@@ -420,7 +425,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSecretBox
      */
-    public function testNaclSecretBoxWithSuccessResult(): void
+    public function testNaclSecretBox(): void
     {
         $decrypted = base64_encode('Test Message');
         $nonce = '2a33564717595ebe53d91a785b9e068aba625c8453a76e45';
@@ -441,7 +446,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSecretBoxOpen
      */
-    public function testNaclSecretBoxOpenWithSuccessResult(): void
+    public function testNaclSecretBoxOpen(): void
     {
         $encrypted = 'JL7ejKWe2KXmrsns41yfXoQF0t/C1Q8RGyzQ2A==';
         $nonce = '2a33564717595ebe53d91a785b9e068aba625c8453a76e45';
@@ -462,7 +467,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicWords
      */
-    public function testMnemonicWordsWithSuccessResult(): void
+    public function testMnemonicWords(): void
     {
         $dictionary = 1;
 
@@ -475,7 +480,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicFromRandom
      */
-    public function testMnemonicFromRandomWithSuccessResult(): void
+    public function testMnemonicFromRandom(): void
     {
         $dictionary = 1;
         $wordCount = 18;
@@ -489,7 +494,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicFromEntropy
      */
-    public function testMnemonicFromEntropyWithSuccessResult(): void
+    public function testMnemonicFromEntropy(): void
     {
         $entropy = '00112233445566778899AABBCCDDEEFF';
         $dictionary = 1;
@@ -510,7 +515,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicVerify
      */
-    public function testMnemonicVerifyWithSuccessResult(): void
+    public function testMnemonicVerify(): void
     {
         $phrase = 'abandon math mimic master filter design carbon crystal rookie group knife young';
         $dictionary = 1;
@@ -531,7 +536,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicDeriveSignKeys
      */
-    public function testMnemonicDeriveSignKeysWithSuccessResult(): void
+    public function testMnemonicDeriveSignKeys(): void
     {
         $phrase = 'abandon math mimic master filter design carbon crystal rookie group knife young';
 
@@ -551,7 +556,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyXprvFromMnemonic
      */
-    public function testHdkeyXprvFromMnemonicWithSuccessResult(): void
+    public function testHdkeyXprvFromMnemonic(): void
     {
         $phrase = 'abuse boss fly battle rubber wasp afraid hamster guide essence vibrant tattoo';
         $dictionary = 1;
@@ -572,7 +577,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyDeriveFromXprv
      */
-    public function testHdkeyDeriveFromXprvWithSuccessResult(): void
+    public function testHdkeyDeriveFromXprv(): void
     {
         $xprv = 'xprv9s21ZrQH143K25JhKqEwvJW7QAiVvkmi4WRenBZanA6kxHKtKAQQKwZG65kCyW5jWJ8NY9e3GkRoistUjjcpHNsGBUv94istDPXvqGNuWpC';
         $childIndex = 0;
@@ -593,7 +598,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyDeriveFromXprvPath
      */
-    public function testHdkeyDeriveFromXprvPathWithSuccessResult(): void
+    public function testHdkeyDeriveFromXprvPath(): void
     {
         $xprv = 'xprv9s21ZrQH143K25JhKqEwvJW7QAiVvkmi4WRenBZanA6kxHKtKAQQKwZG65kCyW5jWJ8NY9e3GkRoistUjjcpHNsGBUv94istDPXvqGNuWpC';
         $path = 'm/44\'/60\'/0\'/0\'';
@@ -613,7 +618,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeySecretFromXprv
      */
-    public function testHdkeySecretFromXprvWithSuccessResult(): void
+    public function testHdkeySecretFromXprv(): void
     {
         $xprv = 'xprvA1KNMo63UcGjmDF1bX39Cw2BXGUwrwMjeD5qvQ3tA3qS3mZQkGtpf4DHq8FDLKAvAjXsYGLHDP2dVzLu9ycta8PXLuSYib2T3vzLf3brVgZ';
 
@@ -632,7 +637,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyPublicFromXprv
      */
-    public function testHdkeyPublicFromXprvWithSuccessResult(): void
+    public function testHdkeyPublicFromXprv(): void
     {
         $xprv = 'xprvA1KNMo63UcGjmDF1bX39Cw2BXGUwrwMjeD5qvQ3tA3qS3mZQkGtpf4DHq8FDLKAvAjXsYGLHDP2dVzLu9ycta8PXLuSYib2T3vzLf3brVgZ';
 
@@ -651,7 +656,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::chaCha20
      */
-    public function testChaCha20WithSuccessResult(): void
+    public function testChaCha20(): void
     {
         $data = base64_encode('Message');
         $key = str_repeat('01', 32);
@@ -667,5 +672,110 @@ class CryptoTest extends AbstractModuleTest
         $result = $this->crypto->chaCha20($data, $key, $nonce);
 
         self::assertEquals($expected, $result);
+    }
+
+    /**
+     * @covers ::naclSignDetachedVerify
+     */
+    public function testNaclSignDetachedVerify(): void
+    {
+        $unsigned = base64_encode('Test Message');
+        $signature = 'fb0cfe40eea5d6c960652e6ceb904da8a72ee2fcf6e05089cf835203179ff65bb48c57ecf31dcfcd26510bea67e64f3e6898b7c58300dc14338254268cade103';
+        $public = '1869b7ef29d58026217e9cf163cbfbd0de889bdf1bf4daebf5433a312f5b8d6e';
+
+        $expected = new ResultOfNaclSignDetachedVerify(
+            new Response(
+                [
+                    'succeeded' => true,
+                ]
+            )
+        );
+        $result = $this->crypto->naclSignDetachedVerify($unsigned, $signature, $public);
+
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * @covers ::getSigningBox
+     */
+    public function testGetSigningBox(): void
+    {
+        $keyPair = $this->crypto->generateRandomSignKeys();
+
+        $result = $this->crypto->getSigningBox(
+            $keyPair->getPublic(),
+            $keyPair->getSecret()
+        );
+
+        self::assertGreaterThan(0, $result->getHandle());
+    }
+
+    /**
+     * @covers ::signingBoxGetPublicKey
+     */
+    public function testSigningBoxGetPublicKey(): void
+    {
+        $keyPair = $this->crypto->generateRandomSignKeys();
+
+        $resultOfGetSigningBox = $this->crypto->getSigningBox(
+            $keyPair->getPublic(),
+            $keyPair->getSecret()
+        );
+
+        $handle = $resultOfGetSigningBox->getHandle();
+        self::assertGreaterThan(0, $handle);
+
+        $resultOfSigningBoxGetPublicKey = $this->crypto->signingBoxGetPublicKey($handle);
+
+        self::assertEquals(
+            $keyPair->getPublic(),
+            $resultOfSigningBoxGetPublicKey->getPublic()
+        );
+    }
+
+    /**
+     * @covers ::signingBoxSign
+     * @covers ::removeSigningBox
+     * @covers ::getSigningBox
+     */
+    public function testSigningBoxSign(): void
+    {
+        $resultOfGetSigningBox = $this->crypto->getSigningBox(
+            $this->dataProvider->getPublicKey(),
+            $this->dataProvider->getPrivateKey()
+        );
+
+        $handle = $resultOfGetSigningBox->getHandle();
+
+        $unsigned = base64_encode('Sign with box');
+
+        $expected = new ResultOfSigningBoxSign(
+            new Response(
+                [
+                    'signature' => '0ba591cbc643c3a17169c737e20dff68b9e054b00f8b5b466cbec8c2e480c7142f4c8d8e0c3c7851a58c3c7f07e625ffe9c8d8771e83c16cd88916489a59350d',
+                ]
+            )
+        );
+
+        $resultOfSigningBoxSign = $this->crypto->signingBoxSign(
+            $handle,
+            $unsigned
+        );
+
+        self::assertEquals($expected, $resultOfSigningBoxSign);
+
+        $this->crypto->removeSigningBox($handle);
+
+        $this->expectExceptionObject(
+            new SDKException(
+                sprintf('Signing box is not registered. ID %d', $handle),
+                121
+            )
+        );
+
+        $this->crypto->signingBoxSign(
+            $handle,
+            $unsigned
+        );
     }
 }

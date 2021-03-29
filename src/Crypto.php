@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfFactorize;
@@ -25,6 +27,8 @@ use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetached;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxGetPublicKey;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
 use Extraton\TonClient\Exception\TonException;
@@ -731,5 +735,108 @@ class Crypto extends AbstractModule
                 ],
             )->wait()
         );
+    }
+
+    /**
+     * Verifies the signature with public key and unsigned data
+     *
+     * @param string $unsigned Unsigned data that must be verified. Encoded with base64.
+     * @param string $signature Signature that must be verified. Encoded with hex.
+     * @param string $public Signer's public key - unprefixed 0-padded to 64 symbols hex string.
+     * @return ResultOfNaclSignDetachedVerify
+     * @throws TonException
+     */
+    public function naclSignDetachedVerify(
+        string $unsigned,
+        string $signature,
+        string $public
+    ): ResultOfNaclSignDetachedVerify {
+        return new ResultOfNaclSignDetachedVerify(
+            $this->tonClient->request(
+                'crypto.nacl_sign_detached_verify',
+                [
+                    'unsigned'  => $unsigned,
+                    'signature' => $signature,
+                    'public'    => $public,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Creates a default signing box implementation
+     *
+     * @param string $public Public key - 64 symbols hex string
+     * @param string $secret Private key - u64 symbols hex string
+     * @return ResultOfGetSigningBox
+     * @throws TonException
+     */
+    public function getSigningBox(string $public, string $secret): ResultOfGetSigningBox
+    {
+        return new ResultOfGetSigningBox(
+            $this->tonClient->request(
+                'crypto.get_signing_box',
+                [
+                    'public' => $public,
+                    'secret' => $secret,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Returns public key of signing key pair
+     *
+     * @param int $handle Handle of the signing box.
+     * @return ResultOfSigningBoxGetPublicKey
+     * @throws TonException
+     */
+    public function signingBoxGetPublicKey(int $handle): ResultOfSigningBoxGetPublicKey
+    {
+        return new ResultOfSigningBoxGetPublicKey(
+            $this->tonClient->request(
+                'crypto.signing_box_get_public_key',
+                [
+                    'handle' => $handle,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Returns signed user data
+     *
+     * @param int $handle Signing Box handle.
+     * @param string $unsigned Unsigned user data (must be encoded with base64)
+     * @return ResultOfSigningBoxSign
+     * @throws TonException
+     */
+    public function signingBoxSign(int $handle, string $unsigned): ResultOfSigningBoxSign
+    {
+        return new ResultOfSigningBoxSign(
+            $this->tonClient->request(
+                'crypto.signing_box_sign',
+                [
+                    'signing_box' => $handle,
+                    'unsigned'    => $unsigned,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Removes signing box from SDK.
+     *
+     * @param int $handle Handle of the signing box
+     * @throws TonException
+     */
+    public function removeSigningBox(int $handle): void
+    {
+        $this->tonClient->request(
+            'crypto.remove_signing_box',
+            [
+                'handle' => $handle,
+            ],
+        )->wait();
     }
 }
