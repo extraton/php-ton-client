@@ -6,6 +6,8 @@ namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Crypto;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
 use Extraton\TonClient\Entity\Crypto\ResultOfFactorize;
@@ -26,6 +28,8 @@ use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetached;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxGetPublicKey;
+use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
 use Extraton\TonClient\Handler\Response;
@@ -53,7 +57,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::factorize
      */
-    public function testFactorizeWithSuccessResult(): void
+    public function testFactorize(): void
     {
         $composite = uniqid(microtime(), true);
         $result = new Response(
@@ -85,7 +89,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::modularPower
      */
-    public function testModularPowerWithSuccessResult(): void
+    public function testModularPower(): void
     {
         $base = uniqid(microtime(), true);
         $exponent = uniqid(microtime(), true);
@@ -121,7 +125,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::tonCrc16
      */
-    public function testTonCrc16WithSuccessResult(): void
+    public function testTonCrc16(): void
     {
         $data = uniqid(microtime(), true);
         $result = new Response(
@@ -153,7 +157,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::generateRandomBytes
      */
-    public function testGenerateRandomBytesWithSuccessResult(): void
+    public function testGenerateRandomBytes(): void
     {
         $length = hexdec(uniqid('', false));
         $result = new Response(
@@ -185,7 +189,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::convertPublicKeyToTonSafeFormat
      */
-    public function testConvertPublicKeyToTonSafeFormatWithSuccessResult(): void
+    public function testConvertPublicKeyToTonSafeFormat(): void
     {
         $publicKey = uniqid(microtime(), true);
         $result = new Response(
@@ -217,7 +221,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::generateRandomSignKeys
      */
-    public function testGenerateRandomSignKeysWithSuccessResult(): void
+    public function testGenerateRandomSignKeys(): void
     {
         $result = new Response(
             [
@@ -246,7 +250,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sign
      */
-    public function testSignWithSuccessResult(): void
+    public function testSign(): void
     {
         $unsigned = uniqid(microtime(), true);
         $keyPair = new KeyPair(uniqid(microtime(), true), uniqid(microtime(), true));
@@ -280,7 +284,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::verifySignature
      */
-    public function testVerifySignatureWithSuccessResult(): void
+    public function testVerifySignature(): void
     {
         $signed = uniqid(microtime(), true);
         $public = uniqid(microtime(), true);
@@ -314,7 +318,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sha256
      */
-    public function testSha256WithSuccessResult(): void
+    public function testSha256(): void
     {
         $data = uniqid(microtime(), true);
         $result = new Response(
@@ -346,7 +350,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::sha512
      */
-    public function testSha512WithSuccessResult(): void
+    public function testSha512(): void
     {
         $data = uniqid(microtime(), true);
         $result = new Response(
@@ -378,7 +382,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::scrypt
      */
-    public function testScryptWithSuccessResult(): void
+    public function testScrypt(): void
     {
         $password = uniqid(microtime(), true);
         $salt = uniqid(microtime(), true);
@@ -420,7 +424,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignKeyPairFromSecretKey
      */
-    public function testNaclSignKeyPairFromSecretKeyWithSuccessResult(): void
+    public function testNaclSignKeyPairFromSecretKey(): void
     {
         $secret = uniqid(microtime(), true);
         $result = new Response(
@@ -452,7 +456,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSign
      */
-    public function testNaclSignWithSuccessResult(): void
+    public function testNaclSign(): void
     {
         $unsigned = uniqid(microtime(), true);
         $secret = uniqid(microtime(), true);
@@ -486,7 +490,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignOpen
      */
-    public function testNaclSignOpenWithSuccessResult(): void
+    public function testNaclSignOpen(): void
     {
         $signed = uniqid(microtime(), true);
         $public = uniqid(microtime(), true);
@@ -520,7 +524,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSignDetached
      */
-    public function testNaclSignDetachedWithSuccessResult(): void
+    public function testNaclSignDetached(): void
     {
         $unsigned = uniqid(microtime(), true);
         $secret = uniqid(microtime(), true);
@@ -554,7 +558,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxKeypair
      */
-    public function testNaclBoxKeypairWithSuccessResult(): void
+    public function testNaclBoxKeypair(): void
     {
         $result = new Response(
             [
@@ -583,7 +587,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxKeypairFromSecretKey
      */
-    public function testNaclBoxKeypairFromSecretKeyWithSuccessResult(): void
+    public function testNaclBoxKeypairFromSecretKey(): void
     {
         $secret = uniqid(microtime(), true);
         $result = new Response(
@@ -615,7 +619,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBox
      */
-    public function testNaclBoxWithSuccessResult(): void
+    public function testNaclBox(): void
     {
         $decrypted = uniqid(microtime(), true);
         $nonce = uniqid(microtime(), true);
@@ -653,7 +657,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclBoxOpen
      */
-    public function testNaclBoxOpenWithSuccessResult(): void
+    public function testNaclBoxOpen(): void
     {
         $encrypted = uniqid(microtime(), true);
         $nonce = uniqid(microtime(), true);
@@ -691,7 +695,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSecretBox
      */
-    public function testNaclSecretBoxWithSuccessResult(): void
+    public function testNaclSecretBox(): void
     {
         $decrypted = uniqid(microtime(), true);
         $nonce = uniqid(microtime(), true);
@@ -727,7 +731,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::naclSecretBoxOpen
      */
-    public function testNaclSecretBoxOpenWithSuccessResult(): void
+    public function testNaclSecretBoxOpen(): void
     {
         $encrypted = uniqid(microtime(), true);
         $nonce = uniqid(microtime(), true);
@@ -763,7 +767,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicWords
      */
-    public function testMnemonicWordsWithSuccessResult(): void
+    public function testMnemonicWords(): void
     {
         $dictionary = hexdec(uniqid('', false));
         $result = new Response(
@@ -795,7 +799,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicFromRandom
      */
-    public function testMnemonicFromRandomWithSuccessResult(): void
+    public function testMnemonicFromRandom(): void
     {
         $dictionary = hexdec(uniqid('', false));
         $wordCount = hexdec(uniqid('', false));
@@ -829,7 +833,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicFromEntropy
      */
-    public function testMnemonicFromEntropyWithSuccessResult(): void
+    public function testMnemonicFromEntropy(): void
     {
         $entropy = uniqid(microtime(), true);
         $dictionary = hexdec(uniqid('', false));
@@ -865,7 +869,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicVerify
      */
-    public function testMnemonicVerifyWithSuccessResult(): void
+    public function testMnemonicVerify(): void
     {
         $phrase = uniqid(microtime(), true);
         $dictionary = hexdec(uniqid('', false));
@@ -901,7 +905,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::mnemonicDeriveSignKeys
      */
-    public function testMnemonicDeriveSignKeysWithSuccessResult(): void
+    public function testMnemonicDeriveSignKeys(): void
     {
         $phrase = uniqid(microtime(), true);
         $path = uniqid(microtime(), true);
@@ -939,7 +943,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyXprvFromMnemonic
      */
-    public function testHdkeyXprvFromMnemonicWithSuccessResult(): void
+    public function testHdkeyXprvFromMnemonic(): void
     {
         $phrase = uniqid(microtime(), true);
         $dictionary = hexdec(uniqid('', false));
@@ -975,7 +979,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyDeriveFromXprv
      */
-    public function testHdkeyDeriveFromXprvWithSuccessResult(): void
+    public function testHdkeyDeriveFromXprv(): void
     {
         $xprv = uniqid(microtime(), true);
         $childIndex = hexdec(uniqid('', false));
@@ -1011,7 +1015,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyDeriveFromXprvPath
      */
-    public function testHdkeyDeriveFromXprvPathWithSuccessResult(): void
+    public function testHdkeyDeriveFromXprvPath(): void
     {
         $xprv = uniqid(microtime(), true);
         $path = uniqid(microtime(), true);
@@ -1045,7 +1049,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeySecretFromXprv
      */
-    public function testHdkeySecretFromXprvWithSuccessResult(): void
+    public function testHdkeySecretFromXprv(): void
     {
         $xprv = uniqid(microtime(), true);
         $result = new Response(
@@ -1077,7 +1081,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::hdkeyPublicFromXprv
      */
-    public function testHdkeyPublicFromXprvWithSuccessResult(): void
+    public function testHdkeyPublicFromXprv(): void
     {
         $xprv = uniqid(microtime(), true);
         $result = new Response(
@@ -1109,7 +1113,7 @@ class CryptoTest extends AbstractModuleTest
     /**
      * @covers ::chaCha20
      */
-    public function testChaCha20WithSuccessResult(): void
+    public function testChaCha20(): void
     {
         $data = uniqid(microtime(), true);
         $key = uniqid(microtime(), true);
@@ -1140,5 +1144,187 @@ class CryptoTest extends AbstractModuleTest
         $expected = new ResultOfChaCha20($result);
 
         self::assertEquals($expected, $this->crypto->chaCha20($data, $key, $nonce));
+    }
+
+    /**
+     * @covers ::naclSignDetachedVerify
+     */
+    public function testNaclSignDetachedVerify(): void
+    {
+        $unsigned = uniqid(microtime(), true);
+        $signature = uniqid(microtime(), true);
+        $public = uniqid(microtime(), true);
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.nacl_sign_detached_verify',
+                [
+                    'unsigned'  => $unsigned,
+                    'signature' => $signature,
+                    'public'    => $public,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfNaclSignDetachedVerify($result);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->naclSignDetachedVerify(
+                $unsigned,
+                $signature,
+                $public
+            )
+        );
+    }
+
+    /**
+     * @covers ::getSigningBox
+     */
+    public function testGetSigningBox(): void
+    {
+        $public = uniqid(microtime(), true);
+        $secret = uniqid(microtime(), true);
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.get_signing_box',
+                [
+                    'public' => $public,
+                    'secret' => $secret,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfGetSigningBox($result);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->getSigningBox(
+                $public,
+                $secret
+            )
+        );
+    }
+
+    /**
+     * @covers ::signingBoxGetPublicKey
+     */
+    public function testSigningBoxGetPublicKey(): void
+    {
+        $handle = time();
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.signing_box_get_public_key',
+                [
+                    'handle' => $handle,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfSigningBoxGetPublicKey($result);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->signingBoxGetPublicKey($handle)
+        );
+    }
+
+    /**
+     * @covers ::signingBoxSign
+     */
+    public function testSigningBoxSign(): void
+    {
+        $handle = time();
+        $unsigned = uniqid(microtime(), true);
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.signing_box_sign',
+                [
+                    'signing_box' => $handle,
+                    'unsigned'    => $unsigned,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfSigningBoxSign($result);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->signingBoxSign($handle, $unsigned)
+        );
+    }
+
+    /**
+     * @covers ::removeSigningBox
+     */
+    public function testRemoveSigningBox(): void
+    {
+        $handle = time();
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with();
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.remove_signing_box',
+                [
+                    'handle' => $handle,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $this->crypto->removeSigningBox($handle);
     }
 }

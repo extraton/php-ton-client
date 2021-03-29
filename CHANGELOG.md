@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+1.9.0
+-----
+
+* Added new method `Crypto::naclSignDetachedVerify`
+* Added new method `Crypto::getSigningBox`
+* Added new method `Crypto::signingBoxGetPublicKey`
+* Added new method `Crypto::signingBoxSign`
+* Added new method `Crypto::removeSigningBox`
+* Added new integration and unit tests
+
 1.8.0
 -----
 
