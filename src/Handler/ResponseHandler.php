@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient\Handler;
 
-use Extraton\TonClient\Binding\Binding;
+use Extraton\TonClient\App\AppInterface;
 use Extraton\TonClient\Binding\Type\ResponseType;
 use Extraton\TonClient\Exception\DataException;
+use Extraton\TonClient\Exception\LogicException;
 use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Exception\TonException;
+use Extraton\TonClient\TonClient;
 use FFI\CData;
 use GuzzleHttp\Promise\Is;
 use GuzzleHttp\Promise\Promise;
@@ -26,16 +28,20 @@ class ResponseHandler
     /** @var Response[] */
     private array $responses = [];
 
-    private Binding $binding;
-
     private int $requestId;
 
+    private TonClient $tonClient;
+
+    private ?AppInterface $app;
+
     /**
-     * @param Binding $binding
+     * @param TonClient $tonClient
+     * @param AppInterface|null $app
      */
-    public function __construct(Binding $binding)
+    public function __construct(TonClient $tonClient, AppInterface $app = null)
     {
-        $this->binding = $binding;
+        $this->tonClient = $tonClient;
+        $this->app = $app;
         $this->requestId = 0;
     }
 
@@ -84,7 +90,7 @@ class ResponseHandler
      */
     public function __invoke(int $requestId, CData $paramsJson, int $responseType, bool $finished): void
     {
-        $result = $this->binding->getEncoder()->decodeToArray($paramsJson);
+        $result = $this->tonClient->getBinding()->getEncoder()->decodeToArray($paramsJson);
 
         if ($responseType === ResponseType::SUCCESS) {
             $this->handleSuccess($requestId, $result, $finished);
@@ -94,6 +100,10 @@ class ResponseHandler
             $this->handleData($requestId, $result, $finished);
         } elseif ($responseType === ResponseType::NOP) {
             $this->handleNop($requestId, $finished);
+        } elseif ($responseType === ResponseType::APP_REQUEST) {
+            $this->handleAppRequest($result);
+        } elseif ($responseType === ResponseType::APP_NOTIFY) {
+            $this->handleAppNotify($result);
         } else {
             throw new DataException(sprintf('Unknown response type %s.', $responseType));
         }
@@ -195,5 +205,35 @@ class ResponseHandler
 
         $this->unregisterPromise($requestId);
         $this->removeResponse($requestId);
+    }
+
+    /**
+     * @param array<mixed> $result
+     */
+    public function handleAppRequest(array $result): void
+    {
+        if ($this->app === null) {
+            throw new LogicException('App not defined.');
+        }
+
+        if (!isset($result['request_data'], $result['app_request_id'])) {
+            throw new DataException('Invalid app data.');
+        }
+
+        $app = $this->app;
+        $app($this->tonClient, $result['request_data'], $result['app_request_id']);
+    }
+
+    /**
+     * @param array<mixed> $result
+     */
+    public function handleAppNotify(array $result): void
+    {
+        if ($this->app === null) {
+            throw new LogicException('App not defined.');
+        }
+
+        $app = $this->app;
+        $app($this->tonClient, $result);
     }
 }

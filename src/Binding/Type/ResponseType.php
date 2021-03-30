@@ -15,5 +15,9 @@ class ResponseType
 
     public const NOP = 2;
 
+    public const APP_REQUEST = 3;
+
+    public const APP_NOTIFY = 4;
+
     public const CUSTOM = 100;
 }

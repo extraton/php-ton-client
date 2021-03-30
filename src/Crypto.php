@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\App\AppInterface;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
 use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
@@ -837,6 +838,21 @@ class Crypto extends AbstractModule
             [
                 'handle' => $handle,
             ],
+        )->wait();
+    }
+
+    /**
+     * Register an application implemented signing box
+     *
+     * @param AppInterface $app Application for SigningBox
+     * @throws TonException
+     */
+    public function registerSigningBox(AppInterface $app): void
+    {
+        $this->tonClient->request(
+            'crypto.register_signing_box',
+            [],
+            $app
         )->wait();
     }
 }
