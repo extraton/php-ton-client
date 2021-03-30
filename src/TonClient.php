@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\App\AppInterface;
 use Extraton\TonClient\Binding\Binding;
+use Extraton\TonClient\Entity\App\AppRequestResult;
 use Extraton\TonClient\Entity\Client\ResultOfBuildInfo;
 use Extraton\TonClient\Entity\Client\ResultOfGetApiReference;
 use Extraton\TonClient\Entity\Client\ResultOfVersion;
@@ -44,6 +46,8 @@ class TonClient
     private ?Crypto $crypto = null;
 
     private ?Tvm $tvm = null;
+
+    private ?Debot $debot = null;
 
     /**
      * @param array<mixed> $configuration
@@ -86,6 +90,14 @@ class TonClient
         ];
 
         return new TonClient($config);
+    }
+
+    /**
+     * @return Binding
+     */
+    public function getBinding(): Binding
+    {
+        return $this->binding;
     }
 
     /**
@@ -187,16 +199,31 @@ class TonClient
     }
 
     /**
+     * Get Debot module
+     *
+     * @return Debot
+     */
+    public function getDebot(): Debot
+    {
+        if ($this->debot === null) {
+            $this->debot = new Debot($this);
+        }
+
+        return $this->debot;
+    }
+
+    /**
      * Main method to call sdk methods
      *
      * @param string $functionName Function name
      * @param array<string, mixed> $functionParams Function params
+     * @param AppInterface|null $app
      * @return Promise
      * @throws TonException
      */
-    public function request(string $functionName, array $functionParams = []): Promise
+    public function request(string $functionName, array $functionParams = [], AppInterface $app = null): Promise
     {
-        $responseHandler = $this->getResponseHandler();
+        $responseHandler = $this->getResponseHandler($app);
         $promise = new Promise(
             static function () use (&$promise, $functionName) {
                 if ($promise === null) {
@@ -226,12 +253,13 @@ class TonClient
     /**
      * Get response handler
      *
+     * @param AppInterface|null $app
      * @return ResponseHandler
      */
-    public function getResponseHandler(): ResponseHandler
+    public function getResponseHandler(AppInterface $app = null): ResponseHandler
     {
         if ($this->responseHandler === null) {
-            $this->responseHandler = new ResponseHandler($this->binding);
+            $this->responseHandler = new ResponseHandler($this, $app);
         }
 
         return $this->responseHandler;
@@ -294,5 +322,23 @@ class TonClient
                 'client.get_api_reference'
             )->wait()
         );
+    }
+
+    /**
+     * Resolves application request processing result
+     *
+     * @param int $appRequestId Request ID received from SDK
+     * @param AppRequestResult $appRequestResult Result of request processing
+     * @throws TonException
+     */
+    public function resolveAppRequest(int $appRequestId, AppRequestResult $appRequestResult): void
+    {
+        $this->request(
+            'client.resolve_app_request',
+            [
+                'app_request_id' => $appRequestId,
+                'result'         => $appRequestResult,
+            ]
+        )->wait();
     }
 }

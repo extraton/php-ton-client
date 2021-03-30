@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+1.10.0
+-----
+
+* Added new interface `AppInterface`
+* Added new method `Debot::start`
+* Added new method `Debot::fetch`
+* Added new method `Debot::execute`
+* Added new method `Debot::send`
+* Added new method `Debot::remove`
+* Added new method `TonClient::resolveAppRequest`
+* Added new method `Crypto::registerSigningBox`
+
 1.9.0
 -----
 
