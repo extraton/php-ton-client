@@ -6,7 +6,9 @@ namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
+use Extraton\TonClient\Entity\Utils\ResultOfCompressZstd;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Entity\Utils\ResultOfDecompressZstd;
 use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Utils;
 
@@ -33,7 +35,7 @@ class UtilsTest extends AbstractModuleTest
     /**
      * @covers ::convertAddress
      */
-    public function testConvertAddressWithSuccessResult(): void
+    public function testConvertAddress(): void
     {
         $address = uniqid(microtime(), true);
         $response = new Response(
@@ -67,7 +69,7 @@ class UtilsTest extends AbstractModuleTest
     /**
      * @covers ::calcStorageFee
      */
-    public function testCalcStorageFeeWithSuccessResult(): void
+    public function testCalcStorageFee(): void
     {
         $account = uniqid(microtime(), true);
         $period = time();
@@ -97,5 +99,73 @@ class UtilsTest extends AbstractModuleTest
         $expected = new ResultOfCalcStorageFee($response);
 
         self::assertEquals($expected, $this->utils->calcStorageFee($account, $period));
+    }
+
+    /**
+     * @covers ::compressZstd
+     */
+    public function testCompressZstd(): void
+    {
+        $uncompressed = uniqid(microtime(), true);
+        $level = random_int(1, 21);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'utils.compress_zstd',
+                [
+                    'uncompressed' => $uncompressed,
+                    'level'        => $level,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfCompressZstd($response);
+
+        self::assertEquals($expected, $this->utils->compressZstd($uncompressed, $level));
+    }
+
+    /**
+     * @covers ::decompressZstd
+     */
+    public function testDecompressZstd(): void
+    {
+        $compressed = uniqid(microtime(), true);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'utils.decompress_zstd',
+                [
+                    'compressed' => $compressed,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfDecompressZstd($response);
+
+        self::assertEquals($expected, $this->utils->decompressZstd($compressed));
     }
 }

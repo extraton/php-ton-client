@@ -80,7 +80,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::encodeMessageBody
      */
-    public function testEncodeMessageBodyWithSuccessResult(): void
+    public function testEncodeMessageBody(): void
     {
         $isInternal = (bool)random_int(0, 1);
         $processingTryIndex = random_int(0, PHP_INT_MAX);
@@ -127,7 +127,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::attachSignatureToMessageBody
      */
-    public function testAttachSignatureToMessageBodyWithSuccessResult(): void
+    public function testAttachSignatureToMessageBody(): void
     {
         $publicKey = uniqid(microtime(), true);
         $message = uniqid(microtime(), true);
@@ -173,7 +173,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::encodeMessage
      */
-    public function testEncodeMessageWithSuccessResult(): void
+    public function testEncodeMessage(): void
     {
         $address = uniqid(microtime(), true);
         $processingTryIndex = random_int(0, PHP_INT_MAX);
@@ -222,7 +222,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::attachSignature
      */
-    public function testAttachSignatureWithSuccessResult(): void
+    public function testAttachSignature(): void
     {
         $publicKey = uniqid(microtime(), true);
         $message = uniqid(microtime(), true);
@@ -268,7 +268,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::decodeMessage
      */
-    public function testDecodeMessageWithSuccessResult(): void
+    public function testDecodeMessage(): void
     {
         $message = uniqid(microtime(), true);
 
@@ -308,7 +308,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::decodeMessageBody
      */
-    public function testDecodeMessageBodyWithSuccessResult(): void
+    public function testDecodeMessageBody(): void
     {
         $body = uniqid(microtime(), true);
         $isInternal = (bool)random_int(0, 1);
@@ -351,7 +351,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::encodeAccount
      */
-    public function testEncodeAccountWithSuccessResult(): void
+    public function testEncodeAccount(): void
     {
         $balance = random_int(0, PHP_INT_MAX);
         $lastTransLt = random_int(0, PHP_INT_MAX);
@@ -397,7 +397,7 @@ class AbiTest extends AbstractModuleTest
     /**
      * @covers ::encodeInternalMessage
      */
-    public function testEncodeInternalMessageWithSuccessResult(): void
+    public function testEncodeInternalMessage(): void
     {
         $value = uniqid(microtime(), true);
         $abi = AbiType::fromHandle(time());

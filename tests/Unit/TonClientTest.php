@@ -53,7 +53,7 @@ class TonClientTest extends TestCase
     /**
      * @covers ::version
      */
-    public function testVersionWithSuccessResult(): void
+    public function testVersion(): void
     {
         $response = new Response(
             [
@@ -79,7 +79,7 @@ class TonClientTest extends TestCase
     /**
      * @covers ::buildInfo
      */
-    public function testBuildInfoWithSuccessResult(): void
+    public function testBuildInfo(): void
     {
         $response = new Response(
             [
@@ -105,7 +105,7 @@ class TonClientTest extends TestCase
     /**
      * @covers ::getApiReference
      */
-    public function testGetApiReferenceWithSuccessResult(): void
+    public function testGetApiReference(): void
     {
         $response = new Response(
             [

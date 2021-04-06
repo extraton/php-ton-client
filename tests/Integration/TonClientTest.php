@@ -17,12 +17,12 @@ class TonClientTest extends AbstractModuleTest
     /**
      * @covers ::version
      */
-    public function testVersionWithSuccessResult(): void
+    public function testVersion(): void
     {
         $expected = new ResultOfVersion(
             new Response(
                 [
-                    'version' => '1.11.1'
+                    'version' => '1.12.0'
                 ]
             )
         );
@@ -33,7 +33,7 @@ class TonClientTest extends AbstractModuleTest
     /**
      * @covers ::buildInfo
      */
-    public function testBuildInfoSuccessResult(): void
+    public function testBuildInfo(): void
     {
         $resultOfBuildInfo = $this->tonClient->buildInfo();
 
@@ -48,7 +48,7 @@ class TonClientTest extends AbstractModuleTest
     {
         $resultOfGetApiReference = $this->tonClient->getApiReference();
 
-        self::assertEquals('1.11.1', $resultOfGetApiReference->getApi()['version']);
+        self::assertEquals('1.12.0', $resultOfGetApiReference->getApi()['version']);
         self::assertCount(9, $resultOfGetApiReference->getApi()['modules']);
     }
 }

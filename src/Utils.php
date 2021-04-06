@@ -6,7 +6,9 @@ namespace Extraton\TonClient;
 
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
+use Extraton\TonClient\Entity\Utils\ResultOfCompressZstd;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
+use Extraton\TonClient\Entity\Utils\ResultOfDecompressZstd;
 use Extraton\TonClient\Exception\TonException;
 
 /**
@@ -93,6 +95,7 @@ class Utils extends AbstractModule
      * @param string $account Account
      * @param int $period Period
      * @return ResultOfCalcStorageFee
+     * @throws TonException
      */
     public function calcStorageFee(string $account, int $period): ResultOfCalcStorageFee
     {
@@ -102,6 +105,49 @@ class Utils extends AbstractModule
                 [
                     'account' => $account,
                     'period'  => $period,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Compresses data using Zstandard algorithm
+     * Where: 1 - lowest compression level (fastest compression); 21 - highest compression level (slowest compression).
+     * If level is omitted, the default compression level is used (currently 3).
+     *
+     * @param string $uncompressed Uncompressed data. Must be encoded as base64.
+     * @param int|null $level Compression level, from 1 to 21.
+     * @return ResultOfCompressZstd
+     * @throws TonException
+     */
+    public function compressZstd(string $uncompressed, ?int $level = null): ResultOfCompressZstd
+    {
+        return new ResultOfCompressZstd(
+            $this->tonClient->request(
+                'utils.compress_zstd',
+                [
+                    'uncompressed' => $uncompressed,
+                    'level'        => $level,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Decompresses data using Zstandard algorithm
+     *
+     * @param string $compressed Compressed data. Must be encoded as base64.
+     * @return ResultOfDecompressZstd
+     * @throws TonException
+     * @throws TonException
+     */
+    public function decompressZstd(string $compressed): ResultOfDecompressZstd
+    {
+        return new ResultOfDecompressZstd(
+            $this->tonClient->request(
+                'utils.decompress_zstd',
+                [
+                    'compressed' => $compressed,
                 ]
             )->wait()
         );

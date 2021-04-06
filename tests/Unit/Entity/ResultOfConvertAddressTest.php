@@ -19,7 +19,7 @@ class ResultOfConvertAddressTest extends TestCase
     /**
      * @covers ::getAddress
      */
-    public function testGetAddressWithSuccessResult(): void
+    public function testGetAddress(): void
     {
         $data = [
             'address' => $address = uniqid(microtime(), true),

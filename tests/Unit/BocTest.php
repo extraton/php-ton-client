@@ -38,7 +38,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::parseMessage
      */
-    public function testParseMessageWithSuccessResult(): void
+    public function testParseMessage(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -70,7 +70,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::parseTransaction
      */
-    public function testParseTransactionWithSuccessResult(): void
+    public function testParseTransaction(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -102,7 +102,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::parseAccount
      */
-    public function testParseAccountWithSuccessResult(): void
+    public function testParseAccount(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -134,7 +134,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::parseBlock
      */
-    public function testParseBlockWithSuccessResult(): void
+    public function testParseBlock(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -166,7 +166,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::getBlockchainConfig
      */
-    public function testGetBlockchainConfigWithSuccessResult(): void
+    public function testGetBlockchainConfig(): void
     {
         $blockBoc = uniqid(microtime(), true);
         $response = new Response(
@@ -198,7 +198,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::parseShardstate
      */
-    public function testParseShardstateWithSuccessResult(): void
+    public function testParseShardstate(): void
     {
         $boc = uniqid(microtime(), true);
         $id = uniqid(microtime(), true);
@@ -234,7 +234,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::getBocHash
      */
-    public function testGetBocHashWithSuccessResult(): void
+    public function testGetBocHash(): void
     {
         $boc = uniqid(microtime(), true);
         $response = new Response(
@@ -266,7 +266,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::getCodeFromTvc
      */
-    public function testGetCodeFromTvcSuccessResult(): void
+    public function testGetCodeFromTvc(): void
     {
         $tvc = uniqid(microtime(), true);
         $response = new Response(
@@ -298,7 +298,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::cacheGet
      */
-    public function testCacheGetSuccessResult(): void
+    public function testCacheGet(): void
     {
         $bocRef = uniqid(microtime(), true);
         $response = new Response(
@@ -330,7 +330,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::cacheSet
      */
-    public function testCacheSetSuccessResult(): void
+    public function testCacheSet(): void
     {
         $boc = uniqid(microtime(), true);
         $cacheType = CacheType::fromPinned(uniqid(microtime(), true));
@@ -364,7 +364,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::cacheUnpin
      */
-    public function testCacheUnpinSuccessResult(): void
+    public function testCacheUnpin(): void
     {
         $pin = uniqid(microtime(), true);
         $bocRef = uniqid(microtime(), true);
@@ -396,7 +396,7 @@ class BocTest extends AbstractModuleTest
     /**
      * @covers ::encodeBoc
      */
-    public function testEncodeBocSuccessResult(): void
+    public function testEncodeBoc(): void
     {
         $builderOps = [
             BuilderOp::fromBitString(uniqid(microtime(), true)),

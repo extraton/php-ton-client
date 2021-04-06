@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.11.0
+-----
+
+* Updated TON SDK library to version 1.12.0
+* Added new method `Utils::compressZstd`
+* Added new method `Utils::decompressZstd`
+
 1.10.0
 -----
 

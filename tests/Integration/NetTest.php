@@ -29,7 +29,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::queryCollection
      */
-    public function testQueryCollectionWithSuccessResult(): void
+    public function testQueryCollection(): void
     {
         $query = new ParamsOfQueryCollection(
             'accounts',
@@ -133,7 +133,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::waitForCollection
      */
-    public function testWaitForCollectionSuccessResult(): void
+    public function testWaitForCollection(): void
     {
         $query = new ParamsOfWaitForCollection(
             'accounts',
@@ -209,7 +209,7 @@ class NetTest extends AbstractModuleTest
      * @covers ::subscribeCollection
      * @covers ::unsubscribe
      */
-    public function testSubscribeCollectionSuccessResult(): void
+    public function testSubscribeCollection(): void
     {
         $minBalanceDelta = 1_000;
 
@@ -272,7 +272,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::query
      */
-    public function testQuerySuccessResult(): void
+    public function testQuery(): void
     {
         $query = <<<'QUERY'
             query($time: Float) {
@@ -300,7 +300,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::findLastShardBlock
      */
-    public function testFindLastShardBlockSuccessResult(): void
+    public function testFindLastShardBlock(): void
     {
         $address = $this->dataProvider->getGiverAddress();
 
@@ -313,7 +313,7 @@ class NetTest extends AbstractModuleTest
      * @covers ::setEndpoints
      * @covers ::fetchEndpoints
      */
-    public function testSetEndpointsAndGetEndpointsSuccessResult(): void
+    public function testSetEndpointsAndGetEndpoints(): void
     {
         $this->net->setEndpoints(
             [
@@ -334,7 +334,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::aggregateCollection
      */
-    public function testAggregateCollectionWithSuccessResult(): void
+    public function testAggregateCollection(): void
     {
         $aggregation = new Aggregation();
         $aggregation->add('id', Aggregation::COUNT);
@@ -352,7 +352,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::batchQuery
      */
-    public function testBatchQueryWithSuccessResult(): void
+    public function testBatchQuery(): void
     {
         // Query 1
         $query1 = new ParamsOfQueryCollection('blocks_signatures', ['id']);
