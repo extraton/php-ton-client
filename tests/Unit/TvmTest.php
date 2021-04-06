@@ -37,7 +37,7 @@ class TvmTest extends AbstractModuleTest
     /**
      * @covers ::runExecutor
      */
-    public function testRunExecutorWithSuccessResult(): void
+    public function testRunExecutor(): void
     {
         $message = uniqid(microtime(), true);
         $accountForExecutor = AccountForExecutor::fromNone();
@@ -98,7 +98,7 @@ class TvmTest extends AbstractModuleTest
     /**
      * @covers ::runTvm
      */
-    public function testRunTvmWithSuccessResult(): void
+    public function testRunTvm(): void
     {
         $message = uniqid(microtime(), true);
         $account = uniqid(microtime(), true);
@@ -156,7 +156,7 @@ class TvmTest extends AbstractModuleTest
     /**
      * @covers ::runGet
      */
-    public function testRunGetWithSuccessResult(): void
+    public function testRunGet(): void
     {
         $account = uniqid(microtime(), true);
         $functionName = uniqid(microtime(), true);

@@ -37,7 +37,7 @@ class ProcessingTest extends AbstractModuleTest
     /**
      * @covers ::sendMessage
      */
-    public function testSendMessageWithSuccessResult(): void
+    public function testSendMessage(): void
     {
         $message = uniqid(microtime(), true);
         $sendEvents = (bool)random_int(0, 1);
@@ -81,7 +81,7 @@ class ProcessingTest extends AbstractModuleTest
     /**
      * @covers ::waitForTransaction
      */
-    public function testWaitForTransactionWithSuccessResult(): void
+    public function testWaitForTransaction(): void
     {
         $message = uniqid(microtime(), true);
         $shardBlockId = uniqid(microtime(), true);
@@ -128,7 +128,7 @@ class ProcessingTest extends AbstractModuleTest
     /**
      * @covers ::processMessage
      */
-    public function testProcessMessageWithSuccessResult(): void
+    public function testProcessMessage(): void
     {
         $abi = AbiType::fromArray([]);
         $signer = Signer::fromNone();

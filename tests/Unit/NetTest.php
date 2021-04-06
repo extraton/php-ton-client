@@ -62,7 +62,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::queryCollection
      */
-    public function testQueryCollectionWithSuccessResult(): void
+    public function testQueryCollection(): void
     {
         $collection = uniqid(microtime(), true);
         $result = uniqid(microtime(), true);
@@ -131,7 +131,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::waitForCollection
      */
-    public function testWaitForCollectionWithSuccessResult(): void
+    public function testWaitForCollection(): void
     {
         $collection = uniqid(microtime(), true);
         $result = uniqid(microtime(), true);
@@ -196,7 +196,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::subscribeCollection
      */
-    public function testSubscribeCollectionWithSuccessResult(): void
+    public function testSubscribeCollection(): void
     {
         $collection = uniqid(microtime(), true);
         $result = uniqid(microtime(), true);
@@ -257,7 +257,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::unsubscribe
      */
-    public function testUnsubscribeWithSuccessResult(): void
+    public function testUnsubscribe(): void
     {
         $handle = time();
 
@@ -282,7 +282,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::query
      */
-    public function testQuerySuccessResult(): void
+    public function testQuery(): void
     {
         $query = uniqid(microtime(), true);
         $variables = [
@@ -319,7 +319,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::findLastShardBlock
      */
-    public function testFindLastShardBlockSuccessResult(): void
+    public function testFindLastShardBlock(): void
     {
         $address = uniqid(microtime(), true);
 
@@ -352,7 +352,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::setEndpoints
      */
-    public function testSetEndpointsSuccessResult(): void
+    public function testSetEndpoints(): void
     {
         $endpoints = [
             uniqid(microtime(), true) => uniqid(microtime(), true),
@@ -385,7 +385,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::fetchEndpoints
      */
-    public function testFetchEndpointsSuccessResult(): void
+    public function testFetchEndpoints(): void
     {
         $response = new Response(
             [
@@ -413,7 +413,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::aggregateCollection
      */
-    public function testAggregateCollectionWithSuccessResult(): void
+    public function testAggregateCollection(): void
     {
         $collection = uniqid(microtime(), true);
         $filters = new Filters();
@@ -477,7 +477,7 @@ class NetTest extends AbstractModuleTest
     /**
      * @covers ::batchQuery
      */
-    public function testBatchQueryWithSuccessResult(): void
+    public function testBatchQuery(): void
     {
         $query = new ParamsOfBatchQuery();
 
