@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Net\Aggregation;
 use Extraton\TonClient\Entity\Net\EndpointsSet;
 use Extraton\TonClient\Entity\Net\Filters;
@@ -15,6 +16,7 @@ use Extraton\TonClient\Entity\Net\ResultOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
+use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 use Extraton\TonClient\Handler\Response;
@@ -505,5 +507,47 @@ class NetTest extends AbstractModuleTest
         $expected = new ResultOfBatchQuery($response);
 
         self::assertEquals($expected, $this->net->batchQuery($query));
+    }
+
+    /**
+     * @covers ::queryCounterparties
+     */
+    public function testQueryCounterparties(): void
+    {
+        $account = uniqid(microtime(), true);
+        $result = uniqid(microtime(), true);
+        $first = time();
+        $after = uniqid(microtime(), true);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'net.query_counterparties',
+                [
+                    'account' => $account,
+                    'result'  => $result,
+                    'first'   => $first,
+                    'after'   => $after,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfQueryCounterparties($response);
+
+        self::assertEquals(
+            $expected,
+            $this->net->queryCounterparties($account, $result, $first, $after)
+        );
     }
 }

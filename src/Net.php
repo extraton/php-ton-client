@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Net\EndpointsSet;
 use Extraton\TonClient\Entity\Net\ParamsOfAggregateCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfBatchQuery;
@@ -16,6 +17,7 @@ use Extraton\TonClient\Entity\Net\ResultOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
+use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 use Extraton\TonClient\Exception\TonException;
@@ -239,6 +241,36 @@ class Net extends AbstractModule
                 'net.batch_query',
                 [
                     'operations' => $query,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Allows to query and paginate through the list of accounts that the specified account has interacted with,
+     * sorted by the time of the last internal message between accounts
+     *
+     * @param string $account Account address
+     * @param string $result Projection (result) string
+     * @param int|null $first Number of counterparties to return
+     * @param string|null $after cursor field of the last received result
+     * @return ResultOfQueryCounterparties
+     * @throws TonException
+     */
+    public function queryCounterparties(
+        string $account,
+        string $result,
+        ?int $first = null,
+        ?string $after = null
+    ): ResultOfQueryCounterparties {
+        return new ResultOfQueryCounterparties(
+            $this->tonClient->request(
+                'net.query_counterparties',
+                [
+                    'account' => $account,
+                    'result'  => $result,
+                    'first'   => $first,
+                    'after'   => $after,
                 ]
             )->wait()
         );
