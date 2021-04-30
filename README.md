@@ -29,7 +29,7 @@
 - ffi extension
 - json extension
 - zlib extension
-- TON SDK Library __1.12.0__ (download script included)
+- TON SDK Library __1.14.0__ (download script included)
 
 ## Installation
 To install it via [Composer](https://getcomposer.org/) simply run:

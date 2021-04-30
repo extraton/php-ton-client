@@ -1,12 +1,20 @@
 CHANGELOG
 =========
 
+1.12.0
+-----
+
+* Updated TON SDK library to version 1.14.0
+* Added new method `Net::queryCounterparties`
+* Added new integration and unit tests
+
 1.11.0
 -----
 
 * Updated TON SDK library to version 1.12.0
 * Added new method `Utils::compressZstd`
 * Added new method `Utils::decompressZstd`
+* Added new integration and unit tests
 
 1.10.0
 -----
@@ -19,6 +27,7 @@ CHANGELOG
 * Added new method `Debot::remove`
 * Added new method `TonClient::resolveAppRequest`
 * Added new method `Crypto::registerSigningBox`
+* Added new integration and unit tests
 
 1.9.0
 -----
