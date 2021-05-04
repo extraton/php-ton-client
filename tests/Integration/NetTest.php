@@ -400,14 +400,14 @@ class NetTest extends AbstractModuleTest
                 [
                     'result' => [
                         [
+                            'counterparty'    => '0:954688c088881241c5c6b248da398aefa2752bd5a97202f41454fdf3671e671c',
+                            'last_message_id' => '972e6d570c2a114e09a291435c69d29333e3ad67a7e60445fff517d58d38cefd',
+                            'cursor'          => '1614858473/0:954688c088881241c5c6b248da398aefa2752bd5a97202f41454fdf3671e671c',
+                        ],
+                        $part2 = [
                             'counterparty'    => '0:2bb4a0e8391e7ea8877f4825064924bd41ce110fce97e939d3323999e1efbb13',
                             'last_message_id' => '33ce8939b7cec3018272ecf47381782d502ca7a81e7ff9385803f69a03fced35',
                             'cursor'          => '1610344806/0:2bb4a0e8391e7ea8877f4825064924bd41ce110fce97e939d3323999e1efbb13',
-                        ],
-                        $part2 = [
-                            'counterparty'    => '0:954688c088881241c5c6b248da398aefa2752bd5a97202f41454fdf3671e671c',
-                            'last_message_id' => 'e925b2918aa17a0fd59b8b3137fe3401e74d41a11ce12a043b24e4583486e867',
-                            'cursor'          => '1614858161/0:954688c088881241c5c6b248da398aefa2752bd5a97202f41454fdf3671e671c',
                         ],
                     ]
                 ]
