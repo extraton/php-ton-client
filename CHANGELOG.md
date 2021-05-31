@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-1.16.0
+1.14.0
 -----
 
 * Updated TON SDK library to version 1.16.0
