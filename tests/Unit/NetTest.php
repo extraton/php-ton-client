@@ -17,6 +17,7 @@ use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
+use Extraton\TonClient\Entity\Net\ResultOfQueryTransactionTree;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 use Extraton\TonClient\Handler\Response;
@@ -548,6 +549,48 @@ class NetTest extends AbstractModuleTest
         self::assertEquals(
             $expected,
             $this->net->queryCounterparties($account, $result, $first, $after)
+        );
+    }
+
+    /**
+     * @covers ::queryTransactionTree
+     */
+    public function testQueryTransactionTree(): void
+    {
+        $inMsg = uniqid(microtime(), true);
+        $abiRegistry = [
+            uniqid(microtime(), true),
+            uniqid(microtime(), true),
+            uniqid(microtime(), true),
+        ];
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'net.query_transaction_tree',
+                [
+                    'in_msg'       => $inMsg,
+                    'abi_registry' => $abiRegistry,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfQueryTransactionTree($response);
+
+        self::assertEquals(
+            $expected,
+            $this->net->queryTransactionTree($inMsg, $abiRegistry)
         );
     }
 }
