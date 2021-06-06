@@ -100,20 +100,11 @@ abstract class AbstractQuery implements QueryInterface
      */
     public function getResult(): string
     {
-        $fields = array_merge(
-            ...array_map(
-                static fn ($resultField): array => explode(' ', $resultField),
-                $this->resultFields
-            )
-        );
-
-        $fields = array_unique(array_filter(array_map('trim', $fields)));
-
-        if (empty($fields)) {
+        if (empty($this->resultFields)) {
             throw new LogicException('Result fields cannot be empty');
         }
 
-        return implode(' ', $fields);
+        return implode(' ', $this->resultFields);
     }
 
     /**

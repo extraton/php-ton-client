@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Net\EndpointsSet;
 use Extraton\TonClient\Entity\Net\ParamsOfAggregateCollection;
@@ -18,6 +19,7 @@ use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
+use Extraton\TonClient\Entity\Net\ResultOfQueryTransactionTree;
 use Extraton\TonClient\Entity\Net\ResultOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
 use Extraton\TonClient\Exception\TonException;
@@ -271,6 +273,31 @@ class Net extends AbstractModule
                     'result'  => $result,
                     'first'   => $first,
                     'after'   => $after,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Returns transactions tree for specific message.
+     * Performs recursive retrieval of the transactions tree produced by the specific message:
+     * in_msg -> dst_transaction -> out_messages -> dst_transaction -> ...
+     * All retrieved messages and transactions will be included
+     * into result.messages and result.transactions respectively.
+     *
+     * @param string $inMsg
+     * @param AbiType[]|null $abiRegistry
+     * @return ResultOfQueryTransactionTree
+     * @throws TonException
+     */
+    public function queryTransactionTree(string $inMsg, ?array $abiRegistry = null): ResultOfQueryTransactionTree
+    {
+        return new ResultOfQueryTransactionTree(
+            $this->tonClient->request(
+                'net.query_transaction_tree',
+                [
+                    'in_msg'       => $inMsg,
+                    'abi_registry' => $abiRegistry,
                 ]
             )->wait()
         );

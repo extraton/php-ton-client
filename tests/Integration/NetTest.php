@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\TonClient\Abi;
+use Extraton\TonClient\Entity\Abi\AbiType;
 use Extraton\TonClient\Entity\Net\Aggregation;
 use Extraton\TonClient\Entity\Net\Filters;
+use Extraton\TonClient\Entity\Net\MessageNode;
 use Extraton\TonClient\Entity\Net\OrderBy;
 use Extraton\TonClient\Entity\Net\ParamsOfAggregateCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfBatchQuery;
@@ -14,7 +17,9 @@ use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
+use Extraton\TonClient\Entity\Net\ResultOfQueryTransactionTree;
 use Extraton\TonClient\Entity\Net\ResultOfWaitForCollection;
+use Extraton\TonClient\Entity\Net\TransactionNode;
 use Extraton\TonClient\Handler\Response;
 
 use function dechex;
@@ -445,5 +450,64 @@ class NetTest extends AbstractModuleTest
         );
 
         self::assertEquals($expected, $resultOfQueryCounterparties);
+    }
+
+    /**
+     * @covers ::queryTransactionTree
+     */
+    public function testQueryTransactionTree(): void
+    {
+        $filters = new Filters();
+        $filters->add('msg_type', Filters::EQ, 1);
+
+        $query = new ParamsOfQueryCollection(
+            'messages',
+            [],
+            $filters
+        );
+
+        $query->addResultField(
+            <<<FIELDS
+                id dst dst_transaction {
+                    id aborted out_messages {
+                        id dst msg_type_name dst_transaction {
+                            id aborted out_messages {
+                                id dst msg_type_name dst_transaction {
+                                    id aborted
+                                }
+                            }
+                        }
+                    }
+                }
+            FIELDS
+        );
+
+        $resultOfQueryCollection = $this->net->queryCollection($query);
+
+        $abiRegistry = [
+            AbiType::fromArray($this->dataProvider->getHelloAbiArray())
+        ];
+
+        foreach ($resultOfQueryCollection->getResult() as $message) {
+            $messageId = $message['id'] ?? null;
+            if ($messageId === null) {
+                continue;
+            }
+
+            $resultOfQueryTransactionTree = $this->net->queryTransactionTree(
+                $messageId,
+                $abiRegistry
+            );
+
+            self::assertContainsOnlyInstancesOf(
+                MessageNode::class,
+                $resultOfQueryTransactionTree->getMessages()
+            );
+
+            self::assertContainsOnlyInstancesOf(
+                TransactionNode::class,
+                $resultOfQueryTransactionTree->getTransactions()
+            );
+        }
     }
 }

@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.15.0
+-----
+
+* Added new method `Net::queryTransactionTree`
+* Added new integration and unit tests
+
 1.14.0
 -----
 
