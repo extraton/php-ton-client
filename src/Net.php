@@ -13,9 +13,11 @@ use Extraton\TonClient\Entity\Net\ParamsOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfSubscribeCollection;
 use Extraton\TonClient\Entity\Net\ParamsOfWaitForCollection;
 use Extraton\TonClient\Entity\Net\QueryInterface;
+use Extraton\TonClient\Entity\Net\RegisteredIterator;
 use Extraton\TonClient\Entity\Net\ResultOfAggregateCollection;
 use Extraton\TonClient\Entity\Net\ResultOfBatchQuery;
 use Extraton\TonClient\Entity\Net\ResultOfFindLastShardBlock;
+use Extraton\TonClient\Entity\Net\ResultOfIteratorNext;
 use Extraton\TonClient\Entity\Net\ResultOfQuery;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCollection;
 use Extraton\TonClient\Entity\Net\ResultOfQueryCounterparties;
@@ -301,5 +303,167 @@ class Net extends AbstractModule
                 ]
             )->wait()
         );
+    }
+
+    /**
+     * Creates block iterator.
+     * Block iterator uses robust iteration methods that guaranties that every block
+     * in the specified range isn't missed or iterated twice.
+     *
+     * @param int|null $startTime Starting time to iterate from.
+     * @param int|null $endTime Optional end time to iterate for.
+     * @param list<string>|null $shardFilter Shard prefix filters.
+     * @param string|null $result Account address filter.
+     * @return RegisteredIterator
+     * @throws TonException
+     */
+    public function createBlockIterator(
+        ?int $startTime,
+        ?int $endTime,
+        ?array $shardFilter,
+        ?string $result
+    ): RegisteredIterator {
+        return new RegisteredIterator(
+            $this->tonClient->request(
+                'net.create_block_iterator',
+                [
+                    'start_time'   => $startTime,
+                    'end_time'     => $endTime,
+                    'shard_filter' => $shardFilter,
+                    'result'       => $result,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Resumes block iterator.
+     * The iterator stays exactly at the same position where the resume_state was cached.
+     * Application should call the remove_iterator when iterator is no longer required.
+     *
+     * @param mixed $resumeState Iterator state from which to resume. Same as value returned from iterator_next.
+     * @return RegisteredIterator
+     * @throws TonException
+     */
+    public function resumeBlockIterator($resumeState): RegisteredIterator
+    {
+        return new RegisteredIterator(
+            $this->tonClient->request(
+                'net.resume_block_iterator',
+                [
+                    'resume_state' => $resumeState,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Creates transaction iterator.
+     * Transaction iterator uses robust iteration methods that guaranty that every transaction
+     * in the specified range isn't missed or iterated twice.
+     *
+     * @param int|null $startTime Starting time to iterate from.
+     * @param int|null $endTime Optional end time to iterate for.
+     * @param list<string>|null $shardFilter Shard prefix filters.
+     * @param list<string>|null $accountsFilter Account address filter.
+     * @param string|null $result Projection (result) string.
+     * @param bool|null $includeTransfers Include transfers field in iterated transactions.
+     * @return RegisteredIterator
+     * @throws TonException
+     */
+    public function createTransactionIterator(
+        ?int $startTime,
+        ?int $endTime,
+        ?array $shardFilter,
+        ?array $accountsFilter,
+        ?string $result,
+        ?bool $includeTransfers
+    ): RegisteredIterator {
+        return new RegisteredIterator(
+            $this->tonClient->request(
+                'net.create_transaction_iterator',
+                [
+                    'start_time'        => $startTime,
+                    'end_time'          => $endTime,
+                    'shard_filter'      => $shardFilter,
+                    'accounts_filter'   => $accountsFilter,
+                    'result'            => $result,
+                    'include_transfers' => $includeTransfers,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Resumes transaction iterator.
+     * The iterator stays exactly at the same position where the resume_state was caught.
+     * Note that resume_state doesn't store the account filter.
+     * If the application requires to use the same account filter as it was when the iterator was created
+     * then the application must pass the account filter again in accounts_filter parameter.
+     *
+     * @param mixed $resumeState Iterator state from which to resume. Same as value returned from iterator_next.
+     * @param list<string>|null $accountsFilter Account address filter. Application can specify the list of accounts for which it wants to iterate transactions.
+     * @return RegisteredIterator
+     * @throws TonException
+     */
+    public function resumeTransactionIterator(
+        $resumeState,
+        ?array $accountsFilter
+    ): RegisteredIterator {
+        return new RegisteredIterator(
+            $this->tonClient->request(
+                'net.resume_transaction_iterator',
+                [
+                    'resume_state'    => $resumeState,
+                    'accounts_filter' => $accountsFilter,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Returns next available items.
+     * In addition to available items this function returns the has_more flag indicating
+     * that the iterator isn't reach the end of the iterated range yet.
+     *
+     * @param int $iterator Iterator handle
+     * @param int|null $limit Maximum count of the returned items. If value is missing or is less than 1 the library uses 1.
+     * @param bool|null $returnResumeState Indicates that function must return the iterator state that can be used for resuming iteration.
+     * @return ResultOfIteratorNext
+     * @throws TonException
+     */
+    public function iteratorNext(
+        int $iterator,
+        ?int $limit,
+        ?bool $returnResumeState
+    ): ResultOfIteratorNext {
+        return new ResultOfIteratorNext(
+            $this->tonClient->request(
+                'net.iterator_next',
+                [
+                    'iterator'            => $iterator,
+                    'limit'               => $limit,
+                    'return_resume_state' => $returnResumeState,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Removes an iterator
+     * Frees all resources allocated in library to serve iterator.
+     * Application always should call the remove_iterator when iterator is no longer required.
+     *
+     * @param int $handle Iterator handle
+     * @throws TonException
+     */
+    public function removeIterator(int $handle): void
+    {
+        $this->tonClient->request(
+            'net.remove_iterator',
+            [
+                'handle' => $handle,
+            ]
+        )->wait();
     }
 }
