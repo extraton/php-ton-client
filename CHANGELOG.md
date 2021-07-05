@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+1.18.0
+-----
+
+* Added new method `Net::createBlockIterator`
+* Added new method `Net::resumeBlockIterator`
+* Added new method `Net::createTransactionIterator`
+* Added new method `Net::resumeTransactionIterator`
+* Added new method `Net::iteratorNext`
+* Added new method `Net::removeIterator`
+
 1.17.0
 -----
 
