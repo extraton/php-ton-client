@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Unit\TonClient;
 
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
 use Extraton\TonClient\Entity\Utils\ResultOfCompressZstd;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Entity\Utils\ResultOfDecompressZstd;
+use Extraton\TonClient\Entity\Utils\ResultOfGetAddressType;
 use Extraton\TonClient\Handler\Response;
 use Extraton\TonClient\Utils;
 
@@ -167,5 +169,38 @@ class UtilsTest extends AbstractModuleTest
         $expected = new ResultOfDecompressZstd($response);
 
         self::assertEquals($expected, $this->utils->decompressZstd($compressed));
+    }
+
+    /**
+     * @covers ::getAddressType
+     */
+    public function testGetAddressType(): void
+    {
+        $address = uniqid(microtime(), true);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'utils.get_address_type',
+                [
+                    'address' => $address,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfGetAddressType($response);
+
+        self::assertEquals($expected, $this->utils->getAddressType($address));
     }
 }

@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+1.19.0
+-----
+
+* Updated TON SDK library to version 1.19.0
+* Added new method `Utils::getAddressType`
+* Added new method `Abi::decodeAccountData`
+* Added new integration and unit tests
+* Fix integration tests
+
 1.18.0
 -----
 

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Extraton\TonClient;
 
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Utils\AddressStringFormat;
 use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
 use Extraton\TonClient\Entity\Utils\ResultOfCompressZstd;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Entity\Utils\ResultOfDecompressZstd;
+use Extraton\TonClient\Entity\Utils\ResultOfGetAddressType;
 use Extraton\TonClient\Exception\TonException;
 
 /**
@@ -148,6 +150,25 @@ class Utils extends AbstractModule
                 'utils.decompress_zstd',
                 [
                     'compressed' => $compressed,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Validates and returns the type of any TON address.
+     *
+     * @param string $address Account address in any TON format.
+     * @return ResultOfGetAddressType
+     * @throws TonException
+     */
+    public function getAddressType(string $address): ResultOfGetAddressType
+    {
+        return new ResultOfGetAddressType(
+            $this->tonClient->request(
+                'utils.get_address_type',
+                [
+                    'address' => $address,
                 ]
             )->wait()
         );
