@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Entity\Utils\ResultOfCalcStorageFee;
 use Extraton\TonClient\Entity\Utils\ResultOfCompressZstd;
 use Extraton\TonClient\Entity\Utils\ResultOfConvertAddress;
 use Extraton\TonClient\Entity\Utils\ResultOfDecompressZstd;
+use Extraton\TonClient\Entity\Utils\ResultOfGetAddressType;
+use Extraton\TonClient\Exception\SDKException;
 use Extraton\TonClient\Exception\TonException;
 use Extraton\TonClient\Handler\Response;
 use Generator;
@@ -179,7 +182,9 @@ class UtilsTest extends AbstractModuleTest
      */
     public function testCompressZstd(): void
     {
-        $uncompressed = base64_encode('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+        $uncompressed = base64_encode(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        );
         $level = 21;
 
         $expected = new ResultOfCompressZstd(
@@ -203,11 +208,131 @@ class UtilsTest extends AbstractModuleTest
         $expected = new ResultOfDecompressZstd(
             new Response(
                 [
-                    'decompressed' => base64_encode('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
+                    'decompressed' => base64_encode(
+                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+                    ),
                 ]
             )
         );
 
         self::assertEquals($expected, $this->utils->decompressZstd($compressed));
+    }
+
+    /**
+     * @covers ::getAddressType
+     * @dataProvider getAddressTypeData
+     */
+    public function testGetAddressType(
+        string $address,
+        bool $valid,
+        ?string $type = null,
+        ?bool $isHex = null,
+        ?bool $isAccountId = null,
+        ?bool $isBase64 = null
+    ): void {
+        if (!$valid) {
+            self::expectException(SDKException::class);
+        }
+
+        $result = $this->utils->getAddressType($address);
+        self::assertEquals($type, $result->getAddressType());
+        self::assertEquals($isHex, $result->isHex());
+        self::assertEquals($isBase64, $result->isBase64());
+        self::assertEquals($isAccountId, $result->isAccountId());
+    }
+
+    /**
+     * Data for testing getAddressType method
+     *
+     * @return Generator
+     */
+    public function getAddressTypeData(): Generator
+    {
+        yield [
+            ' ',
+            false,
+        ];
+
+        yield [
+            '123456',
+            false,
+        ];
+
+        yield [
+            'abcdef',
+            false,
+        ];
+
+        yield [
+            '-1:7777777777777777777777777777777777777777777777777777777777777777',
+            true,
+            ResultOfGetAddressType::HEX,
+            true,
+            false,
+            false
+        ];
+
+        yield [
+            '0:919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7',
+            true,
+            ResultOfGetAddressType::HEX,
+            true,
+            false,
+            false
+        ];
+
+        yield [
+            '7777777777777777777777777777777777777777777777777777777777777777',
+            true,
+            ResultOfGetAddressType::ACCOUNT_ID,
+            false,
+            true,
+            false
+        ];
+
+        yield [
+            '919db8e740d50bf349df2eea03fa30c385d846b991ff5542e67098ee833fc7f7',
+            true,
+            ResultOfGetAddressType::ACCOUNT_ID,
+            false,
+            true,
+            false
+        ];
+
+        yield [
+            'EQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H9wam',
+            true,
+            ResultOfGetAddressType::BASE64,
+            false,
+            false,
+            true
+        ];
+
+        yield [
+            'EQCRnbjnQNUL80nfLuoD-jDDhdhGuZH_VULmcJjugz_H9wam',
+            true,
+            ResultOfGetAddressType::BASE64,
+            false,
+            false,
+            true
+        ];
+
+        yield [
+            'UQCRnbjnQNUL80nfLuoD+jDDhdhGuZH/VULmcJjugz/H91tj',
+            true,
+            ResultOfGetAddressType::BASE64,
+            false,
+            false,
+            true
+        ];
+
+        yield [
+            'UQCRnbjnQNUL80nfLuoD-jDDhdhGuZH_VULmcJjugz_H91tj',
+            true,
+            ResultOfGetAddressType::BASE64,
+            false,
+            false,
+            true
+        ];
     }
 }

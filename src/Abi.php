@@ -10,12 +10,14 @@ use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
 use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
+use Extraton\TonClient\Entity\Abi\ResultOfDecodeData;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeInternalMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
 use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Exception\TonException;
 
 /**
@@ -257,6 +259,27 @@ class Abi extends AbstractModule
                     'call_set'    => $callSet,
                     'bounce'      => $bounce,
                     'enable_ihr'  => $enableIhr,
+                ]
+            )->wait()
+        );
+    }
+
+    /**
+     * Decodes account data using provided data BOC and ABI.
+     *
+     * @param AbiType $abi Contract ABI
+     * @param string $data Data BOC or BOC handle
+     * @return ResultOfDecodeData
+     * @throws TonException
+     */
+    public function decodeAccountData(AbiType $abi, string $data): ResultOfDecodeData
+    {
+        return new ResultOfDecodeData(
+            $this->tonClient->request(
+                'abi.decode_account_data',
+                [
+                    'abi'  => $abi,
+                    'data' => $data,
                 ]
             )->wait()
         );

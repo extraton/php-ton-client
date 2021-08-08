@@ -11,12 +11,14 @@ use Extraton\TonClient\Entity\Abi\DecodedMessageBody;
 use Extraton\TonClient\Entity\Abi\DeploySet;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignature;
 use Extraton\TonClient\Entity\Abi\ResultOfAttachSignatureToMessageBody;
+use Extraton\TonClient\Entity\Abi\ResultOfDecodeData;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeAccount;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeInternalMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessage;
 use Extraton\TonClient\Entity\Abi\ResultOfEncodeMessageBody;
 use Extraton\TonClient\Entity\Abi\Signer;
 use Extraton\TonClient\Entity\Abi\StateInitSource;
+use Extraton\TonClient\Entity\AbstractResult;
 use Extraton\TonClient\Handler\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -449,6 +451,47 @@ class AbiTest extends AbstractModuleTest
                 $callSet,
                 $bounce,
                 $enableIhr
+            )
+        );
+    }
+
+    /**
+     * @covers ::decodeAccountData
+     */
+    public function testDecodeAccountData(): void
+    {
+        $abi = AbiType::fromHandle(time());
+        $data = uniqid(microtime(), true);
+
+        $response = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($response);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'abi.decode_account_data',
+                [
+                    'abi'  => $abi,
+                    'data' => $data,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $expected = new ResultOfDecodeData($response);
+
+        self::assertEquals(
+            $expected,
+            $this->abi->decodeAccountData(
+                $abi,
+                $data,
             )
         );
     }

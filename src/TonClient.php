@@ -68,7 +68,10 @@ class TonClient
     {
         $config = [
             'network' => [
-                'server_address'             => 'net.ton.dev',
+                'endpoints'                  => [
+                    'https://net1.ton.dev/',
+                    'https://net5.ton.dev/',
+                ],
                 'network_retries_count'      => 5,
                 'message_retries_count'      => 5,
                 'message_processing_timeout' => 300000,
