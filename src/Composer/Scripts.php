@@ -33,7 +33,7 @@ use const PHP_OS;
  */
 class Scripts
 {
-    private const DEFAULT_SDK_VERSION = '1.19.0';
+    private const DEFAULT_SDK_VERSION = '1.20.0';
 
     private const SOURCE_FILE_NAME = [
         'win32'  => 'tonclient_%s_%s_dll.gz',
