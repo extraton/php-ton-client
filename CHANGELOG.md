@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.21.0
+-----
+* Updated TON SDK library to version 1.21.2
+* Fix integration tests
+
 1.20.0
 -----
 * Updated TON SDK library to version 1.20.0

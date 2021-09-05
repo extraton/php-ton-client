@@ -200,7 +200,7 @@ class TvmTest extends AbstractModuleTest
         $this->expectExceptionObject(
             SDKException::create(
                 [
-                    'message' => 'Contract execution was terminated with error: code 11, value: 128513',
+                    'message' => 'Contract execution was terminated with error: Unknown error, exit code: 11 (unknown error).',
                     'code'    => 414,
                 ]
             )
