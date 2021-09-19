@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Extraton\Tests\Unit\TonClient;
 
 use Extraton\TonClient\Crypto;
+use Extraton\TonClient\Entity\Crypto\EncryptionAlgorithm;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\RegisteredEncryptionBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxDecrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxEncrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxGetInfo;
 use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
@@ -1326,5 +1331,173 @@ class CryptoTest extends AbstractModuleTest
             ->willReturn($this->mockPromise);
 
         $this->crypto->removeSigningBox($handle);
+    }
+
+    /**
+     * @covers ::createEncryptionBox
+     */
+    public function testCreateEncryptionBox(): void
+    {
+        $algorithm = new EncryptionAlgorithm(EncryptionAlgorithm::TYPE_AES);
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+        $expected = new RegisteredEncryptionBox($result);
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.create_encryption_box',
+                [
+                    'algorithm' => $algorithm,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->createEncryptionBox($algorithm)
+        );
+    }
+
+    /**
+     * @covers ::encryptionBoxGetInfo
+     */
+    public function testEncryptionBoxGetInfo(): void
+    {
+        $encryptionBox = time();
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+        $expected = new ResultOfEncryptionBoxGetInfo($result);
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.encryption_box_get_info',
+                [
+                    'encryption_box' => $encryptionBox,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->encryptionBoxGetInfo($encryptionBox)
+        );
+    }
+
+    /**
+     * @covers ::encryptionBoxEncrypt
+     */
+    public function testEncryptionBoxEncrypt(): void
+    {
+        $encryptionBox = time();
+        $data = uniqid(microtime(), true);
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+        $expected = new ResultOfEncryptionBoxEncrypt($result);
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.encryption_box_encrypt',
+                [
+                    'encryption_box' => $encryptionBox,
+                    'data'           => $data,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->encryptionBoxEncrypt($encryptionBox, $data)
+        );
+    }
+
+    /**
+     * @covers ::encryptionBoxDecrypt
+     */
+    public function testEncryptionBoxDecrypt(): void
+    {
+        $encryptionBox = time();
+        $data = uniqid(microtime(), true);
+
+        $result = new Response(
+            [
+                uniqid(microtime(), true)
+            ]
+        );
+        $expected = new ResultOfEncryptionBoxDecrypt($result);
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with()
+            ->willReturn($result);
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.encryption_box_decrypt',
+                [
+                    'encryption_box' => $encryptionBox,
+                    'data'           => $data,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        self::assertEquals(
+            $expected,
+            $this->crypto->encryptionBoxDecrypt($encryptionBox, $data)
+        );
+    }
+
+    /**
+     * @covers ::removeEncryptionBox
+     */
+    public function testRemoveEncryptionBox(): void
+    {
+        $handle = time();
+
+        $this->mockPromise->expects(self::once())
+            ->method('wait')
+            ->with();
+
+        $this->mockTonClient->expects(self::once())
+            ->method('request')
+            ->with(
+                'crypto.remove_encryption_box',
+                [
+                    'handle' => $handle,
+                ]
+            )
+            ->willReturn($this->mockPromise);
+
+        $this->crypto->removeEncryptionBox($handle);
     }
 }

@@ -22,7 +22,7 @@ class TonClientTest extends AbstractModuleTest
         $expected = new ResultOfVersion(
             new Response(
                 [
-                    'version' => '1.21.2'
+                    'version' => '1.21.5'
                 ]
             )
         );
@@ -48,7 +48,7 @@ class TonClientTest extends AbstractModuleTest
     {
         $resultOfGetApiReference = $this->tonClient->getApiReference();
 
-        self::assertEquals('1.21.2', $resultOfGetApiReference->getApi()['version']);
+        self::assertEquals('1.21.5', $resultOfGetApiReference->getApi()['version']);
         self::assertCount(9, $resultOfGetApiReference->getApi()['modules']);
     }
 }
