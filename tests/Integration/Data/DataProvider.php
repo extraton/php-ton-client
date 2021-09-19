@@ -173,4 +173,52 @@ class DataProvider
     {
         return '0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd';
     }
+
+    public function getAesIvBin(): string
+    {
+        $path = __DIR__ . '/aes.iv.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return bin2hex($bin);
+    }
+
+    public function getAes128KeyBin(): string
+    {
+        $path = __DIR__ . '/aes128.key.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return bin2hex($bin);
+    }
+
+    public function getAes256KeyBin(): string
+    {
+        $path = __DIR__ . '/aes256.key.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return bin2hex($bin);
+    }
+
+    public function getAesPlaintextBin(): string
+    {
+        $path = __DIR__ . '/aes.plaintext.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return base64_encode($bin);
+    }
+
+    public function getCbcAes128CiphertextBin(): string
+    {
+        $path = __DIR__ . '/cbc-aes128.ciphertext.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return base64_encode($bin);
+    }
+
+    public function getCbcAes256CiphertextPaddedBin(): string
+    {
+        $path = __DIR__ . '/cbc-aes256.ciphertext.padded.bin';
+        $bin = fread(fopen($path, 'rb'), filesize($path));
+
+        return bin2hex($bin);
+    }
 }

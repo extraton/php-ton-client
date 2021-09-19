@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Extraton\TonClient;
 
 use Extraton\TonClient\App\AppInterface;
+use Extraton\TonClient\Entity\Crypto\EncryptionAlgorithm;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
+use Extraton\TonClient\Entity\Crypto\RegisteredEncryptionBox;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxDecrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxEncrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxGetInfo;
 use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
@@ -854,5 +859,126 @@ class Crypto extends AbstractModule
             [],
             $app
         )->wait();
+    }
+
+    /**
+     * Register an application implemented encryption box
+     * TODO: Please DO NOT use this version in production, it is an early test version.
+     *
+     * @param AppInterface $app Encryption box callbacks.
+     * @return RegisteredEncryptionBox
+     * @throws TonException
+     */
+    public function registerEncryptionBox(AppInterface $app): RegisteredEncryptionBox
+    {
+        return new RegisteredEncryptionBox(
+            $this->tonClient->request(
+                'crypto.register_encryption_box',
+                [],
+                $app
+            )->wait()
+        );
+    }
+
+    /**
+     * Removes encryption box from SDK
+     *
+     * @param int $handle Handle of the encryption box
+     * @throws TonException
+     */
+    public function removeEncryptionBox(int $handle): void
+    {
+        $this->tonClient->request(
+            'crypto.remove_encryption_box',
+            [
+                'handle' => $handle,
+            ],
+        )->wait();
+    }
+
+    /**
+     * Creates encryption box with specified algorithm
+     *
+     * @param EncryptionAlgorithm $algorithm Encryption algorithm specifier including cipher parameters (key, IV, etc)
+     * @return RegisteredEncryptionBox
+     * @throws TonException
+     */
+    public function createEncryptionBox(EncryptionAlgorithm $algorithm): RegisteredEncryptionBox
+    {
+        return new RegisteredEncryptionBox(
+            $this->tonClient->request(
+                'crypto.create_encryption_box',
+                [
+                    'algorithm' => $algorithm,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Encrypts data using given encryption box Note.
+     * Block cipher algorithms pad data to cipher block size so encrypted data can be longer then original data.
+     * Client should store the original data size after encryption and use it after decryption
+     * to retrieve the original data from decrypted data.
+     *
+     * @param int $encryptionBox Encryption box handle
+     * @param string $data Data to be encrypted, encoded in Base64
+     * @return ResultOfEncryptionBoxEncrypt
+     * @throws TonException
+     */
+    public function encryptionBoxEncrypt(int $encryptionBox, string $data): ResultOfEncryptionBoxEncrypt
+    {
+        return new ResultOfEncryptionBoxEncrypt(
+            $this->tonClient->request(
+                'crypto.encryption_box_encrypt',
+                [
+                    'encryption_box' => $encryptionBox,
+                    'data'           => $data,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Decrypts data using given encryption box Note.
+     * Block cipher algorithms pad data to cipher block size so encrypted data can be longer then original data.
+     * Client should store the original data size after encryption and use it after decryption
+     * to retrieve the original data from decrypted data.
+     *
+     * @param int $encryptionBox Encryption box handle
+     * @param string $data Data to be decrypted, encoded in Base64
+     * @return ResultOfEncryptionBoxDecrypt
+     * @throws TonException
+     */
+    public function encryptionBoxDecrypt(int $encryptionBox, string $data): ResultOfEncryptionBoxDecrypt
+    {
+        return new ResultOfEncryptionBoxDecrypt(
+            $this->tonClient->request(
+                'crypto.encryption_box_decrypt',
+                [
+                    'encryption_box' => $encryptionBox,
+                    'data'           => $data,
+                ],
+            )->wait()
+        );
+    }
+
+    /**
+     * Queries info from the given encryption box
+     *
+     * @param int $encryptionBox Encryption box handle
+     * @return ResultOfEncryptionBoxGetInfo
+     * @throws TonException
+     */
+    public function encryptionBoxGetInfo(int $encryptionBox): ResultOfEncryptionBoxGetInfo
+    {
+        return new ResultOfEncryptionBoxGetInfo(
+            $this->tonClient->request(
+                'crypto.encryption_box_get_info',
+                [
+                    'encryption_box' => $encryptionBox,
+                ],
+            )->wait()
+        );
     }
 }

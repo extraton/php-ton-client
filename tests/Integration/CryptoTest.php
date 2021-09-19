@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Extraton\Tests\Integration\TonClient;
 
+use Extraton\TonClient\Entity\Crypto\AesParams;
+use Extraton\TonClient\Entity\Crypto\EncryptionAlgorithm;
 use Extraton\TonClient\Entity\Crypto\KeyPair;
-use Extraton\TonClient\Entity\Crypto\ResultOfGetSigningBox;
-use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
+use Extraton\TonClient\Entity\Crypto\RegisteredEncryptionBox;
 use Extraton\TonClient\Entity\Crypto\ResultOfChaCha20;
 use Extraton\TonClient\Entity\Crypto\ResultOfConvertPublicKeyToTonSafeFormat;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxDecrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxEncrypt;
+use Extraton\TonClient\Entity\Crypto\ResultOfEncryptionBoxGetInfo;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateMnemonic;
 use Extraton\TonClient\Entity\Crypto\ResultOfGenerateSignKeys;
 use Extraton\TonClient\Entity\Crypto\ResultOfHash;
@@ -21,10 +25,10 @@ use Extraton\TonClient\Entity\Crypto\ResultOfNaclBox;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclBoxOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetached;
+use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignDetachedVerify;
 use Extraton\TonClient\Entity\Crypto\ResultOfNaclSignOpen;
 use Extraton\TonClient\Entity\Crypto\ResultOfScrypt;
 use Extraton\TonClient\Entity\Crypto\ResultOfSign;
-use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxGetPublicKey;
 use Extraton\TonClient\Entity\Crypto\ResultOfSigningBoxSign;
 use Extraton\TonClient\Entity\Crypto\ResultOfTonCrc16;
 use Extraton\TonClient\Entity\Crypto\ResultOfVerifySignature;
@@ -777,5 +781,137 @@ class CryptoTest extends AbstractModuleTest
             $handle,
             $unsigned
         );
+    }
+
+    /**
+     * @covers ::createEncryptionBox
+     */
+    public function testEncryptionBox(): void
+    {
+        $aesParams = new AesParams(
+            AesParams::CIPHER_MODE_CBC,
+            $this->dataProvider->getAes128KeyBin(),
+            $this->dataProvider->getAesIvBin()
+        );
+
+        $algorithm = EncryptionAlgorithm::createFromAES($aesParams);
+        $registeredEncryptionBox = $this->crypto->createEncryptionBox($algorithm);
+
+        $expected = new RegisteredEncryptionBox(
+            new Response(
+                [
+                    'handle' => 1,
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $registeredEncryptionBox);
+    }
+
+    /**
+     * @covers ::createEncryptionBox
+     * @covers ::encryptionBoxEncrypt
+     * @covers ::encryptionBoxDecrypt
+     * @covers ::removeEncryptionBox
+     */
+    public function testEncryptionBoxEncrypt(): void
+    {
+        $aesParams = new AesParams(
+            AesParams::CIPHER_MODE_CBC,
+            $this->dataProvider->getAes128KeyBin(),
+            $this->dataProvider->getAesIvBin()
+        );
+
+        $algorithm = EncryptionAlgorithm::createFromAES($aesParams);
+        $registeredEncryptionBox = $this->crypto->createEncryptionBox($algorithm);
+
+        $expected = new RegisteredEncryptionBox(
+            new Response(
+                [
+                    'handle' => 1,
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $registeredEncryptionBox);
+
+        $resultOfEncryptionBoxEncrypt = $this->crypto->encryptionBoxEncrypt(
+            $registeredEncryptionBox->getHandle(),
+            $this->dataProvider->getAesPlaintextBin()
+        );
+
+        $expected = new ResultOfEncryptionBoxEncrypt(
+            new Response(
+                [
+                    'data' => $this->dataProvider->getCbcAes128CiphertextBin(),
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $resultOfEncryptionBoxEncrypt);
+
+        $resultOfEncryptionBoxDecrypt = $this->crypto->encryptionBoxDecrypt(
+            $registeredEncryptionBox->getHandle(),
+            $resultOfEncryptionBoxEncrypt->getData()
+        );
+
+        $expected = new ResultOfEncryptionBoxDecrypt(
+            new Response(
+                [
+                    'data' => $this->dataProvider->getAesPlaintextBin(),
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $resultOfEncryptionBoxDecrypt);
+
+        $this->crypto->removeEncryptionBox($registeredEncryptionBox->getHandle());
+    }
+
+    /**
+     * @covers ::encryptionBoxGetInfo
+     */
+    public function testEncryptionBoxGetInfo(): void
+    {
+        $aesParams = new AesParams(
+            AesParams::CIPHER_MODE_CBC,
+            $this->dataProvider->getAes128KeyBin(),
+            $this->dataProvider->getAesIvBin()
+        );
+
+        $algorithm = EncryptionAlgorithm::createFromAES($aesParams);
+        $registeredEncryptionBox = $this->crypto->createEncryptionBox($algorithm);
+
+        $expected = new RegisteredEncryptionBox(
+            new Response(
+                [
+                    'handle' => 1,
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $registeredEncryptionBox);
+
+        $resultOfEncryptionBoxGetInfo = $this->crypto->encryptionBoxGetInfo(
+            $registeredEncryptionBox->getHandle()
+        );
+
+        $expected = new ResultOfEncryptionBoxGetInfo(
+            new Response(
+                [
+                    'info' => [
+                        'hdpath'    => null,
+                        'algorithm' => 'AES',
+                        'options'   => [
+                            'mode' => 'CBC',
+                            'iv'   => '0001020304050607fffffffffffffffc',
+                        ],
+                        'public'    => null,
+                    ]
+                ]
+            )
+        );
+
+        self::assertEquals($expected, $resultOfEncryptionBoxGetInfo);
     }
 }
