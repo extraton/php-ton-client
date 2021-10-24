@@ -1,9 +1,14 @@
 CHANGELOG
 =========
 
+1.23.0
+-----
+* Updated TON SDK library to version 1.22.0
+* Fix integration tests
+
 1.22.0
 -----
-* Updated TON SDK library to version 1.21.5
+* Updated TON SDK library to version 1.22.0
 * Added new method `Crypto::createEncryptionBox`
 * Added new method `Crypto::registerEncryptionBox`
 * Added new method `Crypto::removeEncryptionBox`
