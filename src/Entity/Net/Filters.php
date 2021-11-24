@@ -43,7 +43,7 @@ class Filters implements Params
     ];
 
     /** @var array<string, mixed> */
-    private array $filters = [];
+    protected array $filters = [];
 
     /**
      * @param string $field
