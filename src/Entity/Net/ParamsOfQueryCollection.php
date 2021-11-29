@@ -60,4 +60,30 @@ class ParamsOfQueryCollection extends AbstractQuery
             'limit'      => $this->getLimit(),
         ];
     }
+
+    /**
+     * @param string[] $fieldNames
+     * @return $this
+     */
+    public function addDeepResultField(string ...$fieldNames): self
+    {
+        $this->addResultField($this->getRecursiveDeepResultField($fieldNames, 0));
+        return $this;
+    }
+
+    /**
+     * @param string[] $fieldNames
+     * @param int $index
+     * @return string
+     */
+    private function getRecursiveDeepResultField(array $fieldNames, int $index): string
+    {
+        if ($index >= count($fieldNames)) {
+            return '';
+        }
+        $result = $fieldNames[$index];
+        $nextPart = $this->getRecursiveDeepResultField($fieldNames, $index + 1);
+        $nextPart = $nextPart ? "{ {$nextPart} }" : '';
+        return "{$result} {$nextPart}";
+    }
 }
